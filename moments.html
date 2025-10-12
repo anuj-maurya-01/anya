@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cute Moments</title>
+  <link rel="stylesheet" href="style.css">
+  <script defer src="script.js"></script>
+  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+</head>
+<body>
+  <div class="hearts-bg"></div>
+
+  <nav class="navbar">
+    <ul>
+     <li><a href="timer.html">Our Time</a></li>
+      <li><a href="notes.html">Love Notes</a></li>
+      <li><a href="messages.html">Dates</a></li>
+      <li><a href="dates.html">Messages</a></li>
+      <li><a href="moments.html" class="active">Cute Moments</a></li>
+      <li><a href="confession.html">Our Confession</a></li>
+      <li><a href="letters.html">Letters</a></li>
+    </ul>
+  </nav>
+
+  <main>
+    <section id="moments" class="parallax">
+      <div class="container">
+        <h2>Cute Moments</h2>
+        <div class="gallery">
+          <div class="gallery-item">
+            <img src="https://source.unsplash.com/random/400x300/?couple,love" alt="Cute Moment 1" onclick="openLightbox(this)">
+            <p>Our first hug – pure magic! 💞</p>
+          </div>
+          <div class="gallery-item">
+            <img src="https://source.unsplash.com/random/400x300/?kiss" alt="Cute Moment 2" onclick="openLightbox(this)">
+            <p>Stealing kisses in the rain 💋</p>
+          </div>
+          <div class="gallery-item">
+            <img src="https://source.unsplash.com/random/400x300/?dance,couple" alt="Cute Moment 3" onclick="openLightbox(this)">
+            <p>Dancing like no one's watching ✨</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Lightbox -->
+    <div id="lightbox" class="lightbox" onclick="closeLightbox()">
+      <span class="close">&times;</span>
+      <img id="lightbox-img" src="" alt="">
+    </div>
+  </main>
+</body>
+</html>

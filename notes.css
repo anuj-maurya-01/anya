@@ -1,0 +1,192 @@
+/* ===== MODERN LOVE DIARY ===== */
+body {
+  background: radial-gradient(circle at top left, #0d0d0d, #1a001a, #000);
+  margin: 0;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  font-family: 'Poppins', sans-serif;
+  color: #fff;
+}
+
+.hearts-bg {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: radial-gradient(circle at top left, #330033, #000);
+  z-index: -1;
+}
+
+.diary-container {
+  margin: 40px auto;
+  position: relative;
+  perspective: 2000px;
+  transform: translateY(-100px);
+}
+
+.book {
+  width: 700px;
+  height: 450px;
+  position: relative;
+  transform-style: preserve-3d;
+}
+
+.page {
+  width: 100%;
+  height: 110%;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(15px);
+  border-radius: 20px;
+  border: 1px solid rgba(255, 105, 180, 0.3);
+  box-shadow: 0 0 20px rgba(255, 105, 180, 0.3);
+  padding: 50px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  transition: transform 1s ease, box-shadow 0.5s ease;
+  transform-origin: left;
+}
+
+.page h2 {
+  font-family: 'Great Vibes', cursive;
+  color: #ff66cc;
+  font-size: 38px;
+  text-align: center;
+  margin-bottom: 20px;
+  text-shadow: 0 0 10px rgba(255, 102, 204, 0.6);
+}
+
+.page p {
+  font-size: 18px;
+  line-height: 1.8;
+  text-indent: 40px;
+  color: #f2e6ff;
+  text-align: justify;
+  letter-spacing: 0.3px;
+}
+
+/* ===== NAVBAR ===== */
+.navbar {
+    position: fixed;       /* stick to top */
+    top: 0;
+    left: 0;
+    width: 100%;
+    background: rgba(0,0,0,0.6);
+    padding: 15px 0;
+    z-index: 9999;
+    box-shadow: 0 0 20px rgba(255,0,255,0.5);
+    display: flex;
+    justify-content: center; 
+    align-items: center;
+}
+
+.navbar ul {
+    display: flex;         /* make items in a row */
+    gap: 25px;             /* space between items */
+    list-style: none;      /* remove bullets */
+    margin: 0;
+    padding: 0;
+}
+
+.navbar li {
+    margin: 0;
+}
+
+.navbar a {
+    text-decoration: none;
+    color: #ff99ff;
+    font-weight: 600;
+    transition: 0.3s;
+}
+
+.navbar a:hover,
+.navbar a.active {
+    color: #ff66ff;
+    text-shadow: 0 0 10px #ff66ff;
+}
+
+/* ===== Push content down so navbar doesn't overlap ===== */
+body {
+    padding-top: 70px; /* adjust to navbar height */
+}
+
+.diary-container {
+    padding-top: 80px; /* same height as navbar */
+}
+
+/* flipping animation */
+.page.flipped {
+  transform: rotateY(-180deg);
+  box-shadow: -10px 0 20px rgba(255, 102, 255, 0.2);
+}
+
+.page-gif {
+  display: block;
+  margin: 30px auto;
+  max-width: 30%;
+  border-radius: 12px;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+}
+
+.page {
+  opacity: 0;
+  transition: opacity 0.6s ease;
+}
+
+.page.show {
+  opacity: 1;
+}
+
+
+/* controls */
+.controls {
+  text-align: center;
+  margin-top: 50px;
+   position: relative;
+    z-index: 10; 
+}
+
+button {
+  background: linear-gradient(90deg, #ff66cc, #b400ff);
+  color: white;
+  border: none;
+  padding: 12px 25px;
+  margin: 0 15px;
+  border-radius: 30px;
+  font-size: 16px;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: 0.3s;
+  z-index: 10; /* Ensure individual buttons are on top */
+  position: relative;
+  box-shadow: 0 0 10px rgba(255, 102, 204, 0.5);
+}
+
+button:hover {
+  transform: scale(1.08);
+  box-shadow: 0 0 20px rgba(255, 102, 204, 0.8);
+}
+
+/* floating glowing hearts */
+@keyframes float {
+  0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+  50% { opacity: 1; }
+  100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
+}
+
+.hearts-bg::before, .hearts-bg::after {
+  content: "♥ ♥ ♥ ♥ ♥";
+  position: absolute;
+  font-size: 20px;
+  color: rgba(255, 102, 204, 0.15);
+  animation: float 8s linear infinite;
+}
+
+.hearts-bg::after {
+  animation-delay: 3s;
+  left: 50px;
+}
