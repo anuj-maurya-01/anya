@@ -52,7 +52,7 @@ const minutesEl = document.getElementById('minutes');
 const secondsEl = document.getElementById('seconds');
 
 if(daysEl && hoursEl && minutesEl && secondsEl){
-    const startDate = new Date("2023-11-21T00:45:01");
+    const startDate = new Date("2023-11-21T00:45:02");
     function updateTimer(){
         const now = new Date();
         const diff = now - startDate;
@@ -69,3 +69,4 @@ if(daysEl && hoursEl && minutesEl && secondsEl){
     }
     setInterval(updateTimer,1000);
 }
+
