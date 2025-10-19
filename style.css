@@ -1,7 +1,7 @@
-/* ===== GLOBAL STYLING ===== */
+/* 🌸 ===== GLOBAL STYLING ===== */
 body {
   font-family: 'Poppins', sans-serif;
-  background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 50%, #fecfef 100%);
+  background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 50%, #ffd1ff 100%);
   color: #fff;
   margin: 0;
   padding: 0;
@@ -9,42 +9,41 @@ body {
   position: relative;
 }
 
-/* ===== FLOATING HEARTS BACKGROUND ===== */
+/* 🌸 ===== FLOATING HEARTS BACKGROUND ===== */
 .hearts-bg {
   position: fixed;
-  top: 0;
-  left: 0;
+  inset: 0;
   width: 100%;
   height: 100%;
   background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="20">💖</text></svg>');
   background-size: 50px 50px;
   opacity: 0.08;
-  z-index: -1;
-  animation: float 10s ease-in-out infinite;
+  z-index: -2;
+  animation: float 12s ease-in-out infinite;
 }
 
 @keyframes float {
   0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-10px); }
+  50% { transform: translateY(-12px); }
 }
 
-/* Floating hearts (animated hearts moving upward) */
-.floating-hearts {
+.floating-heart {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  background: radial-gradient(circle at 30% 30%, #ff9a9e, #e91e63);
+  opacity: 0.25;
+  border-radius: 50%;
   pointer-events: none;
   z-index: -1;
+  animation: float 6s ease-in-out infinite;
 }
 
+/* 🌸 ===== RISING HEARTS ===== */
 .heart {
   position: absolute;
   font-size: 2rem;
   color: #e91e63;
+  opacity: 0.8;
   animation: rise 6s linear infinite;
-  opacity: 0.7;
 }
 
 @keyframes rise {
@@ -54,14 +53,14 @@ body {
   100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
 }
 
-/* ===== NAVBAR ===== */
+/* 🌸 ===== NAVBAR ===== */
 .navbar {
-  background: rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(10px);
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(12px);
   border-radius: 50px;
   margin: 20px auto;
-  padding: 10px 20px;
-  box-shadow: 0 4px 20px rgba(255, 102, 255, 0.3);
+  padding: 12px 25px;
+  box-shadow: 0 4px 25px rgba(255, 102, 255, 0.3);
   max-width: 90%;
   display: flex;
   justify-content: center;
@@ -75,20 +74,20 @@ body {
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
+  gap: 25px;
   margin: 0;
   padding: 0;
-  gap: 30px;
 }
 
 .navbar a {
   text-decoration: none;
   color: #ff66ff;
   font-weight: 600;
-  font-size: 1.1rem;
-  transition: all 0.3s ease;
+  font-size: 1.05rem;
   padding: 8px 15px;
   border-radius: 20px;
   position: relative;
+  transition: all 0.3s ease;
   overflow: hidden;
 }
 
@@ -114,7 +113,7 @@ body {
   text-shadow: 0 0 10px #ff66ff;
 }
 
-/* ===== HEADINGS ===== */
+/* 🌸 ===== HEADINGS ===== */
 h1, h2 {
   text-align: center;
   color: #ff9bf6;
@@ -125,9 +124,9 @@ h1, h2 {
 h1 {
   font-family: 'Dancing Script', cursive;
   font-size: 3rem;
-  position: relative;
   color: #e91e63;
   text-shadow: 0 0 20px #ffb3ec;
+  position: relative;
 }
 
 h1::after {
@@ -145,7 +144,7 @@ h1::after {
   60% { transform: translateY(-5px); }
 }
 
-/* ===== TYPEWRITER ===== */
+/* 🌸 ===== TYPEWRITER ===== */
 .typewriter p {
   overflow: hidden;
   border-right: 3px solid #ff66c4;
@@ -154,6 +153,7 @@ h1::after {
   animation: typing 3s steps(50, end), blink 0.75s step-end infinite;
   text-align: center;
   font-size: 1.2em;
+  color: #ffe6fa;
 }
 
 @keyframes typing {
@@ -166,15 +166,15 @@ h1::after {
   50% { border-color: #ff66c4; }
 }
 
-/* ===== PARALLAX SECTION ===== */
+/* 🌸 ===== PARALLAX SECTION ===== */
 .parallax {
-  background: linear-gradient(120deg,#000000,#1a0033);
+  background: linear-gradient(120deg, #000000, #1a0033);
   background-attachment: fixed;
   padding: 80px 20px;
   text-align: center;
 }
 
-/* ===== MESSAGES GRID ===== */
+/* 🌸 ===== MESSAGES GRID ===== */
 .messages-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -183,17 +183,17 @@ h1::after {
 }
 
 .message {
-  background: rgba(255,255,255,0.1);
+  background: rgba(255, 255, 255, 0.1);
   border-radius: 30px;
   padding: 25px;
   text-align: center;
-  box-shadow: 0 0 20px rgba(255,0,255,0.2);
+  box-shadow: 0 0 25px rgba(255, 0, 255, 0.25);
   transition: all 0.4s ease;
 }
 
 .message:hover {
   transform: translateY(-10px) scale(1.03);
-  box-shadow: 0 0 35px rgba(255,0,255,0.4),0 0 60px rgba(255,105,180,0.3);
+  box-shadow: 0 0 40px rgba(255, 0, 255, 0.4), 0 0 60px rgba(255, 105, 180, 0.3);
 }
 
 .message i {
@@ -204,7 +204,7 @@ h1::after {
 }
 
 @keyframes pulseGlow {
-  0%,100% { opacity: 0.8; }
+  0%, 100% { opacity: 0.8; }
   50% { opacity: 1; }
 }
 
@@ -214,7 +214,7 @@ h1::after {
   color: #ffcaff;
 }
 
-/* ===== TIMELINE ===== */
+/* 🌸 ===== TIMELINE ===== */
 .timeline-container {
   max-width: 900px;
   margin: 50px auto;
@@ -252,7 +252,7 @@ h1::after {
 
 .timeline-item:hover {
   transform: scale(1.03);
-  box-shadow: 0 0 20px rgba(255, 102, 255, 0.5);
+  box-shadow: 0 0 25px rgba(255, 102, 255, 0.5);
 }
 
 .timeline-item.left {
@@ -290,13 +290,13 @@ h1::after {
   line-height: 1.5;
 }
 
-/* ===== TIMER ===== */
+/* 🌸 ===== TIMER ===== */
 .timer-display {
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
   gap: 30px;
-  margin: 30px 0;
+  margin: 40px 0;
 }
 
 .time-unit {
@@ -306,8 +306,8 @@ h1::after {
   padding: 25px 35px;
   background: linear-gradient(45deg, #ff6b9d, #c44569);
   color: white;
-  border-radius: 20px;
-  box-shadow: 0 0 25px rgba(255,0,255,0.3);
+  border-radius: 25px;
+  box-shadow: 0 0 25px rgba(255, 0, 255, 0.3);
   min-width: 120px;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   animation: pulse 2s infinite, glow 3s ease-in-out infinite alternate;
@@ -324,7 +324,7 @@ h1::after {
 }
 
 .time-unit span:first-child {
-  font-size: 2.5em;
+  font-size: 2.6em;
   font-weight: 700;
   color: #ffebf8;
 }
@@ -335,21 +335,22 @@ h1::after {
   opacity: 0.9;
 }
 
-/* ===== FOOTER ===== */
+/* 🌸 ===== FOOTER ===== */
 footer {
   text-align: center;
-  padding: 20px;
+  padding: 25px;
   background: rgba(255, 255, 255, 0.1);
-  border-radius: 20px 20px 0 0;
+  border-radius: 25px 25px 0 0;
   font-size: 0.9rem;
   color: #ccc;
-  margin-top: 40px;
+  margin-top: 50px;
 }
 
-/* ===== RESPONSIVE ===== */
+/* 🌸 ===== RESPONSIVE ===== */
 @media (max-width: 768px) {
   h1 { font-size: 2.3rem; }
   .timeline-item { width: 80%; left: 10% !important; text-align: center; }
   .timeline::before { left: 50%; }
   .navbar ul { flex-direction: column; gap: 10px; }
+  .time-unit { min-width: 100px; padding: 20px; }
 }
