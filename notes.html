@@ -7,23 +7,359 @@
   <link rel="stylesheet" href="notes.css">
   <script defer src="notes.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
+  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+  <style>
+    /* Further enhanced inline styles for ultimate beauty in the love diary - move to notes.css for production */
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 50%, #fecfef 100%);
+      color: #333;
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+      position: relative;
+    }
+    .hearts-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="20">💖</text></svg>');
+      background-size: 50px 50px;
+      opacity: 0.1;
+      z-index: -1;
+      animation: float 10s ease-in-out infinite;
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-10px); }
+    }
+    /* Enhanced floating hearts and particles */
+    .floating-hearts {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: -1;
+    }
+    .heart {
+      position: absolute;
+      font-size: 2rem;
+      color: #e91e63;
+      animation: rise 6s linear infinite;
+      opacity: 0.7;
+    }
+    @keyframes rise {
+      0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+      10% { opacity: 1; }
+      90% { opacity: 1; }
+      100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
+    }
+    .particle {
+      position: absolute;
+      width: 4px;
+      height: 4px;
+      background: radial-gradient(circle, #ff6b9d, #e91e63);
+      border-radius: 50%;
+      animation: sparkle 4s linear infinite;
+      opacity: 0.8;
+    }
+    @keyframes sparkle {
+      0% { transform: translateY(100vh) scale(0); opacity: 0; }
+      10% { opacity: 1; scale: 1; }
+      90% { opacity: 1; scale: 1; }
+      100% { transform: translateY(-10vh) scale(0); opacity: 0; }
+    }
+    nav.navbar {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(15px);
+      border-radius: 50px;
+      margin: 20px auto;
+      padding: 15px 25px;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+      max-width: 90%;
+      position: relative;
+      z-index: 10;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+    nav ul {
+      list-style: none;
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin: 0;
+      padding: 0;
+    }
+    nav li {
+      margin: 0 20px;
+    }
+    nav a {
+      text-decoration: none;
+      color: #e91e63;
+      font-weight: 600;
+      font-size: 1.1rem;
+      transition: all 0.4s ease;
+      padding: 10px 15px;
+      border-radius: 25px;
+      position: relative;
+      overflow: hidden;
+    }
+    nav a::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(233, 30, 99, 0.4), transparent);
+      transition: left 0.6s;
+    }
+    nav a:hover::before {
+      left: 100%;
+    }
+    nav a:hover {
+      color: white;
+      transform: scale(1.1);
+      box-shadow: 0 4px 15px rgba(233, 30, 99, 0.3);
+    }
+    .diary-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 80vh;
+      padding: 20px;
+      position: relative;
+      z-index: 5;
+    }
+    .book {
+      background: rgba(255, 255, 255, 0.98);
+      border-radius: 25px;
+      padding: 50px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+      max-width: 900px;
+      width: 100%;
+      position: relative;
+      overflow: hidden;
+      animation: fadeIn 1.2s ease-in-out;
+      border: 1px solid rgba(255, 255, 255, 0.5);
+    }
+    .book::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.2) 0%, transparent 70%);
+      animation: rotate 25s linear infinite;
+      z-index: -1;
+    }
+    .book::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 5px;
+      background: linear-gradient(90deg, #ff6b9d, #e91e63, #ff6b9d);
+      animation: shimmer 3s ease-in-out infinite;
+    }
+    @keyframes shimmer {
+      0% { background-position: -200% 0; }
+      100% { background-position: 200% 0; }
+    }
+    @keyframes rotate {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(30px) scale(0.95); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    .page {
+      display: none;
+      text-align: center;
+      animation: pageFlip 0.6s ease-in-out;
+    }
+    .page.active {
+      display: block;
+    }
+    @keyframes pageFlip {
+      from { opacity: 0; transform: rotateY(90deg) scale(0.9); }
+      to { opacity: 1; transform: rotateY(0deg) scale(1); }
+    }
+    .page h2 {
+      font-family: 'Great Vibes', cursive;
+      font-size: 3rem;
+      margin-bottom: 25px;
+      text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.15);
+      position: relative;
+      background: linear-gradient(45deg, #e91e63, #ff6b9d);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .page h2::after {
+      content: '✨💕';
+      position: absolute;
+      top: -15px;
+      right: -40px;
+      font-size: 1.8rem;
+      animation: bounce 2.5s infinite;
+    }
+    @keyframes bounce {
+      0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+      40% { transform: translateY(-15px); }
+      60% { transform: translateY(-8px); }
+    }
+    .page p {
+      font-size: 1.3rem;
+      line-height: 1.7;
+      color: #555;
+      margin: 20px 0;
+      font-style: italic;
+      animation: fadeInUp 2s ease-in-out;
+      transition: color 0.3s ease;
+    }
+    .page p:hover {
+      color: #e91e63;
+    }
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(15px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .page-gif {
+      max-width: 100%;
+      height: auto;
+      border-radius: 20px;
+      margin-top: 25px;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+      transition: transform 0.4s ease, box-shadow 0.4s ease;
+      position: relative;
+    }
+    .page-gif:hover {
+      transform: scale(1.08) rotate(1deg);
+      box-shadow: 0 8px 30px rgba(233, 30, 99, 0.3);
+    }
+    .page-gif::before {
+      content: '';
+      position: absolute;
+      top: -10px;
+      left: -10px;
+      right: -10px;
+      bottom: -10px;
+      background: linear-gradient(45deg, #ff6b9d, #e91e63);
+      border-radius: 25px;
+      z-index: -1;
+      opacity: 0;
+      transition: opacity 0.4s ease;
+    }
+    .page-gif:hover::before {
+      opacity: 0.3;
+    }
+    .controls {
+      margin-top: 40px;
+      display: flex;
+      justify-content: center;
+      gap: 25px;
+    }
+    .controls button {
+      background: linear-gradient(45deg, #ff6b9d, #c44569, #e91e63);
+      color: white;
+      border: none;
+      padding: 15px 30px;
+      border-radius: 30px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.4s ease;
+      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.25);
+      position: relative;
+      overflow: hidden;
+    }
+    .controls button::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+      transition: left 0.5s;
+    }
+    .controls button:hover::before {
+      left: 100%;
+    }
+    .controls button:hover {
+      transform: scale(1.15) translateY(-3px);
+      box-shadow: 0 8px 25px rgba(233, 30, 99, 0.5);
+    }
+    .controls button:active {
+      transform: scale(0.95) translateY(0);
+    }
+    footer {
+      text-align: center;
+      padding: 25px;
+      background: rgba(255, 255, 255, 0.9);
+      margin-top: 50px;
+      border-radius: 25px 25px 0 0;
+      font-size: 1rem;
+      color: #777;
+      box-shadow: 0 -4px 15px rgba(0, 0, 0, 0.1);
+      position: relative;
+    }
+    footer::before {
+      content: '🌹';
+      position: absolute;
+      top: 10px;
+      left: 20px;
+      font-size: 1.5rem;
+      animation: sway 3s ease-in-out infinite;
+    }
+    footer::after {
+      content: '🌹';
+      position: absolute;
+      top: 10px;
+      right: 20px;
+      font-size: 1.5rem;
+      animation: sway 3s ease-in-out infinite reverse;
+    }
+    @keyframes sway {
+      0%, 100% { transform: rotate(0deg); }
+      50% { transform: rotate(10deg); }
+    }
+    @media (max-width: 768px) {
+      .book { padding: 30px; }
+      .page h2 { font-size: 2.5rem; }
+      .page p { font-size: 1.1rem; }
+      .controls { flex-direction: column; gap: 15px; }
+      nav ul { flex-direction: column; }
+      nav li { margin: 8px 0; }
+    }
+  </style>
 </head>
 <body>
   <div class="hearts-bg"></div>
+  <div class="floating-hearts" id="floating-hearts"></div>
+
   <nav class="navbar">
     <ul>
-      <li><a href="timer.html" class="active">Our Time</a></li>
-      <li><a href="notes.html">Love Notes</a></li>
-      <li><a href="messages.html">Dates</a></li>
-      <li><a href="dates.html">Messages</a></li>
-      <li><a href="moments.html">Cute Moments</a></li>
-      <li><a href="confession.html">Our Confession</a></li>
-      <li><a href="letters.html">Letters</a></li>
+      <li><a href="timer.html"><i class="fas fa-clock"></i> Our Time</a></li>
+      <li><a href="notes.html" class="active"><i class="fas fa-sticky-note"></i> Love Notes</a></li>
+      <li><a href="messages.html"><i class="fas fa-calendar-alt"></i> Dates</a></li>
+      <li><a href="dates.html"><i class="fas fa-envelope"></i> Messages</a></li>
+      <li><a href="moments.html"><i class="fas fa-heart"></i> Cute Moments</a></li>
+      <li><a href="confession.html"><i class="fas fa-ring"></i> Our Confession</a></li>
+      <li><a href="letters.html"><i class="fas fa-pen"></i> Letters</a></li>
     </ul>
   </nav>
+
   <div class="diary-container">
     <div class="book">
-      <div class="page" id="page1">
+      <div class="page active" id="page1">
         <h2>Dear My Love 💕</h2>
         <p>Every heartbeat writes your name on the pages of my soul. 
         This diary holds not just words, but the moments that made me fall deeper in love with you.</p>
@@ -54,5 +390,24 @@
       <button id="nextBtn">Next ⟶</button>
     </div>
   </div>
-</body>
-</html>
+
+  <footer>
+    Made with ❤️ for our eternal love. Forever and always.
+  </footer>
+
+  <script>
+    // Enhanced JavaScript for floating hearts, particles, and page navigation
+    function createHeart() {
+      const heart = document.createElement('div');
+      heart.className = 'heart';
+      heart.innerHTML = '💖';
+      heart.style.left = Math.random() * 100 + 'vw';
+      heart.style.animationDuration = Math.random() * 3 + 3 + 's';
+      document.getElementById('floating-hearts').appendChild(heart);
+      setTimeout(() => {
+        heart.remove();
+      }, 6000);
+    }
+    function createParticle() {
+      const particle = document.createElement('div');
+      particle.class
