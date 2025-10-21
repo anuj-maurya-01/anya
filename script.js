@@ -98,28 +98,3 @@ if (galleryItems.length && lightbox && lightboxImg) {
   });
 }
 
-// 🌸 ===== LOVE TIMER =====
-const daysEl = document.getElementById('days');
-const hoursEl = document.getElementById('hours');
-const minutesEl = document.getElementById('minutes');
-const secondsEl = document.getElementById('seconds');
-
-if (daysEl && hoursEl && minutesEl && secondsEl) {
-  const startDate = new Date("2023-11-21T00:45:02"); // 💞 Your love journey start date
-  function updateTimer() {
-    const now = new Date();
-    const diff = now - startDate;
-
-    const d = Math.floor(diff / (1000 * 60 * 60 * 24));
-    const h = Math.floor((diff / (1000 * 60 * 60)) % 24);
-    const m = Math.floor((diff / (1000 * 60)) % 60);
-    const s = Math.floor((diff / 1000) % 60);
-
-    daysEl.textContent = d;
-    hoursEl.textContent = h.toString().padStart(2, '0');
-    minutesEl.textContent = m.toString().padStart(2, '0');
-    secondsEl.textContent = s.toString().padStart(2, '0');
-  }
-  updateTimer();
-  setInterval(updateTimer, 1000);
-}
