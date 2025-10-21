@@ -342,7 +342,7 @@ footer {
   background: rgba(255, 255, 255, 0.1);
   border-radius: 25px 25px 0 0;
   font-size: 0.9rem;
-  color: #ccc;
+  color: #000;
   margin-top: 50px;
 }
 
@@ -354,4 +354,5 @@ footer {
   .navbar ul { flex-direction: column; gap: 10px; }
   .time-unit { min-width: 100px; padding: 20px; }
 }
+
 
