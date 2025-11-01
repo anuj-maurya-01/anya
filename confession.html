@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Our Confession 💞</title>
   <style>
-    /* ✨ Romantic Confession Page – Integrated Style ✨ */
+    /* 🌸 Romantic Confession Page */
     body {
       margin: 0;
       font-family: 'Poppins', sans-serif;
@@ -15,6 +15,7 @@
       position: relative;
     }
 
+    /* Floating hearts and background */
     .hearts-bg {
       position: fixed;
       top: 0;
@@ -23,8 +24,8 @@
       height: 100%;
       background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="20">💖</text></svg>');
       background-size: 50px 50px;
-      opacity: 0.1;
-      z-index: -1;
+      opacity: 0.08;
+      z-index: -2;
       animation: float 10s ease-in-out infinite;
     }
 
@@ -33,7 +34,6 @@
       50% { transform: translateY(-10px); }
     }
 
-    /* Floating hearts */
     .floating-hearts {
       position: absolute;
       width: 100%;
@@ -57,6 +57,24 @@
       10% { opacity: 1; }
       90% { opacity: 1; }
       100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
+    }
+
+    /* Sparkles */
+    .sparkle {
+      position: absolute;
+      width: 6px;
+      height: 6px;
+      background: white;
+      border-radius: 50%;
+      opacity: 0.8;
+      box-shadow: 0 0 10px #fff;
+      animation: sparkle 2s linear infinite;
+    }
+
+    @keyframes sparkle {
+      0% { transform: scale(0.5); opacity: 0.5; }
+      50% { transform: scale(1.2); opacity: 1; }
+      100% { transform: scale(0.5); opacity: 0.3; }
     }
 
     /* Navbar */
@@ -92,28 +110,13 @@
       padding: 8px 12px;
       border-radius: 20px;
       transition: all 0.3s ease;
-      position: relative;
-      overflow: hidden;
-    }
-
-    nav a::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: -100%;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(233, 30, 99, 0.3), transparent);
-      transition: left 0.5s;
-    }
-
-    nav a:hover::before {
-      left: 100%;
     }
 
     nav a:hover {
       color: white;
+      background: #e91e63;
       transform: scale(1.05);
+      box-shadow: 0 0 15px rgba(233, 30, 99, 0.5);
     }
 
     nav a.active {
@@ -122,15 +125,17 @@
       box-shadow: 0 4px 15px rgba(233, 30, 99, 0.4);
     }
 
-    /* Confession Section */
+    /* Confession Sections */
     .confession-section {
       display: flex;
       justify-content: center;
       align-items: center;
-      height: 80vh;
+      min-height: 85vh;
       position: relative;
       z-index: 5;
       padding: 20px;
+      flex-direction: column;
+      scroll-margin-top: 50px;
     }
 
     .confession-card {
@@ -140,13 +145,15 @@
       max-width: 700px;
       text-align: center;
       box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-      position: relative;
-      animation: fadeIn 1.2s ease-in-out;
+      opacity: 0;
+      transform: translateY(50px);
+      transition: opacity 1s ease, transform 1s ease;
+      margin-bottom: 60px;
     }
 
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(30px); }
-      to { opacity: 1; transform: translateY(0); }
+    .confession-card.show {
+      opacity: 1;
+      transform: translateY(0);
     }
 
     .glow-text {
@@ -157,11 +164,12 @@
       margin-bottom: 20px;
     }
 
-    #confession-text {
+    #confession-text, #his-confession-text {
       font-size: 1.3rem;
       color: #555;
       line-height: 1.6;
       font-style: italic;
+      white-space: pre-line;
     }
 
     footer {
@@ -183,32 +191,45 @@
   </style>
 </head>
 <body>
+  <audio autoplay loop>
+    <source src="mera_hua.mp3" type="audio/mpeg">
+  </audio>
+
   <div class="hearts-bg"></div>
   <div class="floating-hearts" id="floating-hearts"></div>
 
   <nav class="navbar">
     <ul>
-      <li><a href="timer.html"><i class="fas fa-clock"></i> Our Time</a></li>
-      <li><a href="notes.html"><i class="fas fa-sticky-note"></i> Love Notes</a></li>
-      <li><a href="messages.html"><i class="fas fa-envelope"></i> Messages</a></li>
-      <li><a href="dates.html"><i class="fas fa-calendar-alt"></i> Dates</a></li>
-      <li><a href="moments.html"><i class="fas fa-heart"></i> Cute Moments</a></li>
-      <li><a href="confession.html" class="active"><i class="fas fa-ring"></i> Our Confession</a></li>
-      <li><a href="letters.html"><i class="fas fa-pen"></i> Letters</a></li>
+      <li><a href="timer.html">Our Time</a></li>
+      <li><a href="notes.html">Love Notes</a></li>
+      <li><a href="messages.html">Messages</a></li>
+      <li><a href="dates.html">Dates</a></li>
+      <li><a href="moments.html">Cute Moments</a></li>
+      <li><a href="confession.html" class="active">Our Confession</a></li>
+      <li><a href="letters.html">Letters</a></li>
     </ul>
   </nav>
 
-  <section class="confession-section">
+  <!-- Her Confession -->
+  <section class="confession-section" id="her">
     <div class="confession-card">
       <h1 class="glow-text">💖 Her Confession 💖</h1>
       <p id="confession-text"></p>
     </div>
   </section>
 
-  <footer>Made with ❤️ from the deepest corners of my heart.</footer>
+  <!-- His Confession -->
+  <section class="confession-section" id="his">
+    <div class="confession-card">
+      <h1 class="glow-text">💞 His Confession 💞</h1>
+      <p id="his-confession-text">[You can add his confession here later 💌]</p>
+    </div>
+  </section>
+
+  <footer>Made with ❤️ from the deepest corners of our hearts.</footer>
 
   <script>
-    // Floating hearts animation
+    // Floating hearts
     function createHeart() {
       const heart = document.createElement('div');
       heart.className = 'heart';
@@ -220,8 +241,30 @@
     }
     setInterval(createHeart, 1000);
 
-    // Typing effect for confession text
-    const text = "Toh dekhiye, suniye nahi — bas padhiye. Ye likhne ka reason simple hai… mai chahti hu aap samjhein ki aapki Riya aapko kitna jaanti hai. Shayad pura nahi, par jitna bhi jaanti hu, dil se jaanti hu. Ab ye sach hai ya nahi, wo aap hi bata sakte ho.
+    // Sparkles
+    function createSparkle() {
+      const sparkle = document.createElement('div');
+      sparkle.className = 'sparkle';
+      sparkle.style.left = Math.random() * 100 + 'vw';
+      sparkle.style.top = Math.random() * 100 + 'vh';
+      sparkle.style.animationDuration = Math.random() * 2 + 1 + 's';
+      document.body.appendChild(sparkle);
+      setTimeout(() => sparkle.remove(), 2000);
+    }
+    setInterval(createSparkle, 500);
+
+    // Scroll reveal
+    window.addEventListener('scroll', () => {
+      document.querySelectorAll('.confession-card').forEach(card => {
+        const rect = card.getBoundingClientRect();
+        if (rect.top < window.innerHeight - 100) {
+          card.classList.add('show');
+        }
+      });
+    });
+
+    // Typing effect for Her Confession
+    const text = `Toh dekhiye, suniye nahi — bas padhiye. Ye likhne ka reason simple hai… mai chahti hu aap samjhein ki aapki Riya aapko kitna jaanti hai. Shayad pura nahi, par jitna bhi jaanti hu, dil se jaanti hu. Ab ye sach hai ya nahi, wo aap hi bata sakte ho.
 
 Mujhe aap pasand aana May ke end se hi start ho gaya tha. Tab se aapki baatein, aapka behaviour — sab kuch dil ko achha lagne laga tha. Phir July aaya, jab maine finally confess kar diya tha — “I like you, Anuj.”
 Haan, mujhe aap pasand aa gaye the… aur shayad pyaar bhi hone laga tha 🫣
@@ -250,21 +293,20 @@ Mai jhagde nahi chahti — bas thoda sa aur effort chahiye kabhi kabhi. Jaise pe
 
 Bas itna hi.
 Ye confession ek complaint nahi hai, ye dil se likha sach hai.
-Aap mere liye important ho — aur rahoge. 💖 💌";
+Aap mere liye important ho — aur rahoge. 💖 💌`;
+
     const confessionEl = document.getElementById('confession-text');
     let i = 0;
     function typeText() {
       if (i < text.length) {
         confessionEl.innerHTML += text.charAt(i);
+        let delay = 50;
+        if (['.', '…', '💖', '💌', '💔'].includes(text.charAt(i))) delay = 300;
         i++;
-        setTimeout(typeText, 50);
+        setTimeout(typeText, delay);
       }
     }
     window.onload = typeText;
   </script>
 </body>
 </html>
-
-
-
-
