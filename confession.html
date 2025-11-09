@@ -15,7 +15,6 @@
       position: relative;
     }
 
-    /* Floating hearts and background */
     .hearts-bg {
       position: fixed;
       top: 0;
@@ -59,7 +58,6 @@
       100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
     }
 
-    /* Sparkles */
     .sparkle {
       position: absolute;
       width: 6px;
@@ -200,15 +198,15 @@
 
   <nav class="navbar">
     <ul>
-      <li><a href="timer.html"><i class="fas fa-clock"></i> Our Time</a></li>
-      <li><a href="notes.html"><i class="fas fa-sticky-note"></i> Love Notes</a></li>
-      <li><a href="messages.html"><i class="fas fa-envelope"></i> Messages</a></li>
-      <li><a href="dates.html"><i class="fas fa-calendar-alt"></i> Dates</a></li>
-      <li><a href="moments.html"><i class="fas fa-heart"></i> Cute Moments</a></li>
-      <li><a href="confession.html" class="active"><i class="fas fa-ring"></i> Our Confession</a></li>
-      <li><a href="letters.html"><i class="fas fa-ring"></i>Letters</a></li>
-      <li><a href="chats.html"><i class="fas fa-comments"></i> First Day Chats</a></li>
-      <li><a href="qa.html"><i class="fas fa-comments"></i>Q&A</a></li>
+      <li><a href="timer.html">Our Time</a></li>
+      <li><a href="notes.html">Love Notes</a></li>
+      <li><a href="messages.html">Messages</a></li>
+      <li><a href="dates.html">Dates</a></li>
+      <li><a href="moments.html">Cute Moments</a></li>
+      <li><a href="confession.html" class="active">Our Confession</a></li>
+      <li><a href="letters.html">Letters</a></li>
+      <li><a href="chats.html">First Day Chats</a></li>
+      <li><a href="qa.html">Q&A</a></li>
     </ul>
   </nav>
 
@@ -224,7 +222,7 @@
   <section class="confession-section" id="his">
     <div class="confession-card">
       <h1 class="glow-text">💞 His Confession 💞</h1>
-      <p id="his-confession-text">[You can add his confession here later 💌]</p>
+      <p id="his-confession-text"></p>
     </div>
   </section>
 
@@ -265,55 +263,53 @@
       });
     });
 
-    // Typing effect for Her Confession
-    const text = `Toh dekhiye, suniye nahi — bas padhiye. Ye likhne ka reason simple hai… mai chahti hu aap samjhein ki aapki Riya aapko kitna jaanti hai. Shayad pura nahi, par jitna bhi jaanti hu, dil se jaanti hu. Ab ye sach hai ya nahi, wo aap hi bata sakte ho.
+    // Her confession typing
+    const herText = `Toh padhiye… mai chahti hu aap samjhein ki Riya aapko dil se jaanti hai 💖
+May ke end se hi aap ache lagne lage the, aur July mein “I like you, Anuj” kehne ke baad sab kuch badal gaya 🫶
 
-Mujhe aap pasand aana May ke end se hi start ho gaya tha. Tab se aapki baatein, aapka behaviour — sab kuch dil ko achha lagne laga tha. Phir July aaya, jab maine finally confess kar diya tha — “I like you, Anuj.”
-Haan, mujhe aap pasand aa gaye the… aur shayad pyaar bhi hone laga tha 🫣
+Aap caring ho, samajhdaar ho, aur mere liye bahut special ho.
+Chahe ladai ho ya baatein kam, dil sirf aapko hi chahta hai ❤️
 
-Aap mere liye hamesha special rahe ho. Sorry, mai aapki best friend thi — par feelings control nahi hoti na… human nature hai. Mujhe yaad hai jab aapne kaha tha — “Mai kadar karta hu feelings ki, aur kabhi hurt nahi karunga.” Us moment se hi mujhe laga tha ki aap alag ho, really different.
+I love you, Anuj.
+Ye complaint nahi… ek sachcha ehsaas hai 💌`;
 
-July ke end mein jab mujhe eye flu tha 😂😂 tab lagta tha ki shayad mai aapse pyaar karne lagi hu.
-Aur jab aapne kaha tha, “pyaar ko koi define nahi kar sakta,” tab samjha — haan, sahi kaha tha aapne. Koi define nahi kar sakta, kyunki jab insaan itna samajhdaar, mature aur understanding ho, toh shabd kam pad jaate hain.
+    const hisText = `Riya… sach kahu toh mujhe kabhi laga nahi tha ki koi itna samajh sakta hai mujhe 💫
+Tumne har chhoti baat mehsoos ki, bina kahe sab samajh liya.
 
-Aap ek bahut acche insaan ho — mummy ne aapko bhut pyar se sanskaar diye hain, isiliye aap kabhi disrespect nahi karte. Chahe kitni bhi ladai ho, kabhi bhi aapne maryada cross nahi ki. Uske liye dil se thank you 🙇‍♀️
+May be mai zyada express nahi karta, par I do care… deeply.
+Tum meri life ka woh hissa ho jahan peace milta hai ❤️
 
-Mujhe lagta hai mai aapko kaafi jaanti hu — pehle se bhi zyada. Aap possessive ho, caring ho, fikar karte ho — bas zyada dikhate nahi. Pyaar bhi karte ho, bas manate nahi 😅
-Jhagda ho ya arguments, sorted karne mai hi aati hu, par dil se chaahti hu ki kabhi aap bhi pehle aao.
-
-Aap jaise ladke sach mein rare hote hain. Koi bhi aapko pasand karegi, no doubt.
-Aur mera darr bhi wahi hai — mai aapko khona nahi chahti.
-
-Mai sach kahu toh bahut pyaar karti hu aapse. Mera sab kuch aapse hi hai.
-Jab ladai hoti hai na, aur aap react karte ho, tab lagta hai ki kahin aap sach mein naraaz na ho jao. Dil ke andar se dar lagta hai.
-
-Aap mere liye best ho — seriously.
-Kabhi kabhi lagta hai mai zyada bol deti hu, gussa ho jaati hu, par baad mein sab gussa ch चला जाता है, बस दिल हल्का हो जाता है।
-Lekin jab aap gaane me “chod ke jaane” ki baat kar dete ho… dil dukh jaata hai 💔
-
-Mai jhagde nahi chahti — bas thoda sa aur effort chahiye kabhi kabhi. Jaise pehle update karte the na — aaj ka din kaisa tha, kya kiya, thoda share karte the… बस वही chhoti chhoti baatein chahiye. Mujhe 4-5 reels nahi, bas ek dil se update chahiye — “mera din kaisa tha, kya laga, kya mehsoos hua.”
-
-Bas itna hi.
-Ye confession ek complaint nahi hai, ye dil se likha sach hai.
-Aap mere liye important ho — aur rahoge. 💖 💌`;
+Ladai ho ya doori, dil sirf tum tak hi laut aata hai.
+Aur haan… I love you too, Riya 💌`;
 
     const confessionEl = document.getElementById('confession-text');
+    const hisConfessionEl = document.getElementById('his-confession-text');
+
     let i = 0;
-    function typeText() {
-      if (i < text.length) {
-        confessionEl.innerHTML += text.charAt(i);
+    function typeHerText() {
+      if (i < herText.length) {
+        confessionEl.innerHTML += herText.charAt(i);
         let delay = 50;
-        if (['.', '…', '💖', '💌', '💔'].includes(text.charAt(i))) delay = 300;
+        if (['.', '…', '💖', '💌', '❤️'].includes(herText.charAt(i))) delay = 200;
         i++;
-        setTimeout(typeText, delay);
+        setTimeout(typeHerText, delay);
+      } else {
+        setTimeout(typeHisText, 1000);
       }
     }
-    window.onload = typeText;
+
+    let j = 0;
+    function typeHisText() {
+      if (j < hisText.length) {
+        hisConfessionEl.innerHTML += hisText.charAt(j);
+        let delay = 50;
+        if (['.', '…', '💫', '💌', '❤️'].includes(hisText.charAt(j))) delay = 200;
+        j++;
+        setTimeout(typeHisText, delay);
+      }
+    }
+
+    window.onload = typeHerText;
   </script>
 </body>
 </html>
-
-
-
-
-
