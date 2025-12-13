@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Messages</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
+
+<style>
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:"Poppins",sans-serif;
+}
+
+body{
+  background: linear-gradient(to bottom,#ffd1dc,#ffc1d6);
+  min-height:100vh;
+  color:#555;
+}
+
+/* NAVBAR */
+.navbar{
+  background:#ffe6ee;
+  margin:15px;
+  padding:12px;
+  border-radius:40px;
+  box-shadow:0 8px 20px rgba(0,0,0,0.1);
+}
+
+.navbar ul{
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:center;
+  list-style:none;
+  gap:14px;
+}
+
+.navbar a{
+  text-decoration:none;
+  color:#e75480;
+  font-size:14px;
+  padding:6px 14px;
+  border-radius:20px;
+}
+
+.navbar a.active{
+  background:#ff9dbb;
+  color:#fff;
+}
+
+/* MESSAGE CARD */
+.card{
+  max-width:900px;
+  background:#fff;
+  margin:40px auto;
+  padding:35px 25px;
+  border-radius:25px;
+  text-align:center;
+  box-shadow:0 15px 40px rgba(0,0,0,0.15);
+}
+
+.card h1{
+  font-family:"Great Vibes",cursive;
+  color:#e75480;
+  font-size:38px;
+  margin-bottom:15px;
+}
+
+.card p{
+  font-size:15px;
+  line-height:1.7;
+  margin-bottom:15px;
+  color:#666;
+}
+
+.card img{
+  width:100%;
+  max-width:320px;
+  margin-top:20px;
+  border-radius:15px;
+}
+
+/* BUTTONS */
+.nav-btns{
+  display:flex;
+  justify-content:center;
+  gap:20px;
+  margin-bottom:40px;
+}
+
+.nav-btns button{
+  background:#ff7fa6;
+  border:none;
+  color:white;
+  padding:10px 22px;
+  border-radius:25px;
+  font-size:14px;
+  cursor:pointer;
+  box-shadow:0 8px 18px rgba(0,0,0,0.15);
+}
+
+.nav-btns button:hover{
+  background:#ff5f95;
+}
+
+/* FLOATING HEARTS */
+.heart{
+  position:fixed;
+  font-size:18px;
+  animation:float 6s linear infinite;
+}
+
+@keyframes float{
+  0%{transform:translateY(100vh);opacity:1;}
+  100%{transform:translateY(-10vh);opacity:0;}
+}
+
+/* FOOTER */
+footer{
+  background:#ffe6ee;
+  margin:15px;
+  padding:12px;
+  border-radius:25px;
+  text-align:center;
+  font-size:13px;
+  color:#777;
+}
+</style>
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+<ul>
+  <li><a href="timer.html">Our Time</a></li>
+  <li><a href="notes.html">Love Notes</a></li>
+  <li><a href="messages.html" class="active">Messages</a></li>
+  <li><a href="dates.html">Dates</a></li>
+  <li><a href="moments.html">Cute Moments</a></li>
+  <li><a href="confession.html">Our Confession</a></li>
+  <li><a href="qa.html">Q&A>Qa></li>
+  <li><a href="chats.html">First Chats</a></li>
+  <li><a href="letters.html">Letters</a></li>
+</ul>
+</nav>
+
+<!-- MESSAGE -->
+<div class="card">
+  <h1>Dear My Love 💕</h1>
+
+  <p>
+    Every heartbeat writes your name on the pages of my soul.
+    This diary doesn’t just hold words,
+    it holds the moments that made me fall deeper in love with you.
+  </p>
+
+  <p>
+    From the way your eyes smile before your lips do,
+    to how you make silence feel like music —
+    loving you is my favorite story.
+  </p>
+
+  <!-- Replace image path if needed -->
+  <img src="assets/images/hug.png" alt="Love Sketch">
+</div>
+
+<!-- PREV / NEXT -->
+<div class="nav-btns">
+  <button onclick="prevMsg()">← Previous</button>
+  <button onclick="nextMsg()">Next →</button>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  Made with ❤️ for our eternal love. Forever and always.
+</footer>
+
+<!-- JS -->
+<script>
+const messages=[
+  {
+    title:"Dear My Love 💕",
+    text1:"Every heartbeat writes your name on the pages of my soul.",
+    text2:"Loving you is my favorite story."
+  },
+  {
+    title:"My Safe Place 💖",
+    text1:"In your arms I found my home.",
+    text2:"No matter where life takes us, my heart belongs to you."
+  },
+  {
+    title:"Forever Us 💫",
+    text1:"I don’t need a perfect life.",
+    text2:"I just need you beside me forever."
+  }
+];
+
+let index=0;
+const title=document.querySelector(".card h1");
+const p=document.querySelectorAll(".card p");
+
+function update(){
+  title.innerText=messages[index].title;
+  p[0].innerText=messages[index].text1;
+  p[1].innerText=messages[index].text2;
+}
+
+function nextMsg(){
+  index=(index+1)%messages.length;
+  update();
+}
+
+function prevMsg(){
+  index=(index-1+messages.length)%messages.length;
+  update();
+}
+
+/* Floating hearts */
+setInterval(()=>{
+  const h=document.createElement("div");
+  h.className="heart";
+  h.innerText="💖";
+  h.style.left=Math.random()*100+"vw";
+  h.style.animationDuration=(3+Math.random()*3)+"s";
+  document.body.appendChild(h);
+  setTimeout(()=>h.remove(),6000);
+},800);
+</script>
+
+</body>
+</html>
