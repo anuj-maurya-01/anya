@@ -24,7 +24,7 @@
     nav a:hover::after{width:100%;}
 
     /* --- HERO --- */
-    .hero{height:100vh;background:linear-gradient(135deg,rgba(0,0,0,.8),rgba(20,0,40,.7)),url('../assets/madam_ji/Lehenga_01.jpg')center/cover no-repeat fixed;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;}
+    .hero{height:100vh;background:linear-gradient(135deg,rgba(0,0,0,.8),rgba(20,0,40,.7)),url('assets/madam_ji/Lehenga_01.jpg')center/cover no-repeat fixed;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;}
     .hero h1{font-size:5rem;text-transform:uppercase;letter-spacing:.3em;animation:glow 3s ease-in-out infinite alternate;}
     @keyframes glow{from{text-shadow:0 0 20px rgba(255,107,157,.5);}to{text-shadow:0 0 40px rgba(255,217,61,.5),0 0 80px rgba(255,107,157,.5);}}
     .hero p{font-size:1.8rem;font-weight:300;max-width:700px;margin-top:1rem;text-shadow:0 0 10px rgba(255,255,255,.5);}
@@ -87,7 +87,9 @@
   <section class="hero" id="hero">
     <h1>Our Eternal Bond</h1>
     <p>Two souls, one heartbeat — our love story written in the stars.</p>
-    <button class="cta-button" onclick="document.querySelector('#journey').scrollIntoView({behavior:'smooth'})">Explore Our Journey</button>
+    <a href="timer.html" class="cta-button">
+  Explore Our Journey
+  </a>
   </section>
 
   <!-- JOURNEY -->
@@ -95,7 +97,7 @@
     <h2 class="section-title"><i class="fa-solid fa-road"></i>Our Journey</h2>
     <div class="story-cards">
       <div class="story-card">
-  <img src="../assets/madam_ji/1_20251021_094014_0000.png" alt="First picture">
+  <img src="assets/madam_ji/1_20251021_094014_0000.png" alt="First picture">
   <div class="story-content">
     <h3>First Photo 💫</h3>
     <p>
@@ -106,7 +108,7 @@
     </div>
 
     <div class="story-card">
-  <img src="../assets/madam_ji/2_20251021_100023_0000.png" alt="First Photo in Suit">
+  <img src="assets/madam_ji/2_20251021_100023_0000.png" alt="First Photo in Suit">
   <div class="story-content">
     <h3>First Suit Pic ☕</h3>
     <p>
@@ -117,7 +119,7 @@
     </div>
 
     <div class="story-card">
-    <img src="../assets/madam_ji/3_20251021_100024_0001.png" alt="First Saree Photo">
+    <img src="assets/madam_ji/3_20251021_100024_0001.png" alt="First Saree Photo">
     <div class="story-content">
     <h3>First Saree Photo ❤️</h3>
         <p>
@@ -136,15 +138,15 @@
   <section id="moments">
     <h2 class="section-title"><i class="fa-solid fa-camera-retro"></i>Our Moments</h2>
     <div class="moments-gallery">
-      <img src="../assets/madam_ji/School vibes4.jpg"
+      <img src="assets/madam_ji/School vibes4.jpg"
      alt="School days together"
      data-caption="Carefree laughs, stolen glances, and memories born in the innocence of school days.">
 
-    <img src="../assets/madam_ji/Kumbh couple pic02.jpg"
+    <img src="assets/madam_ji/Kumbh couple pic02.jpg"
      alt="Kumbh moment together"
      data-caption="Amid the sacred crowd and golden sunset, we found peace in each other’s presence.">
 
-    <img src="../assets/madam_ji/Bhardwaj park.jpg"
+    <img src="assets/madam_ji/Bhardwaj park.jpg"
      alt="Bhardwaj Park memory"
      data-caption="Under open skies and quiet paths, our hearts spoke louder than words.">
 
@@ -195,6 +197,7 @@
   </script>
 </body>
 </html>
+
 
 
 
