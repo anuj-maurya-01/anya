@@ -1,255 +1,291 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Our Q&A 💬</title>
-  <style>
-    body {
-      margin: 0;
-      font-family: 'Poppins', sans-serif;
-      background: linear-gradient(135deg, #ff9a9e, #fecfef, #fcbad3);
-      color: #333;
-      overflow-x: hidden;
-      position: relative;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Our Q&A 💬</title>
 
-    /* Floating hearts background */
-    .hearts-bg {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="20">💖</text></svg>');
-      background-size: 50px 50px;
-      opacity: 0.1;
-      z-index: -1;
-      animation: float 10s ease-in-out infinite;
-    }
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+<script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
 
-    @keyframes float {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-10px); }
-    }
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif}
 
-    /* Floating emoji hearts */
-    .floating-hearts {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      top: 0;
-      left: 0;
-      z-index: 0;
-      pointer-events: none;
-    }
+body{
+  background:linear-gradient(135deg,#ff9a9e,#fecfef,#fcbad3);
+  color:#333;
+  overflow-x:hidden;
+}
 
-    .heart {
-      position: absolute;
-      color: #e91e63;
-      font-size: 2rem;
-      opacity: 0.7;
-      animation: rise 6s linear infinite;
-    }
+/* ===== BACKGROUND ===== */
+.hearts-bg{
+  position:fixed;
+  inset:0;
+  background-image:url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="20">💖</text></svg>');
+  background-size:50px 50px;
+  opacity:.1;
+  z-index:-2;
+}
 
-    @keyframes rise {
-      0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
-      10% { opacity: 1; }
-      90% { opacity: 1; }
-      100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
-    }
+.floating-hearts{
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  z-index:-1;
+}
 
-    /* Navbar */
-    nav.navbar {
-      background: rgba(255, 255, 255, 0.9);
-      backdrop-filter: blur(10px);
-      border-radius: 50px;
-      margin: 20px auto;
-      padding: 10px 20px;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-      max-width: 90%;
-      z-index: 10;
-    }
+.heart{
+  position:absolute;
+  font-size:2rem;
+  color:#e91e63;
+  animation:rise 6s linear infinite;
+}
 
-    nav ul {
-      list-style: none;
-      display: flex;
-      justify-content: center;
-      flex-wrap: wrap;
-      padding: 0;
-      margin: 0;
-    }
+@keyframes rise{
+  from{transform:translateY(100vh);opacity:0}
+  20%{opacity:1}
+  to{transform:translateY(-10vh);opacity:0}
+}
 
-    nav li { margin: 0 15px; }
+/* ===== NAVBAR ===== */
+.navbar{
+  background:rgba(255,255,255,.95);
+  backdrop-filter:blur(15px);
+  border-radius:40px;
+  margin:15px auto;
+  padding:14px 22px;
+  max-width:92%;
+  box-shadow:0 6px 20px rgba(0,0,0,.15);
+  position:relative;
+  z-index:1000;
+}
 
-    nav a {
-      text-decoration: none;
-      color: #e91e63;
-      font-weight: 600;
-      font-size: 1.1rem;
-      padding: 8px 12px;
-      border-radius: 20px;
-      transition: all 0.3s ease;
-    }
+.nav-container{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
 
-    nav a:hover { color: white; background: #e91e63; transform: scale(1.05); }
-    nav a.active {
-      color: white;
-      background: #e91e63;
-      box-shadow: 0 4px 15px rgba(233, 30, 99, 0.4);
-    }
+.logo{
+  font-weight:600;
+  color:#e91e63;
+}
 
-    /* Title */
-    h1.glow-text {
-      font-family: 'Dancing Script', cursive;
-      font-size: 3rem;
-      color: #e91e63;
-      text-align: center;
-      margin: 40px 0 20px;
-      text-shadow: 0 0 10px #ffb6c1, 0 0 20px #e91e63, 0 0 30px #ff9a9e;
-    }
+.hamburger{
+  display:none;
+  flex-direction:column;
+  cursor:pointer;
+}
 
-    /* Q&A Section */
-    .qa-container {
-      max-width: 800px;
-      margin: 0 auto;
-      padding: 20px;
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-      z-index: 2;
-    }
+.hamburger span{
+  width:26px;
+  height:3px;
+  background:#e91e63;
+  margin:4px 0;
+  border-radius:4px;
+}
 
-    .qa-item {
-      background: rgba(255, 255, 255, 0.9);
-      border-radius: 15px;
-      padding: 20px;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-      transition: all 0.3s ease;
-      cursor: pointer;
-    }
+.nav-links{
+  list-style:none;
+  display:flex;
+  gap:14px;
+}
 
-    .qa-item:hover {
-      transform: scale(1.02);
-      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
-    }
+.nav-links a{
+  text-decoration:none;
+  color:#e91e63;
+  font-weight:600;
+  padding:8px 14px;
+  border-radius:22px;
+  transition:.3s;
+}
 
-    .question {
-      font-weight: 700;
-      color: #e91e63;
-      font-size: 1.2rem;
-      margin-bottom: 10px;
-    }
+.nav-links a:hover,
+.nav-links a.active{
+  background:#e91e63;
+  color:#fff;
+}
 
-    .answer {
-      font-size: 1rem;
-      color: #444;
-      display: none;
-      animation: fadeIn 0.5s ease forwards;
-    }
+/* ===== MOBILE ===== */
+@media(max-width:768px){
+  .hamburger{display:flex}
 
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(-5px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
+  .nav-links{
+    position:absolute;
+    top:65px;
+    left:5%;
+    width:90%;
+    background:rgba(255,255,255,.98);
+    flex-direction:column;
+    align-items:center;
+    display:none;
+    padding:20px 0;
+    border-radius:25px;
+    box-shadow:0 10px 25px rgba(0,0,0,.2);
+  }
 
-    footer {
-      text-align: center;
-      padding: 20px;
-      font-size: 0.9rem;
-      color: #777;
-      background: rgba(255, 255, 255, 0.8);
-      border-radius: 20px 20px 0 0;
-      margin-top: 40px;
-    }
+  .nav-links.show{display:flex}
+}
 
-    @media (max-width: 768px) {
-      h1.glow-text { font-size: 2.2rem; }
-      nav ul { flex-direction: column; }
-      nav li { margin: 8px 0; }
-    }
-  </style>
+/* ===== TITLE ===== */
+h1{
+  font-family:'Dancing Script',cursive;
+  font-size:3rem;
+  text-align:center;
+  margin:40px 0 25px;
+  color:#e91e63;
+  text-shadow:0 0 10px #ffb6c1;
+}
+
+/* ===== Q&A ===== */
+.qa-container{
+  max-width:850px;
+  margin:0 auto;
+  padding:20px;
+  display:flex;
+  flex-direction:column;
+  gap:20px;
+}
+
+.qa-item{
+  background:rgba(255,255,255,.95);
+  border-radius:18px;
+  padding:22px;
+  box-shadow:0 8px 20px rgba(0,0,0,.12);
+  cursor:pointer;
+  transition:.3s;
+}
+
+.qa-item:hover{
+  transform:scale(1.03);
+}
+
+.question{
+  font-size:1.2rem;
+  font-weight:700;
+  color:#e91e63;
+}
+
+.answer{
+  display:none;
+  margin-top:12px;
+  font-size:1.05rem;
+  color:#444;
+  animation:fadeIn .4s ease;
+}
+
+@keyframes fadeIn{
+  from{opacity:0;transform:translateY(-5px)}
+  to{opacity:1;transform:translateY(0)}
+}
+
+/* ===== FOOTER ===== */
+footer{
+  text-align:center;
+  padding:22px;
+  background:rgba(255,255,255,.9);
+  margin-top:40px;
+  border-radius:25px 25px 0 0;
+  color:#777;
+}
+</style>
 </head>
+
 <body>
 
-  <div class="hearts-bg"></div>
-  <div class="floating-hearts" id="floating-hearts"></div>
+<div class="hearts-bg"></div>
+<div class="floating-hearts" id="floating-hearts"></div>
 
-  <!-- Navbar -->
-  <nav class="navbar">
-    <ul>
+<!-- NAVBAR -->
+<nav class="navbar">
+  <div class="nav-container">
+    <div class="logo">💬 Our Q&A</div>
+
+    <div class="hamburger" id="hamburger">
+      <span></span><span></span><span></span>
+    </div>
+
+    <ul class="nav-links" id="navLinks">
       <li><a href="timer.html">Our Time</a></li>
+      <li><a href="heartbeat.html">Our Heartbeat</a></li>
       <li><a href="notes.html">Love Notes</a></li>
       <li><a href="messages.html">Messages</a></li>
       <li><a href="dates.html">Dates</a></li>
       <li><a href="moments.html">Cute Moments</a></li>
-      <li><a href="confession.html">Our Confession</a></li>
       <li><a href="letters.html">Letters</a></li>
-      <li><a href="chats.html">First Chat</a></li>
+      <li><a href="confession.html">Confession</a></li>
+      <li><a href="chats.html">First Chats</a></li>
       <li><a href="qa.html" class="active">Q&A</a></li>
     </ul>
-  </nav>
+  </div>
+</nav>
 
-  <h1 class="glow-text">💬 Our Q&A 💖</h1>
+<h1>💖 Our Questions & Answers 💬</h1>
 
-  <div class="qa-container">
+<div class="qa-container">
 
-    <div class="qa-item">
-      <div class="question">✨ Who confessed love first?</div>
-      <div class="answer">You did! And I couldn’t believe it at first 😍</div>
-    </div>
-
-    <div class="qa-item">
-      <div class="question">💞 Who said "I love you" first?</div>
-      <div class="answer">I did! And you couldn’t stop smiling for hours 💗</div>
-    </div>
-
-    <div class="qa-item">
-      <div class="question">🎶 What’s our favorite memory together?</div>
-      <div class="answer">Definitely the memory of 6 November 💕</div>
-    </div>
-
-    <div class="qa-item">
-      <div class="question">🏫 Where did we first meet?</div>
-      <div class="answer">In our school! That’s where it all began 🥰</div>
-    </div>
-
-    <div class="qa-item">
-      <div class="question">🌸 What’s one thing you love most about me?</div>
-      <div class="answer">Your eyes… they talk more than words ever could 😌💗</div>
-    </div>
-
-    <div class="qa-item">
-      <div class="question">🌈 What’s our biggest dream together?</div>
-      <div class="answer">To get married and live a happy, cozy life forever ☕❄️</div>
-    </div>
-
+  <div class="qa-item">
+    <div class="question">✨ Who confessed love first?</div>
+    <div class="answer">You did — and my heart hasn’t been the same since 😍</div>
   </div>
 
-  <footer>Made with 💖 for us — every question has a memory.</footer>
+  <div class="qa-item">
+    <div class="question">💞 Who said “I love you” first?</div>
+    <div class="answer">I did… and you smiled like the world paused 💗</div>
+  </div>
 
-  <script>
-    // Floating hearts
-    function createHeart() {
-      const heart = document.createElement('div');
-      heart.className = 'heart';
-      heart.innerHTML = '💖';
-      heart.style.left = Math.random() * 100 + 'vw';
-      heart.style.animationDuration = Math.random() * 3 + 3 + 's';
-      document.getElementById('floating-hearts').appendChild(heart);
-      setTimeout(() => heart.remove(), 6000);
-    }
-    setInterval(createHeart, 1000);
+  <div class="qa-item">
+    <div class="question">🎶 Our favorite memory?</div>
+    <div class="answer">6 November — forever etched in our hearts 💕</div>
+  </div>
 
-    // Q&A toggle
-    document.querySelectorAll('.qa-item').forEach(item => {
-      item.addEventListener('click', () => {
-        const answer = item.querySelector('.answer');
-        const isVisible = answer.style.display === 'block';
-        document.querySelectorAll('.answer').forEach(a => a.style.display = 'none');
-        answer.style.display = isVisible ? 'none' : 'block';
-      });
-    });
-  </script>
+  <div class="qa-item">
+    <div class="question">🏫 Where did we first meet?</div>
+    <div class="answer">School — where destiny decided to smile 🥰</div>
+  </div>
+
+  <div class="qa-item">
+    <div class="question">🌸 One thing you love about me?</div>
+    <div class="answer">Your eyes — they speak love without words 💖</div>
+  </div>
+
+  <div class="qa-item">
+    <div class="question">🌈 Our biggest dream?</div>
+    <div class="answer">Marriage, warmth, tea cups, and forever together ☕❄️</div>
+  </div>
+
+</div>
+
+<footer>
+  Made with 💖 — every answer hides a memory.
+</footer>
+
+<script>
+/* Hamburger */
+document.getElementById("hamburger").onclick=()=>{
+  document.getElementById("navLinks").classList.toggle("show");
+};
+
+/* Floating hearts */
+setInterval(()=>{
+  const h=document.createElement("div");
+  h.className="heart";
+  h.innerText="💖";
+  h.style.left=Math.random()*100+"vw";
+  document.getElementById("floating-hearts").appendChild(h);
+  setTimeout(()=>h.remove(),6000);
+},900);
+
+/* Q&A toggle */
+document.querySelectorAll(".qa-item").forEach(item=>{
+  item.onclick=()=>{
+    const ans=item.querySelector(".answer");
+    const open=ans.style.display==="block";
+    document.querySelectorAll(".answer").forEach(a=>a.style.display="none");
+    ans.style.display=open?"none":"block";
+  };
+});
+</script>
+
 </body>
 </html>
