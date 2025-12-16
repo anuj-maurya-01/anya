@@ -3,55 +3,113 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Messages</title>
+<title>Messages 💌</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
 
 <style>
-*{
-  margin:0;
-  padding:0;
-  box-sizing:border-box;
-  font-family:"Poppins",sans-serif;
-}
+*{margin:0;padding:0;box-sizing:border-box;font-family:"Poppins",sans-serif}
 
 body{
-  background: linear-gradient(to bottom,#ffd1dc,#ffc1d6);
+  background:linear-gradient(to bottom,#ffd1dc,#ffc1d6);
   min-height:100vh;
   color:#555;
+  overflow-x:hidden;
 }
 
-/* NAVBAR */
+/* ===== BACKGROUND HEARTS ===== */
+.heart{
+  position:fixed;
+  font-size:18px;
+  animation:float 6s linear infinite;
+}
+
+@keyframes float{
+  from{transform:translateY(100vh);opacity:1}
+  to{transform:translateY(-10vh);opacity:0}
+}
+
+/* ===== NAVBAR ===== */
 .navbar{
   background:#ffe6ee;
-  margin:15px;
-  padding:12px;
+  margin:15px auto;
+  padding:12px 18px;
   border-radius:40px;
+  max-width:92%;
   box-shadow:0 8px 20px rgba(0,0,0,0.1);
+  position:relative;
+  z-index:1000;
 }
 
-.navbar ul{
+.nav-container{
   display:flex;
-  flex-wrap:wrap;
-  justify-content:center;
+  justify-content:space-between;
+  align-items:center;
+}
+
+.logo{
+  font-weight:600;
+  color:#e75480;
+}
+
+.hamburger{
+  display:none;
+  flex-direction:column;
+  cursor:pointer;
+}
+
+.hamburger span{
+  width:26px;
+  height:3px;
+  background:#e75480;
+  margin:4px 0;
+  border-radius:4px;
+}
+
+.nav-links{
   list-style:none;
+  display:flex;
   gap:14px;
 }
 
-.navbar a{
+.nav-links a{
   text-decoration:none;
   color:#e75480;
   font-size:14px;
   padding:6px 14px;
   border-radius:20px;
+  transition:.3s;
 }
 
-.navbar a.active{
+.nav-links a.active,
+.nav-links a:hover{
   background:#ff9dbb;
   color:#fff;
 }
 
-/* MESSAGE CARD */
+/* ===== MOBILE NAV ===== */
+@media(max-width:768px){
+  .hamburger{display:flex}
+
+  .nav-links{
+    position:absolute;
+    top:65px;
+    left:5%;
+    width:90%;
+    background:#ffe6ee;
+    flex-direction:column;
+    align-items:center;
+    display:none;
+    padding:20px 0;
+    border-radius:25px;
+    box-shadow:0 10px 25px rgba(0,0,0,.2);
+  }
+
+  .nav-links.show{display:flex}
+}
+
+/* ===== MESSAGE CARD ===== */
 .card{
   max-width:900px;
   background:#fff;
@@ -83,7 +141,7 @@ body{
   border-radius:15px;
 }
 
-/* BUTTONS */
+/* ===== BUTTONS ===== */
 .nav-btns{
   display:flex;
   justify-content:center;
@@ -102,23 +160,9 @@ body{
   box-shadow:0 8px 18px rgba(0,0,0,0.15);
 }
 
-.nav-btns button:hover{
-  background:#ff5f95;
-}
+.nav-btns button:hover{background:#ff5f95}
 
-/* FLOATING HEARTS */
-.heart{
-  position:fixed;
-  font-size:18px;
-  animation:float 6s linear infinite;
-}
-
-@keyframes float{
-  0%{transform:translateY(100vh);opacity:1;}
-  100%{transform:translateY(-10vh);opacity:0;}
-}
-
-/* FOOTER */
+/* ===== FOOTER ===== */
 footer{
   background:#ffe6ee;
   margin:15px;
@@ -135,52 +179,53 @@ footer{
 
 <!-- NAVBAR -->
 <nav class="navbar">
-<ul>
-  <li><a href="timer.html">Our Time</a></li>
-  <li><a href="notes.html">Love Notes</a></li>
-  <li><a href="messages.html" class="active">Messages</a></li>
-  <li><a href="dates.html">Dates</a></li>
-  <li><a href="moments.html">Cute Moments</a></li>
-  <li><a href="confession.html">Our Confession</a></li>
-  <li><a href="qa.html">Q&A>Qa></li>
-  <li><a href="chats.html">First Chats</a></li>
-  <li><a href="letters.html">Letters</a></li>
-</ul>
+  <div class="nav-container">
+    <div class="logo">💖 Our Messages</div>
+
+    <div class="hamburger" id="hamburger">
+      <span></span><span></span><span></span>
+    </div>
+
+    <ul class="nav-links" id="navLinks">
+      <li><a href="timer.html">Our Time</a></li>
+      <li><a href="heartbeat.html">Our Heartbeat</a></li>
+      <li><a href="notes.html">Love Notes</a></li>
+      <li><a href="messages.html" class="active">Messages</a></li>
+      <li><a href="dates.html">Dates</a></li>
+      <li><a href="moments.html">Cute Moments</a></li>
+      <li><a href="confession.html">Confession</a></li>
+      <li><a href="chats.html">First Chats</a></li>
+      <li><a href="letters.html">Letters</a></li>
+      <li><a href="qa.html">Q&A</a></li>
+    </ul>
+  </div>
 </nav>
 
-<!-- MESSAGE -->
+<!-- MESSAGE CARD -->
 <div class="card">
   <h1>Dear My Love 💕</h1>
-
-  <p>
-    Every heartbeat writes your name on the pages of my soul.
-    This diary doesn’t just hold words,
-    it holds the moments that made me fall deeper in love with you.
-  </p>
-
-  <p>
-    From the way your eyes smile before your lips do,
-    to how you make silence feel like music —
-    loving you is my favorite story.
-  </p>
-
-  <!-- Replace image path if needed -->
+  <p></p>
+  <p></p>
   <img src="assets/images/hug.png" alt="Love Sketch">
 </div>
 
-<!-- PREV / NEXT -->
+<!-- NAV BUTTONS -->
 <div class="nav-btns">
   <button onclick="prevMsg()">← Previous</button>
   <button onclick="nextMsg()">Next →</button>
 </div>
 
-<!-- FOOTER -->
 <footer>
   Made with ❤️ for our eternal love. Forever and always.
 </footer>
 
-<!-- JS -->
 <script>
+/* Hamburger */
+document.getElementById("hamburger").onclick=()=>{
+  document.getElementById("navLinks").classList.toggle("show");
+};
+
+/* Messages */
 const messages=[
   {
     title:"Dear My Love 💕",
@@ -208,12 +253,12 @@ function update(){
   p[0].innerText=messages[index].text1;
   p[1].innerText=messages[index].text2;
 }
+update();
 
 function nextMsg(){
   index=(index+1)%messages.length;
   update();
 }
-
 function prevMsg(){
   index=(index-1+messages.length)%messages.length;
   update();
@@ -228,7 +273,7 @@ setInterval(()=>{
   h.style.animationDuration=(3+Math.random()*3)+"s";
   document.body.appendChild(h);
   setTimeout(()=>h.remove(),6000);
-},800);
+},900);
 </script>
 
 </body>
