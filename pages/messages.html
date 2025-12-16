@@ -12,6 +12,8 @@
 *{margin:0;padding:0;box-sizing:border-box;font-family:"Poppins",sans-serif}
 
 body{
+  opacity:1;
+  filter:none;
   background:linear-gradient(to bottom,#ffd1dc,#ffc1d6);
   min-height:100vh;
   color:#555;
@@ -32,7 +34,8 @@ body{
 
 /* ===== NAVBAR ===== */
 .navbar{
-  background:#ffe6ee;
+ background:rgba(255,255,255,0.95);
+  backdrop-filter: blur(10px);
   margin:15px auto;
   padding:12px 18px;
   border-radius:40px;
@@ -84,9 +87,10 @@ body{
 
 .nav-links a.active,
 .nav-links a:hover{
-  background:#ff9dbb;
+  background:#e75480;
   color:#fff;
 }
+
 
 /* ===== MOBILE NAV ===== */
 @media(max-width:768px){
@@ -97,7 +101,7 @@ body{
     top:65px;
     left:5%;
     width:90%;
-    background:#ffe6ee;
+    background:rgba(255,255,255,0.97);
     flex-direction:column;
     align-items:center;
     display:none;
