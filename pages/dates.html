@@ -5,74 +5,59 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Our Milestones 💕</title>
 
-<!-- Google Fonts -->
-<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
 
 <style>
-/* ========== BASE ========== */
-*{box-sizing:border-box}
+*{margin:0;padding:0;box-sizing:border-box;font-family:Poppins,sans-serif;}
+
 body{
-  margin:0;
-  font-family:'Poppins',sans-serif;
   background:linear-gradient(135deg,#ff9a9e,#fecfef);
-  color:#333;
   overflow-x:hidden;
 }
 
-/* ========== BACKGROUND ========== */
+/* ===== HEART BACKGROUND ===== */
 .hearts-bg{
   position:fixed;
   inset:0;
-  background-image:url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="20">💖</text></svg>');
-  background-size:50px 50px;
-  opacity:.1;
-  z-index:-2;
-}
-
-.floating-hearts{
-  position:fixed;
-  inset:0;
-  pointer-events:none;
+  background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='20'>💖</text></svg>");
+  background-size:50px;
+  opacity:.08;
   z-index:-1;
 }
 
+/* ===== FLOATING HEARTS ===== */
 .heart{
-  position:absolute;
-  font-size:2rem;
-  color:#e91e63;
-  animation:rise 6s linear infinite;
+  position:fixed;
+  font-size:20px;
+  animation:float 6s linear infinite;
+  opacity:.7;
+}
+@keyframes float{
+  from{transform:translateY(100vh);}
+  to{transform:translateY(-10vh);opacity:0;}
 }
 
-@keyframes rise{
-  from{transform:translateY(100vh);opacity:0}
-  20%{opacity:1}
-  to{transform:translateY(-10vh);opacity:0}
-}
-
-/* ========== NAVBAR ========== */
+/* ===== NAVBAR ===== */
 .navbar{
   background:rgba(255,255,255,.95);
-  backdrop-filter:blur(10px);
-  border-radius:40px;
-  margin:15px auto;
+  margin:20px auto;
+  max-width:90%;
   padding:12px 20px;
-  max-width:92%;
-  box-shadow:0 6px 20px rgba(0,0,0,.12);
-  position:relative;
-  z-index:1000;
+  border-radius:50px;
+  box-shadow:0 8px 20px rgba(0,0,0,.15);
 }
 
 .nav-container{
   display:flex;
-  align-items:center;
   justify-content:space-between;
+  align-items:center;
 }
 
 .logo{
-  font-size:1.2rem;
-  font-weight:600;
   color:#e91e63;
+  font-weight:700;
+  font-size:1.2rem;
 }
 
 .hamburger{
@@ -80,7 +65,6 @@ body{
   flex-direction:column;
   cursor:pointer;
 }
-
 .hamburger span{
   width:26px;
   height:3px;
@@ -93,143 +77,117 @@ body{
   list-style:none;
   display:flex;
   gap:15px;
-  margin:0;
-  padding:0;
 }
-
 .nav-links a{
   text-decoration:none;
   color:#e91e63;
   font-weight:600;
-  padding:8px 12px;
+  padding:8px 14px;
   border-radius:20px;
-  transition:.3s;
 }
-
-.nav-links a:hover,
-.nav-links a.active{
+.nav-links a.active,
+.nav-links a:hover{
   background:#e91e63;
-  color:#fff;
+  color:white;
 }
 
-/* ========== MOBILE NAV ========== */
 @media(max-width:768px){
-  .hamburger{display:flex}
-
+  .hamburger{display:flex;}
   .nav-links{
     position:absolute;
-    top:70px;
+    top:90px;
     left:5%;
     width:90%;
-    background:rgba(255,255,255,.98);
+    background:white;
     flex-direction:column;
     align-items:center;
     display:none;
-    padding:20px 0;
     border-radius:25px;
+    padding:20px 0;
     box-shadow:0 10px 25px rgba(0,0,0,.2);
   }
-
-  .nav-links.show{display:flex}
+  .nav-links.show{display:flex;}
 }
 
-/* ========== MAIN ========== */
-main{
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  padding:40px 10px;
-}
-
+/* ===== CONTENT ===== */
 .container{
-  background:rgba(255,255,255,.95);
-  border-radius:20px;
-  padding:60px 20px;
-  max-width:1500px;
-  width:100%;
-  box-shadow:0 8px 32px rgba(0,0,0,.1);
+  background:rgba(255,255,255,.96);
+  max-width:1100px;
+  margin:30px auto;
+  padding:40px;
+  border-radius:25px;
+  box-shadow:0 10px 40px rgba(0,0,0,.15);
 }
 
-/* ========== HEADING ========== */
-h2{
+h1{
+  text-align:center;
   font-family:'Dancing Script',cursive;
   font-size:3rem;
   color:#e91e63;
-  text-align:center;
   margin-bottom:40px;
 }
 
-/* ========== TIMELINE ========== */
+/* ===== TIMELINE ===== */
 .timeline{
   position:relative;
+  margin-top:30px;
 }
-
 .timeline::before{
-  content:'';
+  content:"";
   position:absolute;
   left:50%;
   width:4px;
   height:100%;
-  background:linear-gradient(#ff80ab,#e91e63);
+  background:#ff6b9d;
   transform:translateX(-50%);
 }
 
 .timeline-item{
   width:45%;
-  background:#fff;
+  padding:20px 25px;
+  background:white;
   border-radius:20px;
-  padding:25px 30px;
-  margin:30px 0;
-  box-shadow:0 8px 20px rgba(0,0,0,.1);
+  box-shadow:0 6px 20px rgba(0,0,0,.15);
+  margin:25px 0;
   position:relative;
 }
 
-.timeline-item.left{left:0;text-align:right}
-.timeline-item.right{left:55%}
+.timeline-item.left{left:0;}
+.timeline-item.right{left:55%;}
 
-.timeline-item .dot{
-  width:16px;
-  height:16px;
+.timeline-item::before{
+  content:"";
+  width:14px;
+  height:14px;
   background:#e91e63;
   border-radius:50%;
   position:absolute;
-  top:25px;
+  top:22px;
 }
 
-.timeline-item.left .dot{right:-8px}
-.timeline-item.right .dot{left:-8px}
+.timeline-item.left::before{right:-8px;}
+.timeline-item.right::before{left:-8px;}
 
-.date{
-  font-weight:bold;
+.timeline-item span{
+  font-weight:700;
   color:#e91e63;
-  margin-bottom:8px;
+  display:block;
+  margin-bottom:6px;
 }
 
-/* ========== MOBILE TIMELINE ========== */
 @media(max-width:768px){
-  h2{font-size:2.2rem}
-
-  .timeline::before{left:8px}
-
+  .timeline::before{left:10px;}
   .timeline-item{
     width:90%;
-    left:5%!important;
-    text-align:left!important;
+    left:20px !important;
   }
-
-  .timeline-item .dot{
-    left:-25px!important;
-  }
+  .timeline-item::before{left:-22px !important;}
 }
 
-/* ========== FOOTER ========== */
 footer{
   text-align:center;
   padding:20px;
-  background:rgba(255,255,255,.85);
-  margin-top:40px;
-  border-radius:20px 20px 0 0;
-  font-size:.9rem;
+  color:#555;
 }
 </style>
 </head>
@@ -237,17 +195,14 @@ footer{
 <body>
 
 <div class="hearts-bg"></div>
-<div class="floating-hearts" id="floating-hearts"></div>
 
 <!-- NAVBAR -->
 <nav class="navbar">
   <div class="nav-container">
-    <div class="logo">💖 Our Dates</div>
-
+    <div class="logo">💖</div>
     <div class="hamburger" id="hamburger">
       <span></span><span></span><span></span>
     </div>
-
     <ul class="nav-links" id="navLinks">
       <li><a href="timer.html">Our Time</a></li>
       <li><a href="heartbeat.html">Our Heartbeat</a></li>
@@ -256,43 +211,237 @@ footer{
       <li><a href="dates.html" class="active">Dates</a></li>
       <li><a href="moments.html">Cute Moments</a></li>
       <li><a href="letters.html">Letters</a></li>
-      <li><a href="confession.html">Our Confession</a></li>
-      <li><a href="chats.html">First Day Chats</a></li>
+      <li><a href="confession.html">Confession</a></li>
+      <li><a href="chats.html">Chats</a></li>
       <li><a href="qa.html">Q&A</a></li>
     </ul>
   </div>
 </nav>
 
-<main>
-  <section class="container">
-    <h2>Our Milestones 💖</h2>
+<div class="container">
+<h1>Our Milestones 💕</h1>
 
-    <div class="timeline">
+<div class="timeline">
 
-      <!-- COPY–PASTE ALL YOUR TIMELINE ITEMS HERE (UNCHANGED) -->
-      <!-- I have intentionally not altered your milestone content -->
+<div class="timeline-item left">
+  <div class="dot"></div>
+  <div class="date">Nov 14, 2022</div>
+  <div class="content">The day she knew I existed in school — she saw me for the first time. ✨👀</div>
+</div>
 
-    </div>
-  </section>
-</main>
+<div class="timeline-item right">
+  <div class="dot"></div>
+  <div class="date">Dec 25, 2022</div>
+  <div class="content">The day our story started on Instagram — we talked for the first time. 💞📱</div>
+</div>
 
-<footer>
-  Made with ❤️ to cherish every milestone in our love story.
-</footer>
+<div class="timeline-item left">
+  <div class="dot"></div>
+  <div class="date">Mar 4, 2023</div>
+  <div class="content">She realized that she was finally attached to me — we had a small fight that day. 💫💔</div>
+</div>
+
+<div class="timeline-item right">
+  <div class="dot"></div>
+  <div class="date">Apr 21, 2023</div>
+  <div class="content">Our first meeting in real life, face to face. ❤️✨</div>
+</div>
+
+<div class="timeline-item left">
+  <div class="dot"></div>
+  <div class="date">Apr 25, 2023</div>
+  <div class="content">We had a fight again, and I told her not to talk to me. 😔💭</div>
+</div>
+
+<div class="timeline-item right">
+  <div class="dot"></div>
+  <div class="date">Apr 28, 2023</div>
+  <div class="content">After not talking for 2 days, I returned and asked her to talk to me again. 💬❤️</div>
+</div>
+
+<div class="timeline-item left">
+  <div class="dot"></div>
+  <div class="date">May 25, 2023</div>
+  <div class="content">We became good friends and started trying to make our bond stronger. 🌸🤝</div>
+</div>
+
+<div class="timeline-item right">
+  <div class="dot"></div>
+  <div class="date">Jul 21, 2023</div>
+  <div class="content">We started understanding each other deeply — our bond grew even stronger. 💞✨</div>
+</div>
+
+<div class="timeline-item left">
+  <div class="dot"></div>
+  <div class="date">Jul 26, 2023</div>
+  <div class="content">She asked me to stay in school after classes were over. 🏫💫</div>
+</div>
+
+<div class="timeline-item right">
+  <div class="dot"></div>
+  <div class="date">Jul 27, 2023</div>
+  <div class="content">Eye flu 😅👁️✨</div>
+</div>
+
+<div class="timeline-item left">
+  <div class="dot"></div>
+  <div class="date">Jul 31, 2023</div>
+  <div class="content">She became sure about her feelings — that she loves me. 💖🥰</div>
+</div>
+
+<div class="timeline-item right">
+  <div class="dot"></div>
+  <div class="date">Aug 2, 2023</div>
+  <div class="content">She dedicated a song to me — “Uncha Lamba Kadd Hai”. 🎶💕</div>
+</div>
+
+<div class="timeline-item left">
+  <div class="dot"></div>
+  <div class="date">Aug 3, 2023</div>
+  <div class="content">I wrote a poem and she thought it was for her. 📝💫</div>
+</div>
+
+<div class="timeline-item right">
+  <div class="dot"></div>
+  <div class="date">Aug 29, 2023</div>
+  <div class="content">I deactivated my account after getting angry with her. 😤💔</div>
+</div>
+
+<div class="timeline-item left">
+  <div class="dot"></div>
+  <div class="date">Aug 30, 2023</div>
+  <div class="content">We weren’t talking. 💭😔</div>
+</div>
+
+<div class="timeline-item right">
+  <div class="dot"></div>
+  <div class="date">Aug 31, 2023</div>
+  <div class="content">We talked again and settled everything. 💞🤗</div>
+</div>
+
+<div class="timeline-item left">
+  <div class="dot"></div>
+  <div class="date">Sep 11–30, 2023</div>
+  <div class="content">No fights, only sweet talks. 🌷🕊️</div>
+</div>
+
+<div class="timeline-item right">
+  <div class="dot"></div>
+  <div class="date">Nov 5, 2023</div>
+  <div class="content">We had a small fight again. 💔😅</div>
+</div>
+
+<div class="timeline-item left">
+  <div class="dot"></div>
+  <div class="date">Nov 18, 2023</div>
+  <div class="content">Her teacher was absent, so she came as a substitute in my class. 🏫💞</div>
+</div>
+
+<div class="timeline-item right">
+  <div class="dot"></div>
+  <div class="date">Nov 19, 2023</div>
+  <div class="content">I dedicated the song “Hamdard” to her. 🎵❤️</div>
+</div>
+
+<div class="timeline-item left">
+  <div class="dot"></div>
+  <div class="date">Nov 21, 2023</div>
+  <div class="content">I confessed my love to her — she was so happy she couldn’t sleep that night. 💖🌙</div>
+</div>
+
+<div class="timeline-item right">
+  <div class="dot"></div>
+  <div class="date">Dec 25, 2023</div>
+  <div class="content">From strangers to friends, best friends to lovers — our first anniversary! 💍💞</div>
+</div>
+
+<div class="timeline-item left">
+  <div class="dot"></div>
+  <div class="date">Nov 21, 2024</div>
+  <div class="content">Our First Anniversary! 💍💞</div>
+</div>
+
+<div class="timeline-item right">
+  <div class="dot"></div>
+  <div class="date">Dec 13, 2024</div>
+  <div class="content">We planned to meet, but she later cancelled. 💭😔</div>
+</div>
+
+<div class="timeline-item left">
+  <div class="dot"></div>
+  <div class="date">Dec 21, 2024</div>
+  <div class="content">We met and went to Arail Ghat and Sangam — she got caught at home later. 🏞️💞</div>
+</div>
+
+<div class="timeline-item right">
+  <div class="dot"></div>
+  <div class="date">Jan 1, 2025</div>
+  <div class="content">We wished each other Happy New Year at midnight. 🎆💌</div>
+</div>
+
+<div class="timeline-item left">
+  <div class="dot"></div>
+  <div class="date">Jan 25, 2025</div>
+  <div class="content">The world-famous Kumbh Mela — we followed rituals and explored together. 🕉️💞</div>
+</div>
+
+<div class="timeline-item right">
+  <div class="dot"></div>
+  <div class="date">Feb 25, 2025</div>
+  <div class="content">Her brother’s reception — I met all her family members for the first time. 👨‍👩‍👧‍👦✨</div>
+</div>
+
+<div class="timeline-item left">
+  <div class="dot"></div>
+  <div class="date">Jul 18, 2025</div>
+  <div class="content">We met at Bhardwaj Park and spent a beautiful time together. 🌳❤️</div>
+</div>
+
+<div class="timeline-item right">
+  <div class="dot"></div>
+  <div class="date">Jul 29, 2025</div>
+  <div class="content">She got injured while closing the bed drawer. 😢💫</div>
+</div>
+
+<div class="timeline-item left">
+  <div class="dot"></div>
+  <div class="date">Nov 06, 2025</div>
+  <div class="content">We met after a long time and have some close moments. ❤️</div>
+</div>
+
+<div class="timeline-item right">
+  <div class="dot"></div>
+  <div class="date">Nov 21, 2025</div>
+  <div class="content">A very special day — our second anniversary and we got so close. 💫</div>
+</div>
+
+<div class="timeline-item left">
+  <div class="dot"></div>
+  <div class="date">Dec 03, 2025</div>
+  <div class="content">We met again and I gifted some special gifts to her. ❤️</div>
+</div>
+
+
+
+<!-- You can continue adding ALL remaining dates exactly like this -->
+
+</div>
+</div>
+
+<footer>Made with ❤️ to cherish every milestone.</footer>
 
 <script>
-/* Hamburger toggle */
-document.getElementById("hamburger").onclick=()=>{
-  document.getElementById("navLinks").classList.toggle("show");
-};
+/* HAMBURGER */
+hamburger.onclick=()=>navLinks.classList.toggle("show");
 
-/* Floating hearts */
+/* FLOATING HEARTS */
 setInterval(()=>{
   const h=document.createElement("div");
   h.className="heart";
-  h.innerText="💖";
+  h.textContent="💖";
   h.style.left=Math.random()*100+"vw";
-  document.getElementById("floating-hearts").appendChild(h);
+  h.style.animationDuration=(3+Math.random()*3)+"s";
+  document.body.appendChild(h);
   setTimeout(()=>h.remove(),6000);
 },900);
 </script>
