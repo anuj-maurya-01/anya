@@ -1,270 +1,305 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>My Love Diary 💌</title>
-  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Poppins:wght@300;400;500&display=swap" rel="stylesheet" />
-  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
-  <style>
-    body {
-      font-family: 'Poppins', sans-serif;
-      background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 50%, #fecfef 100%);
-      color: #333;
-      margin: 0;
-      padding: 0;
-      overflow-x: hidden;
-      position: relative;
-    }
-    .hearts-bg {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="20">💖</text></svg>');
-      background-size: 50px 50px;
-      opacity: 0.1;
-      z-index: -1;
-      animation: float 10s ease-in-out infinite;
-    }
-    @keyframes float {
-      0%, 100% { transform: translateY(0px); }
-      50% { transform: translateY(-10px); }
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Love Diary 💌</title>
 
-    .floating-hearts {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-      z-index: -1;
-    }
-    .heart {
-      position: absolute;
-      font-size: 2rem;
-      color: #e91e63;
-      animation: rise 6s linear infinite;
-      opacity: 0.7;
-    }
-    @keyframes rise {
-      0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
-      10% { opacity: 1; }
-      90% { opacity: 1; }
-      100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
-    }
+<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
 
-    nav.navbar {
-      background: rgba(255, 255, 255, 0.95);
-      backdrop-filter: blur(15px);
-      border-radius: 50px;
-      margin: 20px auto;
-      padding: 15px 25px;
-      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
-      max-width: 90%;
-      z-index: 10;
-    }
-    nav ul {
-      list-style: none;
-      display: flex;
-      justify-content: center;
-      flex-wrap: wrap;
-      margin: 0;
-      padding: 0;
-    }
-    nav li { margin: 0 20px; }
-    nav a {
-      text-decoration: none;
-      color: #e91e63;
-      font-weight: 600;
-      font-size: 1.1rem;
-      transition: all 0.4s ease;
-      padding: 10px 15px;
-      border-radius: 25px;
-      position: relative;
-      overflow: hidden;
-    }
-    nav a:hover {
-      color: white;
-      transform: scale(1.1);
-      box-shadow: 0 4px 15px rgba(233, 30, 99, 0.3);
-      background: #e91e63;
-    }
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif}
 
-    .diary-container {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      min-height: 80vh;
-      padding: 20px;
-      position: relative;
-      z-index: 5;
-    }
-    .book {
-      background: rgba(255, 255, 255, 0.98);
-      border-radius: 25px;
-      padding: 50px;
-      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
-      max-width: 900px;
-      width: 100%;
-      position: relative;
-      overflow: hidden;
-      border: 1px solid rgba(255, 255, 255, 0.5);
-      animation: fadeIn 1.2s ease-in-out;
-    }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(30px) scale(0.95); }
-      to { opacity: 1; transform: translateY(0) scale(1); }
-    }
+body{
+  background:linear-gradient(135deg,#ff9a9e 0%,#fecfef 50%,#fecfef 100%);
+  color:#333;
+  overflow-x:hidden;
+}
 
-    .page { display: none; text-align: center; }
-    .page.active { display: block; animation: pageFlip 0.6s ease-in-out; }
-    @keyframes pageFlip {
-      from { opacity: 0; transform: rotateY(90deg) scale(0.9); }
-      to { opacity: 1; transform: rotateY(0deg) scale(1); }
-    }
+/* ===== BACKGROUND ===== */
+.hearts-bg{
+  position:fixed;
+  inset:0;
+  background-image:url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="20">💖</text></svg>');
+  background-size:50px 50px;
+  opacity:.1;
+  z-index:-2;
+}
 
-    .page h2 {
-      font-family: 'Great Vibes', cursive;
-      font-size: 3rem;
-      margin-bottom: 25px;
-      background: linear-gradient(45deg, #e91e63, #ff6b9d);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-    .page p {
-      font-size: 1.3rem;
-      color: #555;
-      margin: 20px 0;
-      font-style: italic;
-    }
-    .page-gif {
-      max-width: 100%;
-      border-radius: 20px;
-      margin-top: 25px;
-      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
-    }
+.floating-hearts{
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  z-index:-1;
+}
 
-    .controls {
-      margin-top: 40px;
-      display: flex;
-      justify-content: center;
-      gap: 25px;
-    }
-    .controls button {
-      background: linear-gradient(45deg, #ff6b9d, #c44569, #e91e63);
-      color: white;
-      border: none;
-      padding: 15px 30px;
-      border-radius: 30px;
-      font-size: 1.1rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.4s ease;
-    }
-    .controls button:hover {
-      transform: scale(1.1);
-      box-shadow: 0 8px 25px rgba(233, 30, 99, 0.5);
-    }
+.heart{
+  position:absolute;
+  font-size:2rem;
+  color:#e91e63;
+  animation:rise 6s linear infinite;
+}
 
-    footer {
-      text-align: center;
-      padding: 25px;
-      background: rgba(255, 255, 255, 0.9);
-      margin-top: 50px;
-      border-radius: 25px 25px 0 0;
-      color: #777;
-      box-shadow: 0 -4px 15px rgba(0, 0, 0, 0.1);
-    }
-  </style>
+@keyframes rise{
+  from{transform:translateY(100vh);opacity:0}
+  20%{opacity:1}
+  to{transform:translateY(-10vh);opacity:0}
+}
+
+/* ===== NAVBAR ===== */
+.navbar{
+  background:rgba(255,255,255,.95);
+  backdrop-filter:blur(15px);
+  border-radius:40px;
+  margin:15px auto;
+  padding:14px 22px;
+  max-width:92%;
+  box-shadow:0 6px 20px rgba(0,0,0,.15);
+  position:relative;
+  z-index:1000;
+}
+
+.nav-container{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+.logo{
+  font-weight:600;
+  color:#e91e63;
+}
+
+.hamburger{
+  display:none;
+  flex-direction:column;
+  cursor:pointer;
+}
+
+.hamburger span{
+  width:26px;
+  height:3px;
+  background:#e91e63;
+  margin:4px 0;
+  border-radius:4px;
+}
+
+.nav-links{
+  list-style:none;
+  display:flex;
+  gap:14px;
+}
+
+.nav-links a{
+  text-decoration:none;
+  color:#e91e63;
+  font-weight:600;
+  padding:8px 14px;
+  border-radius:22px;
+  transition:.3s;
+}
+
+.nav-links a:hover,
+.nav-links a.active{
+  background:#e91e63;
+  color:#fff;
+}
+
+/* ===== MOBILE ===== */
+@media(max-width:768px){
+  .hamburger{display:flex}
+
+  .nav-links{
+    position:absolute;
+    top:65px;
+    left:5%;
+    width:90%;
+    background:rgba(255,255,255,.98);
+    flex-direction:column;
+    align-items:center;
+    display:none;
+    padding:20px 0;
+    border-radius:25px;
+    box-shadow:0 10px 25px rgba(0,0,0,.2);
+  }
+
+  .nav-links.show{display:flex}
+}
+
+/* ===== DIARY ===== */
+.diary-container{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  min-height:80vh;
+  padding:20px;
+}
+
+.book{
+  background:rgba(255,255,255,.98);
+  border-radius:25px;
+  padding:50px;
+  max-width:900px;
+  width:100%;
+  box-shadow:0 10px 40px rgba(0,0,0,.15);
+}
+
+.page{display:none;text-align:center}
+.page.active{display:block;animation:pageFlip .6s ease}
+
+@keyframes pageFlip{
+  from{opacity:0;transform:rotateY(90deg)}
+  to{opacity:1;transform:rotateY(0)}
+}
+
+.page h2{
+  font-family:'Great Vibes',cursive;
+  font-size:3rem;
+  background:linear-gradient(45deg,#e91e63,#ff6b9d);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+
+.page p{
+  font-size:1.3rem;
+  font-style:italic;
+  color:#555;
+  margin:20px 0;
+}
+
+.page-gif{
+  max-width:100%;
+  border-radius:20px;
+  margin-top:25px;
+  box-shadow:0 6px 20px rgba(0,0,0,.15);
+}
+
+/* ===== CONTROLS ===== */
+.controls{
+  margin-top:40px;
+  display:flex;
+  gap:25px;
+}
+
+.controls button{
+  background:linear-gradient(45deg,#ff6b9d,#c44569,#e91e63);
+  color:#fff;
+  border:none;
+  padding:15px 30px;
+  border-radius:30px;
+  font-weight:600;
+  cursor:pointer;
+  transition:.3s;
+}
+
+.controls button:hover{transform:scale(1.1)}
+
+footer{
+  text-align:center;
+  padding:25px;
+  background:rgba(255,255,255,.9);
+  margin-top:50px;
+  border-radius:25px 25px 0 0;
+  color:#777;
+}
+</style>
 </head>
 
 <body>
-  <div class="hearts-bg"></div>
-  <div class="floating-hearts" id="floating-hearts"></div>
 
-  <nav class="navbar">
-    <ul>
-      <li><a href="timer.html"><i class="fas fa-clock"></i> Our Time</a></li>
-      <li><a href="notes.html" class="active"><i class="fas fa-sticky-note"></i> Love Notes</a></li>
-      <li><a href="messages.html"><i class="fas fa-envelope"></i> Messages</a></li>
-      <li><a href="dates.html"><i class="fas fa-calendar-alt"></i> Dates</a></li>
-      <li><a href="moments.html"><i class="fas fa-heart"></i> Cute Moments</a></li>
-      <li><a href="letters.html"><i class="fas fa-comments"></i> Letters</a></li>
-      <li><a href="confession.html"><i class="fas fa-ring"></i> Our Confession</a></li>
-      <li><a href="chats.html"><i class="fas fa-comments"></i> First Day Chats</a></li>
-      <li><a href="qa.html"><i class="fas fa-question-circle"></i> Q&A</a></li>
+<div class="hearts-bg"></div>
+<div class="floating-hearts" id="floating-hearts"></div>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <div class="nav-container">
+    <div class="logo">💖 Love Notes</div>
+
+    <div class="hamburger" id="hamburger">
+      <span></span><span></span><span></span>
+    </div>
+
+    <ul class="nav-links" id="navLinks">
+      <li><a href="timer.html">Our Time</a></li>
+      <li><a href="heartbeat.html">Our Heartbeat</a></li>
+      <li><a href="notes.html" class="active">Love Notes</a></li>
+      <li><a href="messages.html">Messages</a></li>
+      <li><a href="dates.html">Dates</a></li>
+      <li><a href="moments.html">Cute Moments</a></li>
+      <li><a href="letters.html">Letters</a></li>
+      <li><a href="confession.html">Confession</a></li>
+      <li><a href="chats.html">First Day Chats</a></li>
+      <li><a href="qa.html">Q&A</a></li>
     </ul>
-  </nav>
+  </div>
+</nav>
 
-  <div class="diary-container">
-    <div class="book">
-      <div class="page active" id="page1">
-        <h2>Dear My Love 💕</h2>
-        <p>Every heartbeat writes your name on the pages of my soul. 
-        This diary holds not just words, but the moments that made me fall deeper in love with you.</p>
-        <p>From the way your eyes smile before your lips do — to how you make silence feel like music.</p>
-        <img src="https://media4.giphy.com/media/xT39CXg70nNS0MFNLy/giphy.gif" class="page-gif">
-      </div>
+<div class="diary-container">
+  <div class="book">
 
-      <div class="page" id="page2">
-        <h2>Chapter 1 — First Sparks ✨</h2>
-        <p>It all began with a glance that felt like a lifetime. 
-        You didn’t just walk into my life — you danced in, with laughter that rewrote my story.</p>
-        <p>I still remember how my heart forgot to beat for a moment, 
-        just to listen to yours.</p>
-        <img src="https://media2.giphy.com/media/3oEhmDMA4r9GxhwEqA/giphy.gif" class="page-gif">
-      </div>
-
-      <div class="page" id="page3">
-        <h2>Chapter 2 — The Little Things 💗</h2>
-        <p>The late-night talks, the teasing, the shared dreams — 
-        every piece of us stitched together this beautiful chaos called “us”.</p>
-        <p>Maybe forever isn’t measured in years — but in every time I whisper your name and smile.</p>
-        <img src="https://media4.giphy.com/media/HoeLI9qzQwbAY/giphy.gif" class="page-gif">
-      </div>
+    <div class="page active">
+      <h2>Dear My Love 💕</h2>
+      <p>Every heartbeat writes your name on the pages of my soul.</p>
+      <img src="https://media4.giphy.com/media/xT39CXg70nNS0MFNLy/giphy.gif" class="page-gif">
     </div>
 
-    <div class="controls">
-      <button id="prevBtn">⟵ Previous</button>
-      <button id="nextBtn">Next ⟶</button>
+    <div class="page">
+      <h2>Chapter 1 — First Sparks ✨</h2>
+      <p>You didn’t walk into my life — you danced into it.</p>
+      <img src="https://media2.giphy.com/media/3oEhmDMA4r9GxhwEqA/giphy.gif" class="page-gif">
     </div>
+
+    <div class="page">
+      <h2>Chapter 2 — The Little Things 💗</h2>
+      <p>Forever is made of moments like these.</p>
+      <img src="https://media4.giphy.com/media/HoeLI9qzQwbAY/giphy.gif" class="page-gif">
+    </div>
+
   </div>
 
-  <footer>
-    Made with ❤️ for our eternal love. Forever and always.
-  </footer>
+  <div class="controls">
+    <button id="prevBtn">⟵ Previous</button>
+    <button id="nextBtn">Next ⟶</button>
+  </div>
+</div>
 
-  <script>
-    // Floating hearts
-    function createHeart() {
-      const heart = document.createElement('div');
-      heart.className = 'heart';
-      heart.innerHTML = '💖';
-      heart.style.left = Math.random() * 100 + 'vw';
-      heart.style.animationDuration = Math.random() * 3 + 3 + 's';
-      document.getElementById('floating-hearts').appendChild(heart);
-      setTimeout(() => heart.remove(), 6000);
-    }
-    setInterval(createHeart, 600);
+<footer>
+  Made with ❤️ for our eternal love. Forever and always.
+</footer>
 
-    // Page navigation
-    const pages = document.querySelectorAll('.page');
-    let currentPage = 0;
+<script>
+/* Hamburger */
+document.getElementById("hamburger").onclick=()=>{
+  document.getElementById("navLinks").classList.toggle("show");
+};
 
-    document.getElementById('nextBtn').addEventListener('click', () => {
-      pages[currentPage].classList.remove('active');
-      currentPage = (currentPage + 1) % pages.length;
-      pages[currentPage].classList.add('active');
-    });
+/* Floating hearts */
+setInterval(()=>{
+  const h=document.createElement("div");
+  h.className="heart";
+  h.innerText="💖";
+  h.style.left=Math.random()*100+"vw";
+  document.getElementById("floating-hearts").appendChild(h);
+  setTimeout(()=>h.remove(),6000);
+},700);
 
-    document.getElementById('prevBtn').addEventListener('click', () => {
-      pages[currentPage].classList.remove('active');
-      currentPage = (currentPage - 1 + pages.length) % pages.length;
-      pages[currentPage].classList.add('active');
-    });
-  </script>
+/* Page flip */
+const pages=document.querySelectorAll(".page");
+let i=0;
+
+document.getElementById("nextBtn").onclick=()=>{
+  pages[i].classList.remove("active");
+  i=(i+1)%pages.length;
+  pages[i].classList.add("active");
+};
+
+document.getElementById("prevBtn").onclick=()=>{
+  pages[i].classList.remove("active");
+  i=(i-1+pages.length)%pages.length;
+  pages[i].classList.add("active");
+};
+</script>
+
 </body>
 </html>
