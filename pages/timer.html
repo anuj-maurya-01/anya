@@ -3,61 +3,37 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Our Time Together ⏳</title>
+<title>Our Time Together ❤️</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-<script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif}
+*{margin:0;padding:0;box-sizing:border-box;font-family:Poppins,sans-serif;}
 
 body{
-  background:linear-gradient(135deg,#ff9a9e,#fecfef,#fcbad3);
-  color:#333;
+  background:linear-gradient(135deg,#ff9a9e,#fecfef);
+  min-height:100vh;
   overflow-x:hidden;
 }
 
-/* ===== BACKGROUND ===== */
+/* ===== HEART BG ===== */
 .hearts-bg{
   position:fixed;
   inset:0;
-  background-image:url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="20">💖</text></svg>');
-  background-size:50px 50px;
-  opacity:.1;
-  z-index:-2;
-}
-
-.floating-hearts{
-  position:fixed;
-  inset:0;
-  pointer-events:none;
+  background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='20'>💖</text></svg>");
+  background-size:50px;
+  opacity:.08;
   z-index:-1;
-}
-
-.heart{
-  position:absolute;
-  font-size:2rem;
-  color:#e91e63;
-  animation:rise 6s linear infinite;
-}
-
-@keyframes rise{
-  from{transform:translateY(100vh);opacity:0}
-  20%{opacity:1}
-  to{transform:translateY(-10vh);opacity:0}
 }
 
 /* ===== NAVBAR ===== */
 .navbar{
   background:rgba(255,255,255,.95);
-  backdrop-filter:blur(15px);
-  border-radius:40px;
-  margin:15px auto;
-  padding:14px 22px;
-  max-width:92%;
-  box-shadow:0 6px 20px rgba(0,0,0,.15);
-  position:relative;
-  z-index:1000;
+  margin:20px auto;
+  max-width:90%;
+  border-radius:50px;
+  padding:12px 20px;
+  box-shadow:0 8px 20px rgba(0,0,0,.15);
 }
 
 .nav-container{
@@ -66,29 +42,25 @@ body{
   align-items:center;
 }
 
-.logo{
-  font-weight:600;
-  color:#e91e63;
-}
+.logo{font-size:1.2rem;color:#e91e63;font-weight:700;}
 
 .hamburger{
   display:none;
   flex-direction:column;
   cursor:pointer;
 }
-
 .hamburger span{
   width:26px;
   height:3px;
   background:#e91e63;
   margin:4px 0;
-  border-radius:4px;
+  border-radius:5px;
 }
 
 .nav-links{
   list-style:none;
   display:flex;
-  gap:14px;
+  gap:15px;
 }
 
 .nav-links a{
@@ -96,44 +68,40 @@ body{
   color:#e91e63;
   font-weight:600;
   padding:8px 14px;
-  border-radius:22px;
-  transition:.3s;
+  border-radius:20px;
 }
-
-.nav-links a:hover,
-.nav-links a.active{
+.nav-links a.active,
+.nav-links a:hover{
   background:#e91e63;
-  color:#fff;
+  color:white;
 }
 
-/* MOBILE */
 @media(max-width:768px){
-  .hamburger{display:flex}
-
+  .hamburger{display:flex;}
   .nav-links{
     position:absolute;
-    top:65px;
+    top:90px;
     left:5%;
     width:90%;
-    background:rgba(255,255,255,.98);
+    background:white;
     flex-direction:column;
     align-items:center;
     display:none;
-    padding:20px 0;
     border-radius:25px;
+    padding:20px 0;
     box-shadow:0 10px 25px rgba(0,0,0,.2);
   }
-  .nav-links.show{display:flex}
+  .nav-links.show{display:flex;}
 }
 
-/* ===== CONTAINER ===== */
+/* ===== CONTENT ===== */
 .container{
-  background:rgba(255,255,255,.95);
-  border-radius:25px;
-  padding:40px;
+  background:rgba(255,255,255,.96);
   max-width:900px;
-  margin:40px auto;
-  box-shadow:0 10px 30px rgba(0,0,0,.15);
+  margin:30px auto;
+  padding:40px;
+  border-radius:25px;
+  box-shadow:0 10px 40px rgba(0,0,0,.15);
   text-align:center;
 }
 
@@ -144,40 +112,42 @@ h1{
   margin-bottom:20px;
 }
 
-/* ===== TIMER ===== */
-.timer{
+.timer-display{
   display:flex;
   justify-content:center;
   flex-wrap:wrap;
-  gap:20px;
-  margin:30px 0;
+  gap:15px;
+  margin:25px 0;
 }
 
-.time-box{
+.time-unit{
   background:linear-gradient(45deg,#ff6b9d,#c44569);
   color:white;
-  padding:20px;
+  padding:18px;
   border-radius:15px;
-  min-width:110px;
-  box-shadow:0 6px 15px rgba(0,0,0,.2);
+  min-width:90px;
+  animation:pulse 2s infinite;
 }
 
-.time-box span:first-child{
-  font-size:2.5rem;
+.time-unit span:first-child{
+  font-size:2rem;
   font-weight:700;
 }
 
-.time-box span:last-child{
-  font-size:1rem;
+@keyframes pulse{
+  50%{transform:scale(1.05);}
 }
 
-/* ===== FOOTER ===== */
+hr{
+  border:none;
+  height:2px;
+  background:#ffd1dc;
+  margin:40px 0;
+}
+
 footer{
   text-align:center;
-  padding:22px;
-  background:rgba(255,255,255,.9);
-  margin-top:40px;
-  border-radius:25px 25px 0 0;
+  padding:20px;
   color:#777;
 }
 </style>
@@ -186,103 +156,109 @@ footer{
 <body>
 
 <div class="hearts-bg"></div>
-<div class="floating-hearts" id="floating-hearts"></div>
 
 <!-- NAVBAR -->
 <nav class="navbar">
   <div class="nav-container">
-    <div class="logo">⏳ Our Time</div>
-
+    <div class="logo">💖</div>
     <div class="hamburger" id="hamburger">
       <span></span><span></span><span></span>
     </div>
-
     <ul class="nav-links" id="navLinks">
       <li><a href="timer.html" class="active">Our Time</a></li>
-      <li><a href="heartbeat.html">Love Heartbeat</a></li>
+      <li><a href="heartbeat.html">Our Heartbeat</a></li>
       <li><a href="notes.html">Love Notes</a></li>
       <li><a href="messages.html">Messages</a></li>
       <li><a href="dates.html">Dates</a></li>
       <li><a href="moments.html">Cute Moments</a></li>
       <li><a href="letters.html">Letters</a></li>
       <li><a href="confession.html">Confession</a></li>
-      <li><a href="chats.html">First Chats</a></li>
+      <li><a href="chats.html">Chats</a></li>
       <li><a href="qa.html">Q&A</a></li>
     </ul>
   </div>
 </nav>
 
-<!-- FRIEND TIME -->
 <div class="container">
-  <h1>Time Shared as Friends 💛</h1>
-  <div class="timer" id="friendTimer">
-    <div class="time-box"><span id="f-days">0</span><span>Days</span></div>
-    <div class="time-box"><span id="f-hours">0</span><span>Hours</span></div>
-    <div class="time-box"><span id="f-minutes">0</span><span>Minutes</span></div>
-    <div class="time-box"><span id="f-seconds">0</span><span>Seconds</span></div>
-  </div>
-  <p>From strangers to best friends 🌱</p>
+
+<h1>Time as a Couple ❤️</h1>
+<div class="timer-display">
+  <div class="time-unit"><span id="c-days">0</span><span>Days</span></div>
+  <div class="time-unit"><span id="c-hours">0</span><span>Hours</span></div>
+  <div class="time-unit"><span id="c-minutes">0</span><span>Minutes</span></div>
+  <div class="time-unit"><span id="c-seconds">0</span><span>Seconds</span></div>
 </div>
 
-<!-- COUPLE TIME -->
-<div class="container">
-  <h1>Time as a Couple ❤️</h1>
-  <div class="timer" id="loveTimer">
-    <div class="time-box"><span id="c-days">0</span><span>Days</span></div>
-    <div class="time-box"><span id="c-hours">0</span><span>Hours</span></div>
-    <div class="time-box"><span id="c-minutes">0</span><span>Minutes</span></div>
-    <div class="time-box"><span id="c-seconds">0</span><span>Seconds</span></div>
-  </div>
-  <p>Since our hearts chose each other 💖</p>
+<hr>
+
+<h1>Time as Friends 🤍</h1>
+<div class="timer-display">
+  <div class="time-unit"><span id="f-days">0</span><span>Days</span></div>
+  <div class="time-unit"><span id="f-hours">0</span><span>Hours</span></div>
+  <div class="time-unit"><span id="f-minutes">0</span><span>Minutes</span></div>
+  <div class="time-unit"><span id="f-seconds">0</span><span>Seconds</span></div>
 </div>
 
-<footer>
-  Made with ❤️ — counting every second together.
-</footer>
+<hr>
+
+<h1>Total Time We Shared 💞</h1>
+<div class="timer-display">
+  <div class="time-unit"><span id="t-days">0</span><span>Days</span></div>
+  <div class="time-unit"><span id="t-hours">0</span><span>Hours</span></div>
+  <div class="time-unit"><span id="t-minutes">0</span><span>Minutes</span></div>
+  <div class="time-unit"><span id="t-seconds">0</span><span>Seconds</span></div>
+</div>
+
+<hr>
+
+<h1>Next Anniversary Countdown 🎉</h1>
+<div class="timer-display">
+  <div class="time-unit"><span id="a-days">0</span><span>Days</span></div>
+  <div class="time-unit"><span id="a-hours">0</span><span>Hours</span></div>
+  <div class="time-unit"><span id="a-minutes">0</span><span>Minutes</span></div>
+  <div class="time-unit"><span id="a-seconds">0</span><span>Seconds</span></div>
+</div>
+
+</div>
+
+<footer>Made with ❤️ — every second counts.</footer>
 
 <script>
-/* Hamburger */
-hamburger.onclick=()=>{
-  navLinks.classList.toggle("show");
-};
+/* ===== HAMBURGER ===== */
+hamburger.onclick=()=>navLinks.classList.toggle("show");
 
-/* Floating hearts */
-setInterval(()=>{
-  const h=document.createElement("div");
-  h.className="heart";
-  h.innerText="💖";
-  h.style.left=Math.random()*100+"vw";
-  floating-hearts.appendChild(h);
-  setTimeout(()=>h.remove(),6000);
-},900);
+/* ===== DATES ===== */
+const friendStart = new Date("2022-12-25T07:21:00");
+const coupleStart = new Date("2023-11-21T14:45:00");
 
-/* ===== DATES (CHANGE THESE) ===== */
-const friendStart = new Date("2022-12-25T07:21:00"); // friendship start
-const coupleStart = new Date("2023-11-21T14:45:00"); // relationship start
-
-function updateTimer(start, ids){
-  const now=new Date();
-  const diff=now-start;
-
+/* ===== HELPERS ===== */
+function fill(diff, p){
   const d=Math.floor(diff/86400000);
   const h=Math.floor(diff/3600000)%24;
   const m=Math.floor(diff/60000)%60;
   const s=Math.floor(diff/1000)%60;
-
-  ids.days.textContent=d;
-  ids.hours.textContent=h;
-  ids.minutes.textContent=m;
-  ids.seconds.textContent=s;
+  document.getElementById(p+"-days").textContent=d;
+  document.getElementById(p+"-hours").textContent=h;
+  document.getElementById(p+"-minutes").textContent=m;
+  document.getElementById(p+"-seconds").textContent=s;
 }
 
-setInterval(()=>{
-  updateTimer(friendStart,{
-    days:f-days,hours:f-hours,minutes:f-minutes,seconds:f-seconds
-  });
-  updateTimer(coupleStart,{
-    days:c-days,hours:c-hours,minutes:c-minutes,seconds:c-seconds
-  });
-},1000);
+/* ===== UPDATE ALL ===== */
+function updateAll(){
+  const now=new Date();
+
+  fill(now-coupleStart,"c");
+  fill(now-friendStart,"f");
+
+  fill(now-friendStart,"t");
+
+  let next=new Date(now.getFullYear(),10,21,14,45);
+  if(next<now) next.setFullYear(next.getFullYear()+1);
+  fill(next-now,"a");
+}
+
+setInterval(updateAll,1000);
+updateAll();
 </script>
 
 </body>
