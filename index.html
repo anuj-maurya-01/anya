@@ -1,4 +1,4 @@
-²<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -14,7 +14,7 @@
 body{
   font-family:'Roboto',sans-serif;
   background:#000;
-  color#fff;
+  color:#fff;
   line-height:1.6;
   overflow-x:hidden;
 }
@@ -25,9 +25,10 @@ a{text-decoration:none;color:inherit;}
 nav{
   position:fixed;
   top:0;
+  left:0;
   width:100%;
   background:rgba(0,0,0,.95);
-  backdrop-filter:blur(20px);
+  backdrop-filter:blur(15px);
   z-index:1000;
   padding:.9rem 0;
 }
@@ -35,7 +36,7 @@ nav ul{
   list-style:none;
   display:flex;
   justify-content:center;
-  gap:1.5rem;
+  gap:1.4rem;
   flex-wrap:wrap;
 }
 nav a{
@@ -43,55 +44,60 @@ nav a{
   display:flex;
   align-items:center;
   gap:.4rem;
+  color:#fff;
 }
 nav a:hover{color:#ff6b9d;}
 
-/* 👉 FIX: offset for fixed nav */
-body::before{
-  content:"";
-  display:block;
-  height:70px;
-}
-
 /* ===== HERO ===== */
 .hero{
-  min-height:calc(100vh - 70px);
+  min-height:100vh;
   background:
-    linear-gradient(135deg,rgba(0,0,0,.8),rgba(20,0,40,.7)),
+    linear-gradient(
+      rgba(0,0,0,.65),
+      rgba(0,0,0,.75)
+    ),
     url('assets/madam_ji/Lehenga_01.jpg') center/cover no-repeat;
   display:flex;
   flex-direction:column;
   justify-content:center;
   align-items:center;
   text-align:center;
-  padding:1.5rem;
+  padding:6rem 1.5rem 3rem; /* space for fixed nav */
 }
+
 .hero h1{
-  font-size:clamp(2.2rem,7vw,4.5rem);
+  font-size:clamp(2.4rem,7vw,4.8rem);
   letter-spacing:.25em;
   text-transform:uppercase;
+  color:#fff;
+  text-shadow:
+    0 0 15px rgba(255,255,255,.6),
+    0 0 30px rgba(255,107,157,.5);
 }
 .hero p{
   font-size:clamp(1rem,3.5vw,1.6rem);
   max-width:650px;
   margin-top:1rem;
+  color:#f2f2f2;
+  text-shadow:0 0 10px rgba(0,0,0,.8);
 }
 .cta-button{
   margin-top:2rem;
   padding:.9rem 2.2rem;
   border-radius:50px;
   border:2px solid #ff6b9d;
-  background:rgba(255,107,157,.2);
+  background:rgba(255,107,157,.15);
+  color:#fff;
   font-size:1rem;
 }
 
 /* ===== SECTIONS ===== */
 section{
-  padding:4.5rem 1.2rem;   /* 🔥 MOBILE FIX */
+  padding:4.5rem 1.2rem;
   text-align:center;
 }
 .section-title{
-  font-size:clamp(1.8rem,5vw,2.8rem);
+  font-size:clamp(1.8rem,5vw,2.7rem);
   margin-bottom:2rem;
 }
 .section-title i{color:#ff6b9d;}
@@ -105,7 +111,7 @@ section{
 #journey{background:linear-gradient(#000,#111,#000);}
 .story-cards{
   display:flex;
-  gap:1.2rem;
+  gap:1.3rem;
   overflow-x:auto;
   padding:1.5rem 0 2.5rem;
 }
@@ -188,15 +194,15 @@ footer i{color:#ff6b9d;}
   <h2 class="section-title"><i class="fa-solid fa-road"></i> Our Journey</h2>
   <div class="story-cards">
 
-     <div class="story-card">
+    <div class="story-card">
       <img src="assets/madam_ji/1_20251021_094014_0000.png">
       <div class="story-content">
-        <h3>First Photo 💫</h3>
-        <p>That first glance when everything silently changed.</p>
+        <h3>First Suit Pic ☕</h3>
+        <p>A shy smile wrapped in elegance and warmth.</p>
       </div>
     </div>
 
-    <div class="story-card">
+<div class="story-card">
       <img src="assets/madam_ji/2_20251021_100023_0000.png">
       <div class="story-content">
         <h3>First Suit Pic ☕</h3>
@@ -208,7 +214,7 @@ footer i{color:#ff6b9d;}
       <img src="assets/madam_ji/3_20251021_100024_0001.png">
       <div class="story-content">
         <h3>First Saree ❤️</h3>
-        <p>Some moments live forever in the heart.</p>
+        <p>Some moments stay forever in the heart.</p>
       </div>
     </div>
 
@@ -231,11 +237,9 @@ footer i{color:#ff6b9d;}
   <p class="bonding-quote">"You are my today and all of my tomorrows."</p>
 </section>
 
-<!-- FOOTER -->
 <footer>
   Made with <i class="fa-solid fa-heart"></i> | © 2025 Our Eternal Bond
 </footer>
 
 </body>
-</html>
-
+  </html>
