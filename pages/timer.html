@@ -6,7 +6,7 @@
 <title>Our Time Together ❤️</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/global.css">
+
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:Poppins,sans-serif;}
@@ -117,23 +117,28 @@ h1{
   display:flex;
   justify-content:center;
   flex-wrap:wrap;
-  gap:15px;
-  margin:25px 0;
+  gap:16px;
+  margin-top:20px;      /* space from menu */
+  margin-bottom:30px;   /* space from next section */
+  position:relative;
+  z-index:1;
 }
 
 .time-unit{
   background:linear-gradient(45deg,#ff6b9d,#c44569);
   color:white;
-  padding:18px;
+  padding:16px;
   border-radius:15px;
-  min-width:90px;
+  min-width:130px;      /* FIX: avoid crowding */
+  text-align:center;
   animation:pulse 2s infinite;
 }
 
-.time-unit span:first-child{
-  font-size:2rem;
-  font-weight:700;
+.time-unit span:last-child{
+  font-size:0.9rem;
+  opacity:0.9;
 }
+
 
 @keyframes pulse{
   50%{transform:scale(1.05);}
@@ -223,7 +228,6 @@ footer{
 </div>
 
 <footer>Made with ❤️ — every second counts.</footer>
-<script src="js/memoryPppup.js"></script>
 
 <script>
 /* ===== HAMBURGER ===== */
