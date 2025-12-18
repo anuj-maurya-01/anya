@@ -29,6 +29,8 @@ body{
 
 /* ===== NAVBAR ===== */
 .navbar{
+  position:relative;
+  z-index:1000;
   background:rgba(255,255,255,.95);
   margin:20px auto;
   max-width:90%;
@@ -42,6 +44,7 @@ body{
   justify-content:space-between;
   align-items:center;
 }
+
 
 .logo{font-size:1.2rem;color:#e91e63;font-weight:700;}
 
@@ -77,22 +80,37 @@ body{
   color:white;
 }
 
-@media(max-width:768px){
-  .hamburger{display:flex;}
-  .nav-links{
-    position:absolute;
-    top:90px;
-    left:5%;
-    width:90%;
-    background:white;
-    flex-direction:column;
-    align-items:center;
-    display:none;
-    border-radius:25px;
-    padding:20px 0;
-    box-shadow:0 10px 25px rgba(0,0,0,.2);
+@media (max-width: 768px) {
+
+  .hamburger {
+    display: flex;
   }
-  .nav-links.show{display:flex;}
+
+  .navbar {
+    padding-bottom: 18px;
+  }
+
+  .nav-container {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .nav-links {
+    position: relative;
+    margin-top: 15px;
+    width: 100%;
+    background: white;
+    flex-direction: column;
+    align-items: center;
+    display: none;
+    border-radius: 25px;
+    padding: 20px 0;
+    box-shadow: 0 10px 25px rgba(0,0,0,.2);
+  }
+
+  .nav-links.show {
+    display: flex;
+  }
 }
 
 /* ===== CONTENT ===== */
@@ -156,6 +174,13 @@ footer{
   padding:20px;
   color:#777;
 }
+
+.page-content{
+  margin-top: 20px;
+  position: relative;
+  z-index: 1;
+}
+
 </style>
 </head>
 
@@ -185,7 +210,8 @@ footer{
   </div>
 </nav>
 
-<div class="container">
+<main class="page-content">
+  <div class="container">
 
 <h1>Time as a Couple ❤️</h1>
 <div class="timer-display">
@@ -225,13 +251,21 @@ footer{
   <div class="time-unit"><span id="a-seconds">0</span><span>Seconds</span></div>
 </div>
 
-</div>
+  </div>
+</main>
+
 
 <footer>Made with ❤️ — every second counts.</footer>
 
 <script>
 /* ===== HAMBURGER ===== */
-hamburger.onclick=()=>navLinks.classList.toggle("show");
+const hamburger = document.getElementById("hamburger");
+const navLinks = document.getElementById("navLinks");
+
+if (hamburger && navLinks) {
+  hamburger.onclick = () => navLinks.classList.toggle("show");
+}
+
 
 /* ===== DATES ===== */
 const friendStart = new Date("2022-12-25T07:21:00");
