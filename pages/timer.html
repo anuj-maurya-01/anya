@@ -1,1 +1,295 @@
-aa
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Our Time Together ❤️</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+<style>
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:Poppins,sans-serif;
+}
+
+body{
+  background:linear-gradient(to bottom,#ffd1dc,#ffc1d6);
+  min-height:100vh;
+  overflow-x:hidden;
+  color:#444;
+}
+
+/* ===== HEART BACKGROUND ===== */
+.hearts-bg{
+  position:fixed;
+  inset:0;
+  background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='20'>💖</text></svg>");
+  background-size:50px;
+  opacity:.08;
+  z-index:-1;
+}
+
+/* ===== NAVBAR ===== */
+.navbar{
+  background:rgba(255,255,255,.95);
+  margin:18px auto;
+  max-width:90%;
+  border-radius:50px;
+  padding:12px 20px;
+  box-shadow:0 8px 20px rgba(0,0,0,.15);
+}
+
+.nav-container{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+.logo{
+  font-size:1.3rem;
+  color:#e91e63;
+  font-weight:700;
+}
+
+/* Hamburger */
+.hamburger{
+  display:none;
+  flex-direction:column;
+  cursor:pointer;
+}
+
+
+
+/* Menu */
+.nav-links{
+  list-style:none;
+  display:flex;
+  gap:15px;
+}
+.hamburger span{
+  width:26px;
+  height:3px;
+  background:#e91e63;
+  margin:4px 0;
+  border-radius:5px;
+}
+.nav-links a{
+  text-decoration:none;
+  color:#e91e63;
+  font-weight:600;
+  padding:8px 14px;
+  border-radius:20px;
+}
+
+.nav-links a.active,
+.nav-links a:hover{
+  background:#e91e63;
+  color:white;
+}
+
+/* ===== MOBILE MENU ===== */
+@media (max-width:768px){
+  .hamburger{display:flex;}
+
+  .nav-container{
+    flex-direction:row;
+    align-items:center;
+  }
+
+  .nav-links{
+  margin-top:15px;
+  display:none;
+  flex-direction:column;
+  align-items:center;
+  padding:0;
+  background:transparent;   /* 🔥 removes white bg */
+  box-shadow:none;          /* 🔥 removes card shadow */
+}
+
+  .nav-links.show{
+    display:flex;
+  }
+
+  .container{
+    margin-top:40px;
+  }
+}
+
+/* ===== CONTENT ===== */
+.container{
+  background:rgba(255,255,255,.96);
+  max-width:900px;
+  margin:30px auto;
+  padding:40px;
+  border-radius:30px;
+  box-shadow:0 10px 40px rgba(0,0,0,.15);
+  text-align:center;
+}
+
+h1{
+  font-family:'Dancing Script',cursive;
+  font-size:3rem;
+  color:#e91e63;
+  margin-bottom:20px;
+}
+
+.timer-display{
+  display:flex;
+  justify-content:center;
+  flex-wrap:wrap;
+  gap:16px;
+  margin-bottom:30px;
+}
+
+.time-unit{
+  background:linear-gradient(45deg,#ff6b9d,#c44569);
+  color:white;
+  padding:16px;
+  border-radius:15px;
+  min-width:130px;
+  animation:pulse 2s infinite;
+}
+
+.time-unit span:first-child{
+  display:block;
+  font-size:1.6rem;
+  font-weight:700;
+}
+
+.time-unit span:last-child{
+  font-size:.9rem;
+  opacity:.9;
+}
+
+@keyframes pulse{
+  50%{transform:scale(1.05);}
+}
+
+hr{
+  border:none;
+  height:2px;
+  background:#ffd1dc;
+  margin:40px 0;
+}
+
+footer{
+  text-align:center;
+  padding:20px;
+  color:#777;
+}
+</style>
+</head>
+
+<body>
+
+<div class="hearts-bg"></div>
+
+<!-- ===== NAVBAR ===== -->
+<nav class="navbar">
+  <div class="nav-container">
+    <div class="logo">💖</div>
+
+    <div class="hamburger" id="hamburger">
+      <span></span><span></span><span></span>
+    </div>
+
+    <ul class="nav-links" id="navLinks">
+      <li><a href="timer.html" class="active">Our Time</a></li>
+      <li><a href="heartbeat.html">Our Heartbeat</a></li>
+      <li><a href="notes.html">Love Notes</a></li>
+      <li><a href="messages.html">Messages</a></li>
+      <li><a href="dates.html">Dates</a></li>
+      <li><a href="moments.html">Cute Moments</a></li>
+      <li><a href="letters.html">Letters</a></li>
+      <li><a href="confession.html">Confession</a></li>
+      <li><a href="chats.html">Chats</a></li>
+      <li><a href="qa.html">Q&A</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- ===== CONTENT ===== -->
+<div class="container">
+
+  <h1>Time as a Couple ❤️</h1>
+  <div class="timer-display">
+    <div class="time-unit"><span id="c-days">0</span><span>Days</span></div>
+    <div class="time-unit"><span id="c-hours">0</span><span>Hours</span></div>
+    <div class="time-unit"><span id="c-minutes">0</span><span>Minutes</span></div>
+    <div class="time-unit"><span id="c-seconds">0</span><span>Seconds</span></div>
+  </div>
+
+  <hr>
+
+  <h1>Time as Friends 🤍</h1>
+  <div class="timer-display">
+    <div class="time-unit"><span id="f-days">0</span><span>Days</span></div>
+    <div class="time-unit"><span id="f-hours">0</span><span>Hours</span></div>
+    <div class="time-unit"><span id="f-minutes">0</span><span>Minutes</span></div>
+    <div class="time-unit"><span id="f-seconds">0</span><span>Seconds</span></div>
+  </div>
+
+  <hr>
+
+  <h1>Total Time We Shared 💞</h1>
+  <div class="timer-display">
+    <div class="time-unit"><span id="t-days">0</span><span>Days</span></div>
+    <div class="time-unit"><span id="t-hours">0</span><span>Hours</span></div>
+    <div class="time-unit"><span id="t-minutes">0</span><span>Minutes</span></div>
+    <div class="time-unit"><span id="t-seconds">0</span><span>Seconds</span></div>
+  </div>
+
+</div>
+
+<footer>Made with ❤️ — every second counts.</footer>
+
+<!-- ===== JAVASCRIPT ===== -->
+<script>
+const hamburger = document.getElementById("hamburger");
+const navLinks = document.getElementById("navLinks");
+
+/* Toggle menu */
+hamburger.onclick = () => {
+  navLinks.classList.toggle("show");
+};
+
+/* Close menu on link click */
+document.querySelectorAll("#navLinks a").forEach(link=>{
+  link.addEventListener("click",()=>{
+    navLinks.classList.remove("show");
+  });
+});
+
+/* ===== DATES ===== */
+const friendStart = new Date("2022-12-25T07:21:00");
+const coupleStart = new Date("2023-11-21T14:45:00");
+
+/* ===== TIMER ===== */
+function fill(diff,p){
+  const d=Math.floor(diff/86400000);
+  const h=Math.floor(diff/3600000)%24;
+  const m=Math.floor(diff/60000)%60;
+  const s=Math.floor(diff/1000)%60;
+
+  document.getElementById(p+"-days").textContent=d;
+  document.getElementById(p+"-hours").textContent=h;
+  document.getElementById(p+"-minutes").textContent=m;
+  document.getElementById(p+"-seconds").textContent=s;
+}
+
+function updateAll(){
+  const now=new Date();
+  fill(now-coupleStart,"c");
+  fill(now-friendStart,"f");
+  fill(now-friendStart,"t");
+}
+
+setInterval(updateAll,1000);
+updateAll();
+</script>
+
+</body>
+  </html>
