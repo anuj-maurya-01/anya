@@ -317,54 +317,47 @@ footer{
 
 
 <script>
-/* Hamburger */
-document.getElementById("hamburger").onclick=()=>{
-  document.getElementById("navLinks").classList.toggle("show");
-};
+/* ===== HAMBURGER MENU ===== */
+const hamburger = document.getElementById("hamburger");
+const navLinks = document.getElementById("navLinks");
 
-/* Floating hearts */
-setInterval(()=>{
-  const h=document.createElement("div");
-  h.className="heart";
-  h.innerText="💖";
-  h.style.left=Math.random()*100+"vw";
-  document.getElementById("floating-hearts").appendChild(h);
-  setTimeout(()=>h.remove(),6000);
-},900);
+hamburger.addEventListener("click", () => {
+  navLinks.classList.toggle("show");
+});
 
-/* Page navigation */
-let currentPage=1;
-const 
-cons= pages=d.cument.querySelectorAll(";
+/* ===== FLOATING HEARTS ===== */
+setInterval(() => {
+  const heart = document.createElement("div");
+  heart.className = "heart";
+  heart.innerText = "💖";
+  heart.style.left = Math.random() * 100 + "vw";
+  document.getElementById("floating-hearts").appendChild(heart);
 
-ge");
+  setTimeout(() => heart.remove(), 6000);
+}, 900);
 
-d.cument.getElementById("pr.vBtn").=nc=>c
-  )=>{
-  if(curr>ntP
-    ){
-    pages[curr-nt.age-1].cl.ssList.remove("a;
-    );
-    curr--;
-    -;
-    pages[curr-nt.age-1].cl.ssList.add("a;
-  e
-);
+/* ===== PAGE NAVIGATION ===== */
+const pages = document.querySelectorAll(".page");
+let currentPage = 0;
 
- }
-};
+function showPage(index) {
+  pages.forEach(page => page.classList.remove("active"));
+  pages[index].classList.add("active");
+}
 
-d.cument.getElementById("ne.tBtn").=nc=>c
-  )=>{
-  if(curr<ntPag.<pages.l
-    ){
-    pages[curr-nt.age-1].cl.ssList.remove("a;
-    );
-    curr++;
-    +;
-    pages[curr-nt.age-1].cl.ssList.add("a;
-  e
-);
+document.getElementById("prevBtn").addEventListener("click", () => {
+  if (currentPage > 0) {
+    currentPage--;
+    showPage(currentPage);
+  }
+});
+
+document.getElementById("nextBtn").addEventListener("click", () => {
+  if (currentPage < pages.length - 1) {
+    currentPage++;
+    showPage(currentPage);
+  }
+});
 </script>
 
 </body>
