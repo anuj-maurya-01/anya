@@ -246,7 +246,7 @@ footer{
   <section class="dates-section">
     <div class="container">
       <h1>Our Milestones 💕</h1>
-
+      <div class="timeline">
           <div class="timeline-item left">
             <div class="dot"></div>
             <div class="date">Nov 14, 2022</div>
@@ -566,25 +566,32 @@ footer{
           </div>
           </div>
 </div>
+</div>
   </section>
 </main>
 <footer>Made with ❤️ to cherish every milestone.</footer>
 
 <script>
-/* HAMBURGER */
-hamburger.onclick=()=>navLinks.classList.toggle("show");
+/* ===== HAMBURGER MENU ===== */
+const hamburger = document.getElementById("hamburger");
+const navLinks = document.getElementById("navLinks");
 
-/* FLOATING HEARTS */
-setInterval(()=>{
-  const h=document.createElement("div");
-  h.className="heart";
-  h.textContent="💖";
-  h.style.left=Math.random()*100+"vw";
-  h.style.animationDuration=(3+Math.random()*3)+"s";
+hamburger.addEventListener("click", () => {
+  navLinks.classList.toggle("show");
+});
+
+/* ===== FLOATING HEARTS ===== */
+setInterval(() => {
+  const h = document.createElement("div");
+  h.className = "heart";
+  h.textContent = "💖";
+  h.style.left = Math.random() * 100 + "vw";
+  h.style.animationDuration = (3 + Math.random() * 3) + "s";
   document.body.appendChild(h);
-  setTimeout(()=>h.remove(),6000);
-},900);
+
+  setTimeout(() => h.remove(), 6000);
+}, 900);
 </script>
 
 </body>
-</html>
+                               </html>
