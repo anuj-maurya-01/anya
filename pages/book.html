@@ -388,6 +388,29 @@ footer{
 .book-dedication{
   font-family: 'Poppins', sans-serif;
 }
+
+/* ===== MOBILE TEXT FIX FOR CHAPTER PAGES ===== */
+@media (max-width: 768px) {
+
+  .page p {
+    text-align: left;              /* ❌ remove justify */
+    letter-spacing: normal;        /* ❌ remove spacing issues */
+    word-spacing: normal;
+    white-space: normal;
+    word-break: normal;
+    overflow-wrap: break-word;
+
+    line-height: 1.7;              /* 📖 book-like reading */
+    font-size: 15.5px;             /* comfortable mobile size */
+    max-width: 100%;
+  }
+
+  .page h2 {
+    text-align: center;
+    line-height: 1.3;
+  }
+
+}
 </style>
 </head>
 
@@ -841,3 +864,4 @@ document.addEventListener("DOMContentLoaded", () => {
 
 </body>
 </html>
+
