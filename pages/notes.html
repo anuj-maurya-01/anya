@@ -339,6 +339,55 @@ footer{
   border-radius:25px 25px 0 0;
   color:#777;
 }
+
+@media (max-width: 768px) {
+
+  .cover-page{
+    padding: 24px 18px;
+  }
+
+  .book-title{
+    font-size: 34px;
+    line-height: 1.2;
+    text-align: center;
+  }
+
+  .book-subtitle,
+  .book-dedication,
+  .cover-footer{
+    width: 100%;
+    max-width: 100%;
+    text-align: center;
+
+    /* 🔑 IMPORTANT FIXES */
+    letter-spacing: normal;
+    word-spacing: normal;
+    word-break: normal;
+    overflow-wrap: break-word;
+    white-space: normal;
+    line-height: 1.6;
+  }
+
+  .book-subtitle{
+    font-size: 16px;
+  }
+
+  .book-dedication{
+    font-size: 15px;
+  }
+
+  .cover-footer{
+    font-size: 14px;
+  }
+  } 
+.book-title{
+  font-family: 'Playfair Display', serif;
+}
+
+.book-subtitle,
+.book-dedication{
+  font-family: 'Poppins', sans-serif;
+}
 </style>
 </head>
 
