@@ -5,12 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Heartbeat 💓</title>
 
-<!-- Google Font -->
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
 
 <style>
-/* ========== BASE ========== */
 *{box-sizing:border-box}
+
 html,body{
   margin:0;
   padding:0;
@@ -84,7 +83,7 @@ html,body{
   color:#fff;
 }
 
-/* ========== MOBILE NAV ========== */
+/* ===== MOBILE NAV ===== */
 @media(max-width:768px){
   .hamburger{display:flex}
 
@@ -101,7 +100,6 @@ html,body{
     border-radius:25px;
     box-shadow:0 10px 25px rgba(0,0,0,.35);
   }
-
   .nav-links.show{display:flex}
 }
 
@@ -116,7 +114,6 @@ canvas{
   z-index:1;
 }
 
-/* Hide audio */
 audio{display:none}
 </style>
 </head>
@@ -148,57 +145,70 @@ audio{display:none}
   </div>
 </nav>
 
-<!-- HEARTBEAT AUDIO -->
-<audio id="hb" src="../assets/audio/heartbeat.mp3" autoplay loop></audio>
+<!-- AUDIO -->
+<audio id="hb" src="../assets/audio/heartbeat.mp3" loop></audio>
 
 <!-- CANVAS -->
 <canvas id="heart"></canvas>
 
 <script>
 /* ===== HAMBURGER ===== */
-document.getElementById("hamburger").onclick=()=>{
+document.getElementById("hamburger").onclick = () => {
   document.getElementById("navLinks").classList.toggle("show");
 };
 
-/* ===== HEART ANIMATION + AUDIO ===== */
+/* ===== HEART ANIMATION (ORIGINAL STYLE – FIXED) ===== */
 window.requestAnimationFrame =
 window.requestAnimationFrame ||
 window.webkitRequestAnimationFrame ||
 window.mozRequestAnimationFrame ||
 function(cb){setTimeout(cb,16)};
 
-var isMobile=/android|iphone|ipad|ipod/i.test(navigator.userAgent);
-var loaded=false;
+const canvas = document.getElementById("heart");
+const ctx = canvas.getContext("2d");
+const audio = document.getElementById("hb");
+
+const isMobile = /android|iphone|ipad|ipod/i.test(navigator.userAgent);
+let loaded = false;
+
+/* ---- AUDIO (mobile tap fix) ---- */
+function startAudio(){
+  audio.volume = 1;
+  audio.play().catch(()=>{});
+  window.removeEventListener("click", startAudio);
+  window.removeEventListener("touchstart", startAudio);
+}
+window.addEventListener("click", startAudio);
+window.addEventListener("touchstart", startAudio);
 
 function init(){
 if(loaded) return;
-loaded=true;
+loaded = true;
 
-const audio=document.getElementById("hb");
-audio.volume=1;
-window.addEventListener("click",()=>audio.play(),{once:true});
-
-const canvas=document.getElementById("heart");
-const ctx=canvas.getContext("2d");
-let koef=isMobile?0.5:1;
-
+/* ---- CANVAS DPI FIX ---- */
 function resize(){
-  canvas.width=koef*innerWidth;
-  canvas.height=koef*innerHeight;
+  const dpr = window.devicePixelRatio || 1;
+  canvas.width = innerWidth * dpr;
+  canvas.height = innerHeight * dpr;
+  canvas.style.width = innerWidth + "px";
+  canvas.style.height = innerHeight + "px";
+  ctx.setTransform(dpr,0,0,dpr,0,0);
 }
 resize();
-window.addEventListener("resize",resize);
+window.addEventListener("resize", resize);
 
-const rand=Math.random;
-let points=[],target=[],particles=[];
-let dr=isMobile?0.3:0.1;
-
+/* ---- HEART SHAPE ---- */
 function heartPos(t){
   return [
     Math.pow(Math.sin(t),3),
     -(15*Math.cos(t)-5*Math.cos(2*t)-2*Math.cos(3*t)-Math.cos(4*t))
   ];
 }
+
+/* ---- POINTS ---- */
+const rand = Math.random;
+let points=[], target=[], particles=[];
+let dr = isMobile ? 0.3 : 0.1;
 
 function scale(p,sx,sy){
   return [p[0]*sx,p[1]*sy];
@@ -210,34 +220,43 @@ for(let i=0;i<Math.PI*2;i+=dr){
   points.push(scale(heartPos(i),90,5));
 }
 
-let count=points.length;
+let count = points.length;
 
+/* ---- PARTICLES ---- */
 for(let i=0;i<count;i++){
   particles.push({
-    vx:0,vy:0,q:~~(rand()*count),
-    speed:rand()+5,force:0.7+0.2*rand(),
-    trace:Array.from({length:isMobile?20:50},()=>({x:rand()*canvas.width,y:rand()*canvas.height})),
+    vx:0, vy:0,
+    q:~~(rand()*count),
+    speed:rand()+5,
+    force:0.7+0.2*rand(),
+    trace:Array.from({length:isMobile?20:50},()=>({
+      x:rand()*innerWidth,
+      y:rand()*innerHeight
+    })),
     color:`hsla(0,${~~(40*rand()+60)}%,${~~(60*rand()+20)}%,.3)`
   });
 }
 
 let time=0;
+
+/* ---- PULSE ---- */
 function pulse(kx,ky){
   for(let i=0;i<count;i++){
     target[i]=[
-      canvas.width/2 + points[i][0]*kx,
-      canvas.height/2 + points[i][1]*ky
+      innerWidth/2 + points[i][0]*kx,
+      innerHeight/2 + points[i][1]*ky
     ];
   }
 }
 
+/* ---- LOOP ---- */
 function loop(){
   let n=-Math.cos(time);
   pulse((1+n)*0.5,(1+n)*0.5);
   time+=0.01;
 
-  ctx.fillStyle="rgba(0,0,0,.1)";
-  ctx.fillRect(0,0,canvas.width,canvas.height);
+  ctx.fillStyle="rgba(0,0,0,.15)";
+  ctx.fillRect(0,0,innerWidth,innerHeight);
 
   particles.forEach(p=>{
     let q=target[p.q];
