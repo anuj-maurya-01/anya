@@ -128,6 +128,54 @@ body{
   .nav-links.show{display:flex}
 }
 
+.cover-page{
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  text-align:center;
+  padding:40px;
+  background:linear-gradient(135deg,#ff9a9e,#fecfef);
+}
+
+.book-title{
+  font-size:42px;
+  font-family:'Playfair Display',serif;
+  margin-bottom:15px;
+}
+
+.book-subtitle{
+  font-size:16px;
+  opacity:0.9;
+  max-width:480px;
+}
+
+.cover-divider{
+  width:80px;
+  height:2px;
+  background:#fff;
+  margin:20px 0;
+}
+
+.book-dedication{
+  font-size:15px;
+  max-width:500px;
+  font-style:italic;
+  margin-bottom:25px;
+}
+
+.cover-gif{
+  width:200px;
+  border-radius:12px;
+  margin:20px 0;
+}
+
+.cover-footer{
+  font-size:14px;
+  opacity:0.8;
+  margin-top:20px;
+}
+
 /* ===== DIARY ===== */
 .diary-container{
   display:flex;
@@ -138,16 +186,66 @@ body{
 }
 
 .book{
-  background:rgba(255,255,255,.98);
-  border-radius:25px;
-  padding:50px;
-  max-width:900px;
-  width:100%;
-  box-shadow:0 10px 40px rgba(0,0,0,.15);
+  position:relative;
+  overflow:hidden;
+  width:900px;
+  max-width:95%;
+  min-height:1100px;
+  background:#fdf8f3;
+  border-radius:6px;
+  box-shadow:
+    0 25px 60px rgba(0,0,0,.35),
+    inset 0 0 30px rgba(0,0,0,.05);
+  padding:60px 80px;
+  perspective:2000px;
 }
 
-.page{display:none;text-align:center}
-.page.active{display:block;animation:pageFlip .6s ease}
+/* BOOK SPINE */
+.book::before{
+  content:"";
+  position:absolute;
+  left:-18px;
+  top:0;
+  width:18px;
+  height:100%;
+  background:linear-gradient(
+    to right,
+    #c49a6c,
+    #e6c8a0,
+    #c49a6c
+  );
+  border-radius:6px 0 0 6px;
+  box-shadow:inset -3px 0 6px rgba(0,0,0,.4);
+}
+
+.page{
+  position:absolute;
+  inset:0;
+  background:
+    linear-gradient(90deg,#fdf7ef 0%,#fff 40%,#fdf7ef 100%);
+  padding:110px 90px 90px;   /* ✅ SINGLE padding */
+  transform-origin:left center;
+  transform:rotateY(180deg);
+  backface-visibility:hidden;
+  visibility:hidden;
+  transition:transform .9s ease;
+  display:flex;
+  flex-direction:column;
+  justify-content:flex-start;
+  text-align:justify;
+  box-shadow:inset 0 0 25px rgba(0,0,0,.03);
+  border-radius:4px;
+}
+
+
+/* ACTIVE PAGE */
+.page.active{
+  transform:rotateY(0deg);
+  visibility:visible;         /* ✅ show only active page */
+  z-index:10;
+}
+
+
 
 @keyframes pageFlip{
   from{opacity:0;transform:rotateY(90deg)}
@@ -160,21 +258,58 @@ body{
   background:linear-gradient(45deg,#e91e63,#ff6b9d);
   -webkit-background-clip:text;
   -webkit-text-fill-color:transparent;
+  margin-bottom:30px;
+  text-align:center;
+  font-size:3.2rem;
 }
 
-.page p{
-  font-size:1.3rem;
-  font-style:italic;
-  color:#555;
-  margin:20px 0;
+.page h2::after{
+  content:"";
+  display:block;
+  width:120px;
+  height:2px;
+  background:#e9a1b2;
+  margin:12px auto 0;
+  border-radius:2px;
 }
+
+
+.page p{
+  font-size:1.2rem;
+  line-height:1.85;
+  color:#4a3f35;
+  text-align:justify;
+  margin-bottom:25px;
+   max-width:600px;
+  margin-left:auto;
+  margin-right:auto;
+}
+
+.page p::first-letter{
+  font-size:2rem;
+  font-weight:600;
+}
+
 
 .page-gif{
   max-width:100%;
-  border-radius:20px;
-  margin-top:25px;
-  box-shadow:0 6px 20px rgba(0,0,0,.15);
+  object-fit:contain;
+  border-radius:16px;
+   max-height:280px;
+  margin:30px auto 0;
 }
+
+
+.page-number{
+  position:absolute;
+  bottom:25px;
+  left:50%;
+  transform:translateX(-50%);
+  font-size:.9rem;
+  color:#999;
+  font-style:italic;
+}
+
 
 /* ===== CONTROLS ===== */
 .controls{
@@ -240,23 +375,340 @@ footer{
 <div class="diary-container">
   <div class="book">
 
-    <div class="page active">
+    <!-- COVER PAGE (PAGE 0) -->
+    <div class="page cover-page active">
+      <h1 class="book-title">Our Love Story</h1>
+
+      <p class="book-subtitle">
+        A journey written in moments, memories, and a love that chose to stay.
+      </p>
+
+      <div class="cover-divider"></div>
+
+      <p class="book-dedication">
+    For the one who became my safe place in a restless world,  
+    who turned ordinary moments into memories my heart will never forget,  
+    and who taught me that forever isn’t a promise — it’s a choice we make every day.
+  </p>
+
+  <img 
+    src="../assets/madam_ji/1763728334967.jpg"
+    class="cover-gif"
+    alt="Love Cover"
+  >
+
+  <span class="cover-footer">
+    This story begins with you — and continues for all my tomorrows.
+  </span>
+
+      <span class="page-number">— Cover —</span>
+    </div>
+
+    <!-- PAGE 1 -->
+    <div class="page">
       <h2>Dear My Love 💕</h2>
-      <p>Every heartbeat writes your name on the pages of my soul.</p>
-      <img src="https://media4.giphy.com/media/xT39CXg70nNS0MFNLy/giphy.gif" class="page-gif">
+      <p>
+        Every heartbeat writes your name on the pages of my soul, slowly and gently,
+        as if my heart itself knows that this story deserves patience. Loving you was
+        never a decision I had to make — it happened naturally, quietly, and completely.
+        In a world that never stops moving, you became the pause my heart was searching for.
+      </p>
+
+      <img 
+        src="https://media4.giphy.com/media/xT39CXg70nNS0MFNLy/giphy.gif"
+        class="page-gif"
+      >
+
+      <span class="page-number">— 1 —</span>
     </div>
 
-    <div class="page">
-      <h2>Chapter 1 — First Sparks ✨</h2>
-      <p>You didn’t walk into my life — you danced into it.</p>
-      <img src="https://media2.giphy.com/media/3oEhmDMA4r9GxhwEqA/giphy.gif" class="page-gif">
-    </div>
+<div class="page">
+  <h2>Chapter 1 — First Sparks ✨</h2>
+  <p>
+    You didn’t walk into my life quietly, and yet you didn’t arrive with noise either. It felt like a spark — subtle, warm, and unmistakable — lighting a place inside me I didn’t know had been waiting. From the very first moment, something felt familiar, as though my heart recognized you before my mind could catch up. Conversations flowed without effort, silences felt natural, and every shared glance carried meaning. That first spark wasn’t dramatic or overwhelming, but it stayed. It lingered in thoughts long after the moment passed, growing stronger each time we spoke, laughed, or simply existed together. What began as curiosity slowly turned into connection, and connection into something deeper. That was the beginning — not loud, not rushed, but quietly unforgettable.
+  </p>
+  <img src="https://media2.giphy.com/media/3oEhmDMA4r9GxhwEqA/giphy.gif" class="page-gif">
+  <span class="page-number">— 2 —</span>
 
-    <div class="page">
-      <h2>Chapter 2 — The Little Things 💗</h2>
-      <p>Forever is made of moments like these.</p>
-      <img src="https://media4.giphy.com/media/HoeLI9qzQwbAY/giphy.gif" class="page-gif">
-    </div>
+</div>
+
+<div class="page">
+  <h2>Chapter 2 — The Little Things 💗</h2>
+  <p>
+    Love didn’t announce itself with grand gestures or dramatic promises. Instead, it arrived gently, hiding in the smallest moments — the way you listened without interrupting, the way you remembered details I never mentioned twice, the way your presence made ordinary days feel special. I began to realize that love is not built in extraordinary events, but in consistent care. It lived in shared smiles, in thoughtful words, in the comfort of knowing someone truly sees you. These little things added up, slowly shaping something meaningful and real. Forever, I learned, isn’t created in one moment — it’s built patiently, piece by piece, through countless small acts of love that quietly endure.
+  </p>
+  <img src="https://media4.giphy.com/media/HoeLI9qzQwbAY/giphy.gif" class="page-gif">
+  <span class="page-number">— 3 —</span>
+
+</div>
+
+<div class="page">
+  <h2>Chapter 3 — Smiles That Stay 😊</h2>
+  <p>
+  Your smile became something I carried with me, even when you weren’t around. It had a way of settling into my thoughts, softening difficult moments and making heavy days feel lighter. I noticed how effortlessly it brought warmth, how naturally it reminded me that happiness doesn’t need to be loud to be powerful. Over time, your smile stopped being just something I admired — it became a place of comfort, a reminder of safety and affection. Even when life felt uncertain, the thought of that smile grounded me. It stayed with me, not as a memory, but as a constant presence, gently reminding me of everything good we were building together.
+  </p>
+  <img src="https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3d3ducndsN25rNHppaGI2aDUxdXhiZTdtMnBnNW80aXc5d2x6bDdlcCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/7YKXFzuKZJmBa/giphy.gif" class="page-gif">
+  <span class="page-number">— 4 —</span>
+
+</div>
+
+<div class="page">
+  <h2>Chapter 4 — Quiet Conversations 🌙</h2>
+  <p>
+    Some of the most meaningful conversations we shared never needed words. They lived in silence, in understanding glances, and in moments where simply being together felt enough. With you, silence was never awkward or empty — it was full. Full of trust, comfort, and a quiet connection that didn’t require explanation. In those moments, I felt understood without having to speak, accepted without needing to explain myself. It was in those quiet conversations that love deepened, growing beyond words and settling into something steady and real. We learned that sometimes the strongest connections are felt, not spoken.
+  </p>
+  <img src="https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3bzlwdXg3b2Q5OHRrdWIzcHF2Y3I5c3RsM3F0eGtmeXBnb2EzNHJpNiZlcD12MV9naWZzX3NlYXJjaCZjdD1n/XibywxKULyGwDbgGbV/giphy.gif" class="page-gif">
+  <span class="page-number">— 5 —</span>
+
+</div>
+
+<div class="page">
+  <h2>Chapter 5 — Becoming Us 💞</h2>
+  <p>
+    Somewhere along the journey, something shifted. Love stopped being about “you” and “me” and quietly became “us.” Decisions began to include you naturally, without hesitation. Dreams felt incomplete if they didn’t involve you. I didn’t lose myself in loving you — instead, I discovered a stronger, more honest version of who I was meant to be. Being with you didn’t restrict me; it expanded me. Together, we formed something balanced and meaningful, built on mutual respect and care. Becoming “us” wasn’t sudden — it was a gradual, beautiful transformation that felt entirely right.
+  </p>
+  <img src="https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3ZGJseTRuajN6Zm1sZjV2bjZkeG1tMGpnMjNpazB0NnZwYnY4eWJjNiZlcD12MV9naWZzX3NlYXJjaCZjdD1n/ifB1v1W3Db0GIW7uTA/giphy.gif" class="page-gif">
+  <span class="page-number">— 6 —</span>
+
+</div>
+
+<div class="page">
+  <h2>Chapter 6 — Safe With You 🤍</h2>
+  <p>
+    With you, safety wasn’t about avoiding problems — it was about knowing I wouldn’t face them alone. Your presence brought a sense of calm that settled deep within my heart. Fears felt smaller, worries less overwhelming. I could be vulnerable without fear of judgment, honest without hesitation. Loving you felt like resting after a long journey, finally exhaling. You became the place where my heart could soften, where I didn’t need to pretend or protect myself. Safety, I learned, isn’t found in perfection — it’s found in trust, understanding, and unconditional acceptance.
+  </p>
+  <img src="https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3NG9qZ2R5YnQzdGxmdDhqcGU2c2R2bzNybGx3cHhjb3pwODk1eHJwYyZlcD12MV9naWZzX3NlYXJjaCZjdD1n/JXLHs90j6WktQ1Ydl6/giphy.gif" class="page-gif">
+  <span class="page-number">— 7 —</span>
+
+</div>
+
+<div class="page">
+  <h2>Chapter 7 — Laughter & Light ☀️</h2>
+  <p>
+  You brought laughter into moments I never expected joy to exist. Ordinary days became brighter simply because you were part of them. Even when life felt heavy, your presence added warmth and light. Laughter became our shared language, a reminder that love doesn’t have to be serious to be meaningful. Through jokes, smiles, and playful moments, we created memories that felt effortless and genuine. Loving you didn’t remove life’s difficulties, but it made them easier to face. With you, happiness wasn’t something I chased — it was something I lived.
+  </p>
+  <img src="https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3NG9qZ2R5YnQzdGxmdDhqcGU2c2R2bzNybGx3cHhjb3pwODk1eHJwYyZlcD12MV9naWZzX3NlYXJjaCZjdD1n/c7G6drkobIQXRJwX5v/giphy.gif" class="page-gif">
+  <span class="page-number">— 8 —</span>
+
+</div>
+
+<div class="page">
+  <h2>Chapter 8 — Missing You 💭</h2>
+  <p>
+  Missing you taught me how deeply you mattered. Distance didn’t weaken what we shared; it strengthened it. Every moment apart became a reminder of connection rather than loss. I realized that love isn’t measured by proximity, but by presence — and you were always present in my thoughts, my heart, my routines. Missing you wasn’t painful; it was comforting, proof that what we shared was real and enduring. Even when apart, love found ways to remain close, reminding me that true connection doesn’t disappear with distance.
+  </p>
+  <img src="https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3NG9qZ2R5YnQzdGxmdDhqcGU2c2R2bzNybGx3cHhjb3pwODk1eHJwYyZlcD12MV9naWZzX3NlYXJjaCZjdD1n/VDR2OZtG7G3hFRdSrR/giphy.gif" class="page-gif">
+  <span class="page-number">— 9 —</span>
+
+</div>
+
+<div class="page">
+  <h2>Chapter 9 — Promises We Kept 🔐</h2>
+  <p>
+Promises between us were never loud or dramatic. They lived quietly in actions, consistency, and effort. We showed up for each other, even when it wasn’t easy. Love became less about words and more about reliability — about choosing honesty, patience, and kindness every day. These promises weren’t spoken once; they were renewed constantly through behavior. In keeping them, we built trust and stability. Love proved itself not through declarations, but through the quiet certainty of knowing we could depend on each other.
+  </p>
+  <img src="https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3a3pncXp2cW5kbDR0OTZ5dHJqMmo4Y3ozaGMxNDQxcHNkOWVqOWF5ZiZlcD12MV9naWZzX3NlYXJjaCZjdD1n/123r6G0lzZZcSylCIk/giphy.gif" class="page-gif">
+  <span class="page-number">— 10 —</span>
+
+</div>
+
+<div class="page">
+  <h2>Chapter 10 — Together 🌍</h2>
+  <p>
+    Together, the world felt more manageable. Challenges became shared experiences rather than solitary burdens. Dreams felt closer, fears less intimidating. Being together didn’t mean life became perfect — it meant life became possible. With you, I learned that togetherness isn’t just proximity; it’s partnership. It’s standing side by side, supporting each other through uncertainty, celebrating victories, and finding comfort in shared presence. Together became the foundation on which everything else rested.
+  </p>
+  <img src="https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3dW5xczBleHgxcXRyOWNxZHB6ZTZ3ZHdvNmN0bzJ3M3MzeW53Y2l5YyZlcD12MV9naWZzX3NlYXJjaCZjdD1n/P7jtQ5KzfTyl6u3S7I/giphy.gif" class="page-gif">
+  <span class="page-number">— 11 —</span>
+</div>
+
+<div class="page">
+  <h2>Chapter 11 — Understanding 🤝</h2>
+  <p>
+    Love deepened when we truly began to understand each other — not just the parts that were easy to love, but also the quiet struggles, the unspoken fears, and the emotions hidden beneath the surface. You listened without trying to fix me, without judgment, and without rushing my feelings. In that space, I felt safe enough to be honest. Understanding didn’t mean we always agreed, but it meant we always tried. It meant choosing empathy over ego and patience over pride. Through understanding, love became gentler and stronger at the same time, teaching us that being heard is one of the most powerful forms of love.
+  </p>
+  <img src="https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3dW5xczBleHgxcXRyOWNxZHB6ZTZ3ZHdvNmN0bzJ3M3MzeW53Y2l5YyZlcD12MV9naWZzX3NlYXJjaCZjdD1n/0OgdJVNjbcIifqSb7U/giphy.gif" class="page-gif">
+  <span class="page-number">— 12 —</span>
+</div>
+
+<div class="page">
+  <h2>Chapter 12 — Patience ⏳</h2>
+  <p>
+   We learned that love doesn’t bloom overnight. It grows slowly, shaped by time, effort, and patience. There were moments when waiting felt difficult — waiting for clarity, for healing, for the right moment. But patience taught us how to trust the process. Instead of rushing, we learned to move at the pace our hearts needed. Love stopped feeling like something fragile and started feeling like something solid. In patience, we found stability, and in stability, we found peace. Waiting didn’t weaken our love — it strengthened it. 
+  </p>
+  <img src="https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3dW5xczBleHgxcXRyOWNxZHB6ZTZ3ZHdvNmN0bzJ3M3MzeW53Y2l5YyZlcD12MV9naWZzX3NlYXJjaCZjdD1n/YRQ0bvJiAjo5BMwL2A/giphy.gif" class="page-gif">
+  <span class="page-number">— 13 —</span>
+</div>
+
+<div class="page">
+  <h2>Chapter 13 — Comfort 🏡</h2>
+  <p>
+    Comfort with you felt effortless. I didn’t need to explain myself or pretend to be someone else. Being with you felt like returning home after a long day — familiar, warm, and grounding. Even silence felt comforting rather than awkward. In your presence, my mind slowed down, and my heart felt lighter. Comfort wasn’t about perfection; it was about acceptance. Loving you meant being fully seen and still fully accepted. That kind of comfort is rare, and once found, it becomes something the heart never wants to lose.
+  </p>
+  <img src="https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3d2ZkYjJlOHozd2p0OWFidHhmenZjM2E1bGRmZ2NwdG0zNHhxNW1qciZlcD12MV9naWZzX3NlYXJjaCZjdD1n/jzkiCRT0c75fYr5auW/giphy.gif" class="page-gif">
+  <span class="page-number">— 14 —</span>
+</div>
+
+<div class="page">
+  <h2>Chapter 14 — Growing Together 🌱</h2>
+  <p>
+   Love didn’t freeze us in time — it encouraged us to grow. Together, we evolved into better versions of ourselves, learning from mistakes and celebrating progress. Growth wasn’t always easy; sometimes it required difficult conversations and uncomfortable honesty. But we chose growth over stagnation, learning that love isn’t about staying the same — it’s about growing side by side. Each step forward felt meaningful because we weren’t walking alone. Growth strengthened our bond, proving that love thrives when both hearts are willing to evolve together. 
+  </p>
+  <img src="https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3eDc5aGUwbjk2N3J4NG11amtuam1jZW85ZzFta2plZDh4c3c2cHZpOSZlcD12MV9naWZzX3NlYXJjaCZjdD1n/d0H2Vvk85TMFW/giphy.gif" class="page-gif">
+  <span class="page-number">— 15 —</span>
+</div>
+
+<div class="page">
+  <h2>Chapter 15 — Weathering Storms 🌧️</h2>
+  <p>
+   Not every chapter of our story was gentle. There were storms — moments of uncertainty, misunderstandings, and challenges that tested our patience. But love didn’t disappear during those times. Instead, it revealed its strength. We learned how to hold on, how to communicate, and how to choose compassion even when emotions ran high. Storms taught us resilience. They showed us that love isn’t proven during calm moments, but during the difficult ones. And through every storm, we emerged stronger, more connected, and more certain of what we shared.
+  </p>
+  <img src="https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3NjB1ZW1weGs2Yjd4eHdzZmc0YTlzNHM1cTV6a3NpcHQyaGlqMzFvaiZlcD12MV9naWZzX3NlYXJjaCZjdD1n/9zYKvuMPyXJZG2rCf9/giphy.gif" class="page-gif">
+  <span class="page-number">— 16 —</span>
+</div>
+
+<div class="page">
+  <h2>Chapter 16 — Choosing Love 💕</h2>
+  <p>
+    Love became a choice we made every day. It wasn’t always effortless, but it was always intentional. We chose kindness over conflict, patience over frustration, and understanding over assumptions. Choosing love meant showing up even on days when it felt easier not to. It meant prioritizing the connection we were building. Through that choice, love transformed from emotion into commitment. It became something dependable, steady, and deeply meaningful. Choosing love, again and again, made all the difference.
+  </p>
+  <img src="https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3cXJ1aXp0NDlrMzl6c283cjA5NmxleDYwN2VweHk2ZnVoM3RicTEzeSZlcD12MV9naWZzX3NlYXJjaCZjdD1n/hXJGuT9OwwWn6/giphy.gif" class="page-gif">
+  <span class="page-number">— 17 —</span>
+</div>
+
+<div class="page">
+  <h2>Chapter 17 — Shared Dreams 🌠</h2>
+  <p>
+   Slowly, our dreams began to intertwine. The future stopped being a solitary vision and became something we imagined together. Conversations about “someday” felt hopeful instead of uncertain. Our goals aligned not because we forced them to, but because love naturally brought us onto the same path. Dreaming together created excitement and purpose, reminding us that we were building something meaningful. Shared dreams didn’t guarantee certainty, but they gave us direction — and with love as our foundation, that was enough.
+  </p>
+  <img src="https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3NjB1ZW1weGs2Yjd4eHdzZmc0YTlzNHM1cTV6a3NpcHQyaGlqMzFvaiZlcD12MV9naWZzX3NlYXJjaCZjdD1n/sY1ReyADf1tZAal6o9/giphy.gif" class="page-gif">
+  <span class="page-number">— 18 —</span>
+</div>
+
+<div class="page">
+  <h2>Chapter 18 — Trust 💖</h2>
+  <p>
+   Trust wasn’t built in a single moment — it grew through consistency, honesty, and care. Each promise kept, each truth spoken, and each effort made added another layer of trust. It became the quiet assurance that we could rely on each other, even when things felt uncertain. Trust allowed love to breathe freely, without fear or doubt. It created a space where vulnerability felt safe and honesty felt natural. With trust, love became secure — steady enough to face whatever came next.
+  </p>
+  <img src="https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3eHRmM2J3cDBjZG41ZDM3NWw1MHRyZW8xNGpwYnBncmNvMDU1OXR5biZlcD12MV9naWZzX3NlYXJjaCZjdD1n/147a7QKzPPbHBC/giphy.gif" class="page-gif">
+  <span class="page-number">— 19 —</span>
+</div>
+
+<div class="page">
+  <h2>Chapter 19 — Stillness 🌙</h2>
+  <p>
+   In the still moments, love felt the strongest. Sitting together without speaking, sharing space without expectation — those moments carried a peaceful depth. Stillness taught us that love doesn’t always need excitement or motion to feel alive. Sometimes, love is simply being present. In those quiet moments, time seemed to slow down, and everything felt aligned. Stillness wasn’t emptiness; it was contentment. It was knowing that just being together was enough.
+  </p>
+  <img src="https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3ejF1ZHduZTd3dGlobzI0NG9jeWM0MDNkN2RyYzR0aGVmZDFkdzJxMCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/Y9joz1712cgg0/giphy.gif" class="page-gif">
+  <span class="page-number">— 20 —</span>
+</div>
+
+<div class="page">
+  <h2>Chapter 20 — Halfway Forever ♾️</h2>
+  <p>
+    By this point, love had settled into something solid and real. It wasn’t fragile or temporary. It felt like the middle of a long journey — not the beginning, not the end, but a meaningful continuation. Halfway forever meant knowing this wasn’t fleeting. It meant building something meant to last. Love felt grounded, patient, and enduring. It wasn’t perfect, but it was true. And that truth made it powerful.
+  </p>
+  <img src="https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3eW1pazE3MmtqNG5mcHdwdjhxemcycjQxYzh1cXlhZnZhNDF4OW1mcSZlcD12MV9naWZzX3NlYXJjaCZjdD1n/RB46T9ysjzDEs/giphy.gif" class="page-gif">
+  <span class="page-number">— 21 —</span>
+</div>
+
+<div class="page">
+  <h2>Chapter 21 — Strength 💪</h2>
+  <p>
+    Together, we discovered strength we never had alone. Love gave us courage — courage to face challenges, to be honest, and to believe in ourselves. Strength didn’t come from avoiding difficulties, but from facing them together. Each challenge overcome reinforced our bond. Love became a source of resilience, reminding us that even on difficult days, we were capable. Strength grew naturally where love was nurtured.
+  </p>
+  <img src="https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3M25pNHo1OTRtem9uaWplcjd6M3B5dXRoemEwdHJoMGkxZWcwN3h6cyZlcD12MV9naWZzX3NlYXJjaCZjdD1n/c76IJLufpNwSULPk77/giphy.gif" class="page-gif">
+  <span class="page-number">— 22 —</span>
+</div>
+
+<div class="page">
+  <h2>Chapter 22 — Gratitude 🙏</h2>
+  <p>
+    Gratitude quietly filled my heart. Gratitude for your patience, your effort, and your willingness to choose love daily. I learned not to take love for granted, understanding that it thrives when appreciated. Gratitude deepened love, making it more intentional and sincere. Every small act, every moment of care, mattered. Love felt richer when acknowledged, and gratitude turned ordinary moments into meaningful memories.
+  </p>
+  <img src="https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3cXNodm43dnI4emhiMmNsYXBvNW93eHRraGJiODNlaHdxeWw1Ymc1OCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/eVH3hovZgqi1G/giphy.gif" class="page-gif">
+  <span class="page-number">— 23 —</span>
+</div>
+
+<div class="page">
+  <h2>Chapter 23 — Safe Forever 🔒</h2>
+  <p>
+    Love felt safe — not because it was flawless, but because it was honest. Mistakes were met with understanding, not judgment. Hearts were protected, not tested. Safety allowed love to grow freely, without fear of rejection or abandonment. In that safety, vulnerability became strength. Love didn’t need to hide. It thrived in trust and openness, becoming something deeply secure and comforting.
+  </p>
+  <img src="https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3Y3kyYTQxcHM4engxbTBrbXRqeDJuOHA0djV2N2Q5ZGdrZGFpZG5nciZlcD12MV9naWZzX3NlYXJjaCZjdD1n/Jq11rmNqtsYvDy5cHo/giphy.gif" class="page-gif">
+  <span class="page-number">— 24 —</span>
+</div>
+
+<div class="page">
+  <h2>Chapter 24 — Seasons 🍂</h2>
+  <p>
+   Love carried us through different seasons — some warm, some challenging, all meaningful. Each season taught us something new about ourselves and each other. Through change, love adapted. It learned how to stay flexible, patient, and resilient. Seasons passed, but love remained. That constancy made all the difference. Love wasn’t defined by circumstances, but by commitment.
+  </p>
+  <img src="https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExdDF1MDNwZGE5dmg5c3UyMTAyaTZ2amZpdGZraXE5dTltaDdsNGhtZiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/vKOpwu1JbAZIQ/giphy.gif" class="page-gif">
+  <span class="page-number">— 25 —</span>
+</div>
+
+<div class="page">
+  <h2>Chapter 25 — Still You 💖</h2>
+  <p>
+    After everything we experienced, the answer never changed. It was still you. Through growth, challenges, and change, my heart returned to the same place. Love didn’t fade; it clarified. Choosing you felt natural, familiar, and right. Still you meant certainty — a quiet knowing that endured beyond doubt or hesitation.
+  </p>
+  <img src="https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3b3luamszd2E5YjJlbGkwMjBvd3U0d3M4OHlzZmxrMjg3OXBrcmJvaiZlcD12MV9naWZzX3JlbGF0ZWQmY3Q9Zw/88zAqbqsXbMe4/giphy.gif" class="page-gif">
+  <span class="page-number">— 26 —</span>
+</div>
+
+<div class="page">
+  <h2>Chapter 26 — My Person ❤️</h2>
+  <p>
+    You became my person — the one I trusted, leaned on, and chose without question. Love became partnership, friendship, and devotion combined. Being with you felt like belonging. You weren’t just someone I loved; you were someone I built life with, step by step. That bond felt irreplaceable.
+  </p>
+  <img src="https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3Njk5b240NzhmYmpoa2xnc3o3M29udHR6bjUwZWZrNTh2cTc5bXlwYyZlcD12MV9naWZzX3JlbGF0ZWQmY3Q9Zw/vHF9vqBsERxIY/giphy.gif" class="page-gif">
+  <span class="page-number">— 27 —</span>
+</div>
+
+<div class="page">
+  <h2>Chapter 27 — Our Story 📖</h2>
+  <p>
+   Our story wasn’t perfect, but it was real. Written with honesty, effort, and love, it reflected who we truly were. Every chapter mattered — the joyful ones and the difficult ones alike. Together, they formed something meaningful. Our story became something worth cherishing, not because it was flawless, but because it was genuine.
+  </p>
+  <img src="https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3OTN4b3M0cHZjOWxicjFodGdtbWxjYmE3Ymw4ZzFmNGx6Zm5saDduYyZlcD12MV9naWZzX3JlbGF0ZWQmY3Q9Zw/8po3tS6aZcjbVEpio3/giphy.gif" class="page-gif">
+  <span class="page-number">— 28 —</span>
+</div>
+
+<div class="page">
+  <h2>Chapter 28 — Always & Forever ♾️</h2>
+  <p>
+    Forever stopped feeling intimidating. With you, it felt natural — like a continuation of everything we had already built. Love didn’t promise perfection, but it promised presence. Always and forever became less about time and more about intention. It was about choosing each other, every day.
+  </p>
+  <img src="https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3bXM3dmw2bmx6M3QxOWtoYWFzeXJlenZ1MXIxendoZm1ueGo2M2tvaiZlcD12MV9naWZzX3JlbGF0ZWQmY3Q9Zw/i5eYw2eJ8uphT1M1rr/giphy.gif" class="page-gif">
+  <span class="page-number">— 29 —</span>
+</div>
+
+<div class="page">
+  <h2>Chapter 29 — The Love That Remains 💞</h2>
+  <p>
+    As time moves forward, love remains. Steady, patient, and enduring. When everything unnecessary fades, this love stays — honest and resilient. It doesn’t demand attention or validation. It simply exists, quietly strong. This love is not defined by moments, but by commitment. And it is this love — our love — that will always remain.
+  </p>
+  <img src="https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExem8ybzBpb2Z5cmV2ODR2MjY0cW5tMWFuaHV4MmMwbXpkNGt2cWxmYyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/DdJ9RsY88uBarMvVsb/giphy.gif" class="page-gif">
+  <span class="page-number">— 30 —</span>
+</div>
+
+<div class="page">
+  <h2>Final Chapter — Forever Begins Here ♾️</h2>
+  <p>
+    This is where the story pauses, not because love has finished, but because it no longer
+    needs words to continue. Everything that mattered has already been written into the
+    quiet spaces between us — in shared mornings, patient silences, and the way our hands
+    still reach for each other without thinking.
+    Loving you taught me that forever isn’t a distant promise or a perfect ending. It’s
+    choosing each other in ordinary moments, finding comfort in familiarity, and trusting
+    that no matter how life changes, we will continue to meet in the same place — heart to
+    heart. If this book ever closes, know this: every chapter after this one will still
+    belong to us.
+  </p>
+  <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExY2h3ODUyeXVyNHc3ajRwcDB4NzZmZXk2cXBmYXQycHRlZnNlcWMwbCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/9JM8MM64q5NMxRRMfj/giphy.gif" class="page-gif">
+  <span class="page-number">— ∞ —</span>
+</div>
+
 
   </div>
 
@@ -272,37 +724,71 @@ footer{
 
 
 <script>
-/* Hamburger */
-document.getElementById("hamburger").onclick=()=>{
-  document.getElementById("navLinks").classList.toggle("show");
-};
+document.addEventListener("DOMContentLoaded", () => {
 
-/* Floating hearts */
-setInterval(()=>{
-  const h=document.createElement("div");
-  h.className="heart";
-  h.innerText="💖";
-  h.style.left=Math.random()*100+"vw";
-  document.getElementById("floating-hearts").appendChild(h);
-  setTimeout(()=>h.remove(),6000);
-},700);
+  /* ===============================
+     HAMBURGER MENU
+  ================================ */
+  const hamburger = document.getElementById("hamburger");
+  const navLinks = document.getElementById("navLinks");
 
-/* Page flip */
-const pages=document.querySelectorAll(".page");
-let i=0;
+  if (hamburger && navLinks) {
+    hamburger.addEventListener("click", () => {
+      navLinks.classList.toggle("show");
+    });
+  }
 
-document.getElementById("nextBtn").onclick=()=>{
-  pages[i].classList.remove("active");
-  i=(i+1)%pages.length;
-  pages[i].classList.add("active");
-};
+  /* ===============================
+     FLOATING HEARTS
+  ================================ */
+  const heartsContainer = document.getElementById("floating-hearts");
 
-document.getElementById("prevBtn").onclick=()=>{
-  pages[i].classList.remove("active");
-  i=(i-1+pages.length)%pages.length;
-  pages[i].classList.add("active");
-};
+  setInterval(() => {
+    if (!heartsContainer) return;
+
+    const heart = document.createElement("div");
+    heart.className = "heart";
+    heart.innerText = "💖";
+    heart.style.left = Math.random() * 100 + "vw";
+    heart.style.animationDuration = 4 + Math.random() * 3 + "s";
+
+    heartsContainer.appendChild(heart);
+    setTimeout(() => heart.remove(), 7000);
+  }, 800);
+
+  /* ===============================
+     PAGE FLIP
+  ================================ */
+  const pages = document.querySelectorAll(".page");
+  const nextBtn = document.getElementById("nextBtn");
+  const prevBtn = document.getElementById("prevBtn");
+
+  let currentPage = 0;
+
+  pages.forEach((page, index) => {
+    page.classList.toggle("active", index === 0);
+  });
+
+  function showPage(index) {
+    pages.forEach(p => p.classList.remove("active"));
+    pages[index].classList.add("active");
+    currentPage = index;
+  }
+
+  if (nextBtn && prevBtn && pages.length) {
+    nextBtn.addEventListener("click", () => {
+      showPage((currentPage + 1) % pages.length);
+    });
+
+    prevBtn.addEventListener("click", () => {
+      showPage((currentPage - 1 + pages.length) % pages.length);
+    });
+  }
+
+});
 </script>
+
+
 
 </body>
 </html>
