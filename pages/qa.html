@@ -168,11 +168,15 @@ h1{
 }
 
 .answer{
-  display:none;
-  margin-top:12px;
-  font-size:1.05rem;
-  color:#444;
-  animation:fadeIn .4s ease;
+  max-height:0;
+  overflow:hidden;
+  opacity:0;
+  transition:max-height .4s ease, opacity .3s ease;
+}
+
+.qa-item.open .answer{
+  max-height:300px;
+  opacity:1;
 }
 
 @keyframes fadeIn{
@@ -218,7 +222,7 @@ footer{
       <li><a href="confession.html">Confession</a></li>
       <li><a href="chats.html">Chats</a></li>
       <li><a href="qa.html" class="active">Q&A</a></li>
-      <li><a href="Flowers.html">Flowers</a</li>
+      <li><a href="Flowers.html">Flowers</a></li>
     </ul>
   </div>
 </nav>
@@ -333,8 +337,8 @@ footer{
 </div>
 
 <div class="qa-item">
-  <div class="question">🌧 What makes rainy days special?</div>
-  <div class="answer">Thinking of you with every drop 💕</div>
+  <div class="question">😉What is the best thing about us?</div>
+  <div class="answer">Our dream of getting married  💕</div>
 </div>
 
 <div class="qa-item">
@@ -364,29 +368,45 @@ footer{
 
 
 <script>
-/* Hamburger */
-document.getElementById("hamburger").onclick=()=>{
-  document.getElementById("navLinks").classList.toggle("show");
-};
+/* ========== HAMBURGER MENU ========== */
+const hamburger = document.getElementById("hamburger");
+const navLinks = document.getElementById("navLinks");
 
-/* Floating hearts */
-setInterval(()=>{
-  const h=document.createElement("div");
-  h.className="heart";
-  h.innerText="💖";
-  h.style.left=Math.random()*100+"vw";
-  document.getElementById("floating-hearts").appendChild(h);
-  setTimeout(()=>h.remove(),6000);
-},900);
-
-/* Q&A toggle */
-document.querySelectorAll(".qa-item").forEach(item=>{
-  item.onclick=()=>{
-    const ans=item.querySelector(".answer");
-    const open=ans.style.display==="block";
-    document.querySelectorAll(".answer").forEach(a=>a.style.display="none");
-    ans.style.display=open?"none":"block";
+if (hamburger && navLinks) {
+  hamburger.onclick = () => {
+    navLinks.classList.toggle("show");
   };
+
+  document.querySelectorAll(".nav-links a").forEach(link => {
+    link.onclick = () => navLinks.classList.remove("show");
+  });
+}
+
+/* ========== FLOATING HEARTS ========== */
+const floatingHearts = document.getElementById("floating-hearts");
+
+if (floatingHearts) {
+  setInterval(() => {
+    const heart = document.createElement("div");
+    heart.className = "heart";
+    heart.textContent = "💖";
+    heart.style.left = Math.random() * 100 + "vw";
+    heart.style.animationDuration = (4 + Math.random() * 3) + "s";
+
+    floatingHearts.appendChild(heart);
+    setTimeout(() => heart.remove(), 7000);
+  }, 900);
+}
+
+/* ========== Q&A TOGGLE ========== */
+document.querySelectorAll(".qa-item").forEach(item => {
+  item.addEventListener("click", () => {
+    const isOpen = item.classList.contains("open");
+
+    document.querySelectorAll(".qa-item").forEach(i => i.classList.remove("open"));
+
+    if (!isOpen) item.classList.add("open");
+  });
 });
 </script>
 
