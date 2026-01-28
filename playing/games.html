@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anya_Plays - Ultimate Gaming Platform</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            color: #fff;
+            overflow-x: hidden;
+        }
+
+        .gradient-text {
+            background: linear-gradient(90deg, #00f5ff, #ff00ff, #00f5ff);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradient 3s ease infinite;
+        }
+
+        @keyframes gradient {
+            0%, 100% { background-position: 0% center; }
+            50% { background-position: 100% center; }
+        }
+
+        .game-card {
+            position: relative;
+            overflow: hidden;
+            border-radius: 20px;
+            transition: all 0.4s ease;
+            cursor: pointer;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .game-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 20px 60px rgba(0, 245, 255, 0.3);
+            border-color: rgba(0, 245, 255, 0.5);
+        }
+
+        .game-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transition: 0.5s;
+        }
+
+        .game-card:hover::before {
+            left: 100%;
+        }
+
+        .game-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: linear-gradient(135deg, #ff00ff, #00f5ff);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            z-index: 10;
+        }
+
+        .play-btn {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #ff00ff, #00f5ff);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            transition: 0.3s;
+            opacity: 0;
+            z-index: 10;
+        }
+
+        .game-card:hover .play-btn {
+            transform: translate(-50%, -50%) scale(1);
+            opacity: 1;
+        }
+
+        .category-btn {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 12px 30px;
+            border-radius: 30px;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .category-btn:hover, .category-btn.active {
+            background: linear-gradient(135deg, #ff00ff, #00f5ff);
+            border-color: transparent;
+            transform: scale(1.05);
+        }
+
+        .hero-section {
+            background: linear-gradient(135deg, rgba(255, 0, 255, 0.2), rgba(0, 245, 255, 0.2));
+            backdrop-filter: blur(20px);
+            border-radius: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .floating {
+            animation: floating 3s ease-in-out infinite;
+        }
+
+        @keyframes floating {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .stats-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .stats-card:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-5px);
+        }
+
+        .scroll-indicator {
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            60% { transform: translateY(-5px); }
+        }
+
+        .nav-link {
+            position: relative;
+            transition: color 0.3s;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #ff00ff, #00f5ff);
+            transition: width 0.3s;
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        .game-img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            border-radius: 15px 15px 0 0;
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 bg-black bg-opacity-50 backdrop-blur-lg border-b border-white border-opacity-10">
+        <div class="container mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-2">
+                    <i class="fas fa-gamepad text-3xl gradient-text"></i>
+                    <span class="text-2xl font-bold gradient-text">Anya_Plays</span>
+                </div>
+                <div class="hidden md:flex space-x-8">
+                    <a href="#home" class="nav-link hover:text-cyan-400">Home</a>
+                    <a href="#games" class="nav-link hover:text-cyan-400">Games</a>
+                    <a href="#features" class="nav-link hover:text-cyan-400">Features</a>
+                </div>
+                    <button class="md:hidden text-2xl">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="pt-32 pb-20 px-6">
+        <div class="container mx-auto">
+            <div class="hero-section p-12 md:p-20">
+                <div class="grid md:grid-cols-2 gap-12 items-center">
+                    <div>
+                        <h1 class="text-5xl md:text-7xl font-bold mb-6">
+                            Welcome to <span class="gradient-text">Anya</span> Gaming
+                        </h1>
+                        <div class="flex flex-wrap gap-4">
+                            <button class="px-8 py-4 rounded-full bg-gradient-to-r from-purple-600 to-cyan-400 font-semibold text-lg hover:shadow-2xl hover:shadow-cyan-400/50 transition transform hover:scale-105">
+                                <i class="fas fa-play mr-2"></i> Start Playing
+                            </button>
+                        </div>
+                    </div>
+                    <div class="relative floating">
+                        <img src="https://images.unsplash.com/photo-1542751371-adc38448a05e?w=600&h=600&fit=crop" alt="Gaming" class="rounded-3xl shadow-2xl shadow-purple-500/50">
+        
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="text-center mt-12 scroll-indicator">
+            <i class="fas fa-chevron-down text-3xl text-cyan-400 pulse"></i>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="py-12 px-6">
+        <div class="container mx-auto">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                <div class="stats-card">
+                    <i class="fas fa-users text-4xl text-cyan-400 mb-3"></i>
+                    <h3 class="text-3xl font-bold mb-2">5M+</h3>
+                    <p class="text-gray-400">Players</p>
+                </div>
+                <div class="stats-card">
+                    <i class="fas fa-gamepad text-4xl text-purple-400 mb-3"></i>
+                    <h3 class="text-3xl font-bold mb-2">2,500+</h3>
+                    <p class="text-gray-400">Games</p>
+                </div>
+                <div class="stats-card">
+                    <i class="fas fa-trophy text-4xl text-yellow-400 mb-3"></i>
+                    <h3 class="text-3xl font-bold mb-2">10K+</h3>
+                    <p class="text-gray-400">Tournaments</p>
+                </div>
+                <div class="stats-card">
+                    <i class="fas fa-star text-4xl text-pink-400 mb-3"></i>
+                    <h3 class="text-3xl font-bold mb-2">4.9/5</h3>
+                    <p class="text-gray-400">Rating</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Games Section -->
+    <section id="games" class="py-20 px-6">
+        <div class="container mx-auto">
+            <div class="text-center mb-12">
+                <h2 class="text-5xl font-bold mb-4">Explore Our <span class="gradient-text">Games</span></h2>
+                <p class="text-xl text-gray-400">Thousands of games waiting for you</p>
+            </div>
+
+            <!-- Category Filter -->
+            <div class="flex flex-wrap justify-center gap-4 mb-12">
+                <button class="category-btn active" data-category="all">
+                    <i class="fas fa-th mr-2"></i> All Games
+                </button>
+                <button class="category-btn" data-category="action">
+                    <i class="fas fa-fire mr-2"></i> Action
+                </button>
+                <button class="category-btn" data-category="adventure">
+                    <i class="fas fa-hiking mr-2"></i> Adventure
+                </button>
+                <button class="category-btn" data-category="strategy">
+                    <i class="fas fa-chess mr-2"></i> Strategy
+                </button>
+                <button class="category-btn" data-category="racing">
+                    <i class="fas fa-car mr-2"></i> Racing
+                </button>
+                <button class="category-btn" data-category="sports">
+                    <i class="fas fa-basketball-ball mr-2"></i> Sports
+                </button>
+            </div>
+
+            <!-- Games Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8" id="gamesGrid">
+                <!-- Game Card 1 -->
+                <div class="game-card" data-category="action" data-link="../playing/play/Arrange.html">
+                    <span class="game-badge">HOT</span>
+                    <img src="https://images.unsplash.com/photo-1538481199705-c710c4e965fc?w=400&h=250&fit=crop" alt="Game" class="game-img">
+                    <div class="play-btn">
+                        <i class="fas fa-play"></i>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-2">Slide Sprint Puzzle</h3>
+                        <p class="text-gray-400 text-sm mb-4">Intense multimode combat</p>
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center space-x-1">
+                                <i class="fas fa-star text-yellow-400"></i>
+                                <span>4.8</span>
+                            </div>
+                            <div class="flex items-center space-x-1">
+                                <i class="fas fa-users text-cyan-400"></i>
+                                <span>125K</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Game Card 2 -->
+                <div class="game-card" data-category="adventure" data-link="../playing/play/bird_game.html">
+                    <span class="game-badge">NEW</span>
+                    <img src="https://images.unsplash.com/photo-1511512578047-dfb367046420?w=400&h=250&fit=crop" alt="Game" class="game-img">
+                    <div class="play-btn">
+                        <i class="fas fa-play"></i>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-2">Neon Space Flap</h3>
+                        <p class="text-gray-400 text-sm mb-4">Epic fantasy adventure</p>
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center space-x-1">
+                                <i class="fas fa-star text-yellow-400"></i>
+                                <span>4.9</span>
+                            </div>
+                            <div class="flex items-center space-x-1">
+                                <i class="fas fa-users text-cyan-400"></i>
+                                <span>89K</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Game Card 3 -->
+                <div class="game-card" data-category="racing" data-link="../playing/play/car_game.html">
+                    <span class="game-badge">POPULAR</span>
+                    <img src="https://images.unsplash.com/photo-1547949003-9792a18a2601?w=400&h=250&fit=crop" alt="Game" class="game-img">
+                    <div class="play-btn">
+                        <i class="fas fa-play"></i>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-2">Neon Racer</h3>
+                        <p class="text-gray-400 text-sm mb-4">High-octane racing action</p>
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center space-x-1">
+                                <i class="fas fa-star text-yellow-400"></i>
+                                <span>4.7</span>
+                            </div>
+                            <div class="flex items-center space-x-1">
+                                <i class="fas fa-users text-cyan-400"></i>
+                                <span>210K</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Game Card 4 -->
+                <div class="game-card" data-category="strategy" data-link="../playing/play/Memory.html">
+                    <span class="game-badge">FEATURED</span>
+                    <img src="https://images.unsplash.com/photo-1614294148960-9aa740632a87?w=400&h=250&fit=crop" alt="Game" class="game-img">
+                    <div class="play-btn">
+                        <i class="fas fa-play"></i>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-2">Memory Puzzle</h3>
+                        <p class="text-gray-400 text-sm mb-4">Build your Memory</p>
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center space-x-1">
+                                <i class="fas fa-star text-yellow-400"></i>
+                                <span>4.6</span>
+                            </div>
+                            <div class="flex items-center space-x-1">
+                                <i class="fas fa-users text-cyan-400"></i>
+                                <span>156K</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Game Card 5 -->
+                <div class="game-card" data-category="action" data-link="../playing/play/Jump.html">
+                    <span class="game-badge">TRENDING</span>
+                    <img src="https://images.unsplash.com/photo-1552820728-8b83bb6b773f?w=400&h=250&fit=crop" alt="Game" class="game-img">
+                    <div class="play-btn">
+                        <i class="fas fa-play"></i>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-2">Doodle Jump</h3>
+                        <p class="text-gray-400 text-sm mb-4">Last one standing wins</p>
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center space-x-1">
+                                <i class="fas fa-star text-yellow-400"></i>
+                                <span>4.9</span>
+                            </div>
+                            <div class="flex items-center space-x-1">
+                                <i class="fas fa-users text-cyan-400"></i>
+                                <span>320K</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Game Card 6 -->
+                <div class="game-card" data-category="sports" data-link="../playing/play/Runner.html">
+                    <span class="game-badge">NEW</span>
+                    <img src="https://images.unsplash.com/photo-1579952363873-27f3bade9f55?w=400&h=250&fit=crop" alt="Game" class="game-img">
+                    <div class="play-btn">
+                        <i class="fas fa-play"></i>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-2">Galaxy Runner</h3>
+                        <p class="text-gray-400 text-sm mb-4">Simulation</p>
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center space-x-1">
+                                <i class="fas fa-star text-yellow-400"></i>
+                                <span>4.5</span>
+                            </div>
+                            <div class="flex items-center space-x-1">
+                                <i class="fas fa-users text-cyan-400"></i>
+                                <span>95K</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Game Card 7 -->
+                <div class="game-card" data-category="adventure" data-link="../playing/play/jump_game.html">
+                    <span class="game-badge">HOT</span>
+                    <img src="https://images.unsplash.com/photo-1509198397868-475647b2a1e5?w=400&h=250&fit=crop" alt="Game" class="game-img">
+                    <div class="play-btn">
+                        <i class="fas fa-play"></i>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-2">Lost Kingdoms</h3>
+                        <p class="text-gray-400 text-sm mb-4">Super Jump Adventure</p>
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center space-x-1">
+                                <i class="fas fa-star text-yellow-400"></i>
+                                <span>4.8</span>
+                            </div>
+                            <div class="flex items-center space-x-1">
+                                <i class="fas fa-users text-cyan-400"></i>
+                                <span>145K</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Game Card 8 -->
+                <div class="game-card" data-category="strategy" data-link="../playing/play/machine.html">
+                    <span class="game-badge">POPULAR</span>
+                    <img src="https://images.unsplash.com/photo-1560419015-7c427e8ae5ba?w=400&h=250&fit=crop" alt="Game" class="game-img">
+                    <div class="play-btn">
+                        <i class="fas fa-play"></i>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-2">Pixel Claw</h3>
+                        <p class="text-gray-400 text-sm mb-4">Strategic warfare</p>
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center space-x-1">
+                                <i class="fas fa-star text-yellow-400"></i>
+                                <span>4.7</span>
+                            </div>
+                            <div class="flex items-center space-x-1">
+                                <i class="fas fa-users text-cyan-400"></i>
+                                <span>178K</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </div>
+
+            <!-- Game Card 8 -->
+                <div class="game-card" data-category="strategy" data-link="../playing/play/Click_speed.html">
+                    <span class="game-badge">POPULAR</span>
+                    <img src="https://images.unsplash.com/photo-1560419015-7c427e8ae5ba?w=400&h=250&fit=crop" alt="Game" class="game-img">
+                    <div class="play-btn">
+                        <i class="fas fa-play"></i>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-2">Click Speed Tester</h3>
+                        <p class="text-gray-400 text-sm mb-4">Test you finger speed</p>
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center space-x-1">
+                                <i class="fas fa-star text-yellow-400"></i>
+                                <span>4.7</span>
+                            </div>
+                            <div class="flex items-center space-x-1">
+                                <i class="fas fa-users text-cyan-400"></i>
+                                <span>178K</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </section>
+            </body>
+
+    <!-- Features Section -->
+    <section id="features" class="py-20 px-6">
+        <div class="container mx-auto">
+            <div class="text-center mb-16">
+                <h2 class="text-5xl font-bold mb-4">Why Choose <span class="gradient-text">Anya_Plays?</span></h2>
+                <p class="text-xl text-gray-400">The ultimate gaming experience awaits</p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="stats-card">
+                    <div class="text-5xl mb-4">
+                        <i class="fas fa-bolt text-yellow-400"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-3">Instant Play</h3>
+                    <p class="text-gray-400">No downloads required. Jump into action instantly from your browser.</p>
+                </div>
+
+                <div class="stats-card">
+                    <div class="text-5xl mb-4">
+                        <i class="fas fa-shield-alt text-green-400"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-3">100% Safe</h3>
+                    <p class="text-gray-400">All games are verified and safe to play. Your security is our priority.</p>
+                </div>
+
+                <div class="stats-card">
+                    <div class="text-5xl mb-4">
+                        <i class="fas fa-crown text-purple-400"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-3">Premium Access</h3>
+                    <p class="text-gray-400">Unlock exclusive games and features with our premium membership.</p>
+                </div>
+
+                <div class="stats-card">
+                    <div class="text-5xl mb-4">
+                        <i class="fas fa-mobile-alt text-pink-400"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-3">Cross-Platform</h3>
+                    <p class="text-gray-400">Play on any device - PC, mobile, or tablet. Progress syncs everywhere.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+
+    <!-- Footer -->
+    <footer class="bg-black bg-opacity-50 py-12 px-6 border-t border-white border-opacity-10">
+        <div class="container mx-auto">
+            <div class="grid md:grid-cols-4 gap-8 mb-8">
+                <div>
+                    <div class="flex items-center space-x-2 mb-4">
+                        <i class="fas fa-gamepad text-3xl gradient-text"></i>
+                        <span class="text-2xl font-bold gradient-text">Anya_Plays</span>
+                    </div>
+                    <p class="text-gray-400 mb-4">The ultimate gaming platform for everyone. Play, compete, and win!</p>
+                    <div class="flex space-x-4">
+                        <a href="https://www.facebook.com/profile.php?id=100051199694153" class="text-2xl hover:text-cyan-400 transition"><i class="fab fa-facebook"></i></a>
+                        <a href="https://www.linkedin.com/in/anuj-maurya-209467342?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app" class="text-2xl hover:text-cyan-400 transition"><i class="fab fa-linkedin"></i></a>
+                        <a href="https://www.instagram.com/anuj_maurya.01?igsh=MXE3ODVkbmN5aHBpNQ==" class="text-2xl hover:text-cyan-400 transition"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+
+                <div>
+                    <h4 class="text-xl font-bold mb-4">Quick Links</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-cyan-400 transition">About Us</a></li>
+                        <li><a href="#games" class="text-gray-400 hover:text-cyan-400 transition">All Games</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-cyan-400 transition">Tournaments</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-cyan-400 transition">Leaderboard</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="text-xl font-bold mb-4">Support</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-cyan-400 transition">Help Center</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-cyan-400 transition">Contact Us</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-cyan-400 transition">FAQ</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-cyan-400 transition">Report Bug</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="text-xl font-bold mb-4">Newsletter</h4>
+                    <p class="text-gray-400 mb-4">Subscribe for updates and exclusive offers</p>
+                    <div class="flex">
+                        
+                        <input type="email" placeholder="Your email" class="flex-1 px-4 py-2 rounded-l-full bg-white bg-opacity-10 border border-white border-opacity-20 focus:outline-none focus:border-cyan-400">
+                        <button class="px-6 py-2 rounded-r-full bg-gradient-to-r from-purple-600 to-cyan-400 hover:shadow-lg transition">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="border-t border-white border-opacity-10 pt-8 text-center text-gray-400">
+                <p>&copy; 2025 GameVerse. All rights reserved. | <a href="#" class="hover:text-cyan-400">Privacy Policy</a> | <a href="#" class="hover:text-cyan-400">Terms of Service</a></p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Category Filter
+        const categoryBtns = document.querySelectorAll('.category-btn');
+        const gameCards = document.querySelectorAll('.game-card');
+
+        categoryBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                // Remove active class from all buttons
+                categoryBtns.forEach(b => b.classList.remove('active'));
+                // Add active class to clicked button
+                btn.classList.add('active');
+
+                const category = btn.getAttribute('data-category');
+
+                gameCards.forEach(card => {
+                    if (category === 'all' || card.getAttribute('data-category') === category) {
+                        card.style.display = 'block';
+                        setTimeout(() => {
+                            card.style.opacity = '1';
+                            card.style.transform = 'scale(1)';
+                        }, 10);
+                    } else {
+                        card.style.opacity = '0';
+                        card.style.transform = 'scale(0.8)';
+                        setTimeout(() => {
+                            card.style.display = 'none';
+                        }, 300);
+                    }
+                });
+            });
+        });
+
+        // Smooth scroll
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Game card click animation
+        gameCards.forEach(card => {
+            card.addEventListener('click', () => {
+                card.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    card.style.transform = '';
+                }, 200);
+            });
+        });
+
+        // Scroll reveal animation
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -100px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.game-card, .stats-card').forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(50px)';
+            el.style.transition = 'all 0.6s ease';
+            observer.observe(el);
+        });
+
+        document.addEventListener("DOMContentLoaded", () => {
+    console.log("JS loaded");
+
+    document.querySelectorAll(".game-card").forEach(card => {
+        card.addEventListener("click", () => {
+            console.log("Card clicked");
+            window.location.href = card.dataset.link;
+        });
+    });
+});
+    </script>
+</body>
+</html>
