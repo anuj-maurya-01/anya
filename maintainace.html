@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Under Construction</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- Google Font -->
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+<!-- Font Awesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins',sans-serif;
+}
+
+body{
+    height:100vh;
+    background:#f4f4f4;
+}
+
+.container{
+    display:flex;
+    height:100vh;
+}
+
+/* ================= LEFT ================= */
+.left{
+    flex:1;
+    background:#fff;
+    padding:60px;
+    display:flex;
+    flex-direction:column;
+}
+
+.logo{
+    font-size:22px;
+    font-weight:600;
+    margin-bottom:40px;
+}
+
+.left h1{
+    font-size:48px;
+    line-height:1.2;
+    margin-bottom:20px;
+}
+
+.left p{
+    color:#777;
+    margin-bottom:30px;
+    max-width:400px;
+}
+
+/* NOTIFY FORM */
+.notify{
+    display:flex;
+    max-width:360px;
+    margin-bottom:30px;
+}
+
+.notify input{
+    flex:1;
+    padding:12px 15px;
+    border:1px solid #ddd;
+    border-radius:30px 0 0 30px;
+    outline:none;
+}
+
+.notify button{
+    padding:12px 25px;
+    border:none;
+    background:#ff4f81;
+    color:#fff;
+    border-radius:0 30px 30px 0;
+    cursor:pointer;
+}
+
+/* FOOTER TEXT */
+.footer-text{
+    font-size:14px;
+    color:#999;
+    margin-bottom:40px;
+}
+
+/* CONNECT WITH US */
+.connect{
+    margin-top:auto;
+}
+
+.connect p{
+    font-size:14px;
+    color:#999;
+    margin-bottom:10px;
+}
+
+.social-icons{
+    display:flex;
+    gap:15px;
+}
+
+.social-icons a{
+    color:#777;
+    font-size:16px;
+    transition:0.3s;
+}
+
+.social-icons a:hover{
+    color:#ff4f81;
+}
+
+/* ================= RIGHT ================= */
+.right{
+    background:url("https://media1.giphy.com/media/v1.Y2lkPTZjMDliOTUyMWRlcjN6Nnd2c3JzcmJ5Y3Z5NzdlaDZkbWRlYzZpY28yamtkbHhscCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/mcsPU3SkKrYDdW3aAU/giphy.gif")
+               center/cover no-repeat;
+}
+
+.overlay{
+    position:absolute;
+    inset:0;
+    background:rgba(0,0,0,0.35);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+.timer{
+    display:flex;
+    gap:20px;
+}
+
+.circle{
+    width:100px;
+    height:100px;
+    border-radius:50%;
+    border:6px solid;
+    color:#fff;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+}
+
+.circle span{
+    font-size:24px;
+    font-weight:600;
+}
+
+.circle small{
+    font-size:12px;
+}
+
+.days{border-color:#1abc9c;}
+.hours{border-color:#3498db;}
+.minutes{border-color:#9b59b6;}
+.seconds{border-color:#f39c12;}
+
+/* ================= RESPONSIVE ================= */
+@media(max-width:900px){
+    .container{
+        flex-direction:column;
+    }
+
+    .right{
+        height:50vh;
+    }
+
+    .left{
+        padding:40px 25px;
+    }
+
+    .left h1{
+        font-size:36px;
+    }
+
+    .timer{
+        flex-wrap:wrap;
+        justify-content:center;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- LEFT SIDE -->
+    <div class="left">
+        <div class="logo">Colorlib.</div>
+
+        <h1>Under<br>Construction</h1>
+
+        <p>
+            Our website is currently undergoing scheduled maintenance.
+            We should be back shortly. Thank you for your patience.
+        </p>
+
+        <form class="notify">
+            <input type="email" placeholder="Enter your email" required>
+            <button type="submit">NOTIFY US</button>
+        </form>
+
+        <div class="footer-text">
+            Sign up now to get early notification of our launch date!
+        </div>
+
+        <!-- CONNECT WITH US -->
+        <div class="connect">
+            <p>Till then watch reels :</p>
+            <div class="social-icons"
+                <a href="https://www.instagram.com/reels/" target="_blank">
+  <i class="fab fa-instagram"></i>
+</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- RIGHT SIDE -->
+    <div class="right">
+        <div class="overlay">
+            <div class="timer">
+                <div class="circle days">
+                    <span id="days">00</span>
+                    <small>Days</small>
+                </div>
+                <div class="circle hours">
+                    <span id="hours">00</span>
+                    <small>Hours</small>
+                </div>
+                <div class="circle minutes">
+                    <span id="minutes">00</span>
+                    <small>Minutes</small>
+                </div>
+                <div class="circle seconds">
+                    <span id="seconds">00</span>
+                    <small>Seconds</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+const launchDate = new Date("2026-01-01").getTime();
+
+setInterval(() => {
+    const now = new Date().getTime();
+    const diff = launchDate - now;
+
+    const d = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const h = Math.floor((diff / (1000 * 60 * 60)) % 24);
+    const m = Math.floor((diff / (1000 * 60)) % 60);
+    const s = Math.floor((diff / 1000) % 60);
+
+    document.getElementById("days").innerText = d;
+    document.getElementById("hours").innerText = h;
+    document.getElementById("minutes").innerText = m;
+    document.getElementById("seconds").innerText = s;
+}, 1000);
+</script>
+
+</body>
+  </html>

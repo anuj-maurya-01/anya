@@ -1,0 +1,498 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JavaScript Chess</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 20px;
+        }
+        
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+        
+        #game-container {
+            width: 100%;
+            max-width: 500px;
+        }
+        
+        #board {
+            width: 100%;
+            max-width: 500px;
+            height: 500px;
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            grid-template-rows: repeat(8, 1fr);
+            gap: 0;
+            border: 2px solid #333;
+            box-sizing: border-box;
+        }
+        
+        .square {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 40px;
+            cursor: pointer;
+            position: relative;
+        }
+        
+        .light {
+            background-color: #f0d9b5;
+        }
+        
+        .dark {
+            background-color: #b58863;
+        }
+        
+        .selected {
+            background-color: rgba(0, 255, 0, 0.5) !important;
+        }
+        
+        .possible-move {
+            background-color: rgba(0, 255, 0, 0.3) !important;
+        }
+        
+        .capture-move {
+            background-color: rgba(255, 0, 0, 0.3) !important;
+        }
+        
+        #game-info {
+            margin-top: 20px;
+            width: 100%;
+            max-width: 500px;
+            background-color: white;
+            padding: 15px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        #turn-indicator {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        #move-history {
+            max-height: 150px;
+            overflow-y: auto;
+            background-color: #f9f9f9;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+        
+        #controls {
+            margin-top: 20px;
+            display: flex;
+            gap: 10px;
+        }
+        
+        button {
+            padding: 8px 15px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        button:hover {
+            background-color: #45a049;
+        }
+        
+        #restart-btn {
+            background-color: #f44336;
+        }
+        
+        #restart-btn:hover {
+            background-color: #d32f2f;
+        }
+        
+        @media (max-width: 600px) {
+            #board {
+                height: 400px;
+            }
+            
+            .square {
+                font-size: 30px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>JavaScript Chess</h1>
+    <div id="game-container">
+        <div id="board"></div>
+        <div id="game-info">
+            <div id="turn-indicator">White's Turn</div>
+            <div>Move History:</div>
+            <div id="move-history"></div>
+            <div id="controls">
+                <button id="restart-btn">Restart Game</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const boardElement = document.getElementById('board');
+            const turnIndicator = document.getElementById('turn-indicator');
+            const moveHistoryElement = document.getElementById('move-history');
+            const restartButton = document.getElementById('restart-btn');
+            
+            let board = [];
+            let selectedSquare = null;
+            let turn = 'white';
+            let moveHistory = [];
+            let gameOver = false;
+            
+            const pieceNotation = {
+                'P': '♙', 'N': '♘', 'B': '♗', 'R': '♖', 'Q': '♕', 'K': '♔',
+                'p': '♟', 'n': '♞', 'b': '♝', 'r': '♜', 'q': '♛', 'k': '♚'
+            };
+            
+            // Initialize the chess board
+            function initBoard() {
+                board = [
+                    ['r', 'n', 'b', 'q', 'k', 'b', 'n', 'r'],
+                    ['p', 'p', 'p', 'p', 'p', 'p', 'p', 'p'],
+                    ['', '', '', '', '', '', '', ''],
+                    ['', '', '', '', '', '', '', ''],
+                    ['', '', '', '', '', '', '', ''],
+                    ['', '', '', '', '', '', '', ''],
+                    ['P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'],
+                    ['R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R']
+                ];
+                
+                renderBoard();
+                updateTurnIndicator();
+                moveHistory = [];
+                moveHistoryElement.innerHTML = '';
+                gameOver = false;
+            }
+            
+            // Render the chess board
+            function renderBoard() {
+                boardElement.innerHTML = '';
+                
+                for (let row = 0; row < 8; row++) {
+                    for (let col = 0; col < 8; col++) {
+                        const square = document.createElement('div');
+                        square.className = `square ${(row + col) % 2 === 0 ? 'light' : 'dark'}`;
+                        square.dataset.row = row;
+                        square.dataset.col = col;
+                        
+                        const piece = board[row][col];
+                        if (piece) {
+                            square.textContent = pieceNotation[piece];
+                            square.dataset.piece = piece;
+                        }
+                        
+                        square.addEventListener('click', () => handleSquareClick(row, col));
+                        boardElement.appendChild(square);
+                    }
+                }
+            }
+            
+            // Handle square clicks
+            function handleSquareClick(row, col) {
+                if (gameOver) return;
+                
+                const piece = board[row][col];
+                
+                // If no square is selected and user clicks on a piece of their color
+                if (!selectedSquare && piece && getPieceColor(piece) === turn) {
+                    selectSquare(row, col);
+                } 
+                // If a square is already selected
+                else if (selectedSquare) {
+                    // If user clicks on another piece of their color
+                    if (piece && getPieceColor(piece) === turn) {
+                        deselectSquares();
+                        selectSquare(row, col);
+                    } 
+                    // If user clicks on a valid move
+                    else if (isValidMove(selectedSquare.row, selectedSquare.col, row, col)) {
+                        makeMove(selectedSquare.row, selectedSquare.col, row, col);
+                    }
+                    // Otherwise, deselect
+                    else {
+                        deselectSquares();
+                    }
+                }
+            }
+            
+            // Select a square
+            function selectSquare(row, col) {
+                // Clear any previous selections
+                deselectSquares();
+                
+                selectedSquare = { row, col };
+                
+                // Highlight selected square
+                const squares = boardElement.querySelectorAll('.square');
+                const index = row * 8 + col;
+                squares[index].classList.add('selected');
+                
+                // Highlight possible moves
+                highlightPossibleMoves(row, col);
+            }
+            
+            // Deselect all squares
+            function deselectSquares() {
+                selectedSquare = null;
+                
+                // Remove selection highlights
+                const squares = boardElement.querySelectorAll('.square');
+                squares.forEach(square => {
+                    square.classList.remove('selected', 'possible-move', 'capture-move');
+                });
+            }
+            
+            // Highlight possible moves for a piece
+            function highlightPossibleMoves(row, col) {
+                const piece = board[row][col];
+                if (!piece) return;
+                
+                for (let r = 0; r < 8; r++) {
+                    for (let c = 0; c < 8; c++) {
+                        if (isValidMove(row, col, r, c)) {
+                            const squares = boardElement.querySelectorAll('.square');
+                            const index = r * 8 + c;
+                            squares[index].classList.add(
+                                board[r][c] ? 'capture-move' : 'possible-move'
+                            );
+                        }
+                    }
+                }
+            }
+            
+            // Check if a move is valid
+            function isValidMove(fromRow, fromCol, toRow, toCol) {
+                const piece = board[fromRow][fromCol];
+                const targetPiece = board[toRow][toCol];
+                
+                // Can't move to same square
+                if (fromRow === toRow && fromCol === toCol) return false;
+                
+                // Can't capture your own piece
+                if (targetPiece && getPieceColor(targetPiece) === getPieceColor(piece)) {
+                    return false;
+                }
+                
+                // Implement basic movement rules for each piece type
+                const pieceType = piece.toLowerCase();
+                const color = getPieceColor(piece);
+                const direction = color === 'white' ? -1 : 1;
+                
+                switch (pieceType) {
+                    case 'p': // Pawn
+                        // Forward move
+                        if (fromCol === toCol) {
+                            // Normal move
+                            if (toRow === fromRow + direction && !targetPiece) {
+                                return true;
+                            }
+                            // Double move from starting position
+                            if ((color === 'white' && fromRow === 6 || color === 'black' && fromRow === 1) && 
+                                toRow === fromRow + 2 * direction && 
+                                !board[fromRow + direction][fromCol] && 
+                                !targetPiece) {
+                                return true;
+                            }
+                        }
+                        // Capture
+                        else if (Math.abs(toCol - fromCol) === 1 && toRow === fromRow + direction && 
+                                targetPiece && getPieceColor(targetPiece) !== color) {
+                            return true;
+                        }
+                        break;
+                        
+                    case 'r': // Rook
+                        if (fromRow === toRow || fromCol === toCol) {
+                            return isPathClear(fromRow, fromCol, toRow, toCol);
+                        }
+                        break;
+                        
+                    case 'n': // Knight
+                        return (Math.abs(toRow - fromRow) === 2 && Math.abs(toCol - fromCol) === 1) ||
+                               (Math.abs(toRow - fromRow) === 1 && Math.abs(toCol - fromCol) === 2);
+                        
+                    case 'b': // Bishop
+                        if (Math.abs(toRow - fromRow) === Math.abs(toCol - fromCol)) {
+                            return isPathClear(fromRow, fromCol, toRow, toCol);
+                        }
+                        break;
+                        
+                    case 'q': // Queen
+                        if ((fromRow === toRow || fromCol === toCol) || 
+                            (Math.abs(toRow - fromRow) === Math.abs(toCol - fromCol))) {
+                            return isPathClear(fromRow, fromCol, toRow, toCol);
+                        }
+                        break;
+                        
+                    case 'k': // King
+                        return Math.abs(toRow - fromRow) <= 1 && Math.abs(toCol - fromCol) <= 1;
+                }
+                
+                return false;
+            }
+            
+            // Check if path between two squares is clear
+            function isPathClear(fromRow, fromCol, toRow, toCol) {
+                const rowStep = toRow === fromRow ? 0 : (toRow > fromRow ? 1 : -1);
+                const colStep = toCol === fromCol ? 0 : (toCol > fromCol ? 1 : -1);
+                
+                let row = fromRow + rowStep;
+                let col = fromCol + colStep;
+                
+                while (row !== toRow || col !== toCol) {
+                    if (board[row][col]) {
+                        return false;
+                    }
+                    row += rowStep;
+                    col += colStep;
+                }
+                
+                return true;
+            }
+            
+            // Make a move
+            function makeMove(fromRow, fromCol, toRow, toCol) {
+                const piece = board[fromRow][fromCol];
+                const targetPiece = board[toRow][toCol];
+                
+                // Remember the move for history
+                const moveNotation = getMoveNotation(fromRow, fromCol, toRow, toCol);
+                const moveRecord = {
+                    piece: piece,
+                    from: { row: fromRow, col: fromCol },
+                    to: { row: toRow, col: toCol },
+                    capture: targetPiece !== '',
+                    notation: moveNotation
+                };
+                moveHistory.push(moveRecord);
+                
+                // Update move history display
+                const moveNumber = Math.ceil(moveHistory.length / 2);
+                const isWhiteMove = moveHistory.length % 2 === 1;
+                let moveText = '';
+                
+                if (isWhiteMove) {
+                    moveText = `${moveNumber}. ${moveNotation}`;
+                } else {
+                    // Find the previous white move
+                    const whiteMove = moveHistory[moveHistory.length - 2];
+                    moveText = ` ${whiteMove.notation} ${moveNotation}`;
+                }
+                
+                // Create a new div for the move or update the existing one
+                if (isWhiteMove) {
+                    const moveDiv = document.createElement('div');
+                    moveDiv.textContent = moveText;
+                    moveHistoryElement.appendChild(moveDiv);
+                } else {
+                    const moves = moveHistoryElement.querySelectorAll('div');
+                    const lastMoveDiv = moves[moves.length - 1];
+                    lastMoveDiv.textContent = moveText;
+                }
+                
+                // Scroll to bottom of move history
+                moveHistoryElement.scrollTop = moveHistoryElement.scrollHeight;
+                
+                // Perform the move
+                board[toRow][toCol] = piece;
+                board[fromRow][fromCol] = '';
+                
+                // Check for pawn promotion
+                if (piece.toLowerCase() === 'p' && (toRow === 0 || toRow === 7)) {
+                    board[toRow][toCol] = turn === 'white' ? 'Q' : 'q'; // Always promote to queen for simplicity
+                }
+                
+                // Switch turns
+                turn = turn === 'white' ? 'black' : 'white';
+                
+                // Check for game over
+                if (isCheckmate()) {
+                    gameOver = true;
+                    turn = turn === 'white' ? 'black' : 'white';
+                    turnIndicator.textContent = `Game Over - ${turn} wins by checkmate!`;
+                    return;
+                }
+                
+                // Redraw the board
+                renderBoard();
+                updateTurnIndicator();
+            }
+            
+            // Get the color of a piece
+            function getPieceColor(piece) {
+                return piece === piece.toLowerCase() ? 'black' : 'white';
+            }
+            
+            // Generate algebraic notation for a move
+            function getMoveNotation(fromRow, fromCol, toRow, toCol) {
+                const piece = board[fromRow][fromCol];
+                const isCapture = board[toRow][toCol] !== '';
+                
+                let notation = '';
+                
+                if (piece.toLowerCase() !== 'p') {
+                    notation += piece.toUpperCase();
+                }
+                
+                notation += String.fromCharCode(97 + fromCol) + (8 - fromRow);
+                
+                if (isCapture) {
+                    notation += 'x';
+                }
+                
+                notation += String.fromCharCode(97 + toCol) + (8 - toRow);
+                
+                return notation;
+            }
+            
+            // Check if the current player is in checkmate
+            function isCheckmate() {
+                // Simplified version - just look if the king is on the board
+                const king = turn === 'white' ? 'K' : 'k';
+                let kingFound = false;
+                
+                for (let row of board) {
+                    if (row.includes(king)) {
+                        kingFound = true;
+                        break;
+                    }
+                }
+                
+                return !kingFound;
+            }
+            
+            // Update the turn indicator
+            function updateTurnIndicator() {
+                turnIndicator.textContent = `${turn === 'white' ? 'White' : 'Black'}'s Turn`;
+            }
+            
+            // Restart the game
+            function restartGame() {
+                initBoard();
+            }
+            
+            // Event listeners
+            restartButton.addEventListener('click', restartGame);
+            
+            // Initialize the game
+            initBoard();
+        });
+    </script>
+</body>
+</html>

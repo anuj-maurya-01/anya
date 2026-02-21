@@ -1,0 +1,914 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Target Shooting Practice</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            overflow: hidden;
+            touch-action: none;
+            user-select: none;
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(120deg, #1a1a2e 0%, #16213e 100%);
+        }
+
+        #game-container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            cursor: crosshair;
+        }
+
+        .target {
+            position: absolute;
+            border-radius: 50%;
+            transition: transform 0.1s;
+            pointer-events: none;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .target-ring {
+            position: absolute;
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        #crosshair {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            z-index: 100;
+        }
+
+        #crosshair::before,
+        #crosshair::after {
+            content: '';
+            position: absolute;
+            background-color: rgba(255, 255, 255, 0.8);
+        }
+
+        #crosshair::before {
+            width: 1px;
+            height: 100%;
+            left: 50%;
+        }
+
+        #crosshair::after {
+            width: 100%;
+            height: 1px;
+            top: 50%;
+        }
+
+        #crosshair-circle {
+            position: absolute;
+            width: 14px;
+            height: 14px;
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .bullet-hole {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background-color: #333;
+            border-radius: 50%;
+            box-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        #hud {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            color: white;
+            z-index: 50;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+        }
+
+        .muzzle-flash {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            background-image: radial-gradient(circle, rgba(255, 255, 180, 0.8), rgba(255, 160, 50, 0.6), transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            z-index: 90;
+            animation: flash 0.15s forwards;
+        }
+
+        @keyframes flash {
+            0% { opacity: 1; transform: translate(-50%, -50%) scale(0.5); }
+            100% { opacity: 0; transform: translate(-50%, -50%) scale(1.5); }
+        }
+
+        .hit-marker {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            z-index: 80;
+        }
+
+        .hit-marker::before,
+        .hit-marker::after {
+            content: '';
+            position: absolute;
+            background-color: white;
+            transform-origin: center;
+        }
+
+        .hit-marker::before {
+            width: 2px;
+            height: 100%;
+            left: 50%;
+            transform: translateX(-50%) rotate(45deg);
+        }
+
+        .hit-marker::after {
+            width: 100%;
+            height: 2px;
+            top: 50%;
+            transform: translateY(-50%) rotate(45deg);
+        }
+
+        #start-screen, #game-over-screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s forwards;
+        }
+
+        .fade-out {
+            animation: fadeOut 0.5s forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; }
+        }
+
+        .score-popup {
+            position: absolute;
+            color: white;
+            font-weight: bold;
+            pointer-events: none;
+            animation: scorePopup 1s forwards;
+            z-index: 60;
+        }
+
+        @keyframes scorePopup {
+            0% { transform: translateY(0) scale(0.8); opacity: 0; }
+            20% { transform: translateY(-10px) scale(1.2); opacity: 1; }
+            100% { transform: translateY(-30px) scale(1); opacity: 0; }
+        }
+
+        .ammo-container {
+            display: flex;
+            gap: 3px;
+            margin-top: 5px;
+        }
+
+        .ammo-bullet {
+            width: 10px;
+            height: 20px;
+            border-radius: 3px 3px 0 0;
+        }
+
+        .accuracy-meter {
+            width: 150px;
+            height: 8px;
+            background-color: rgba(255, 255, 255, 0.2);
+            margin-top: 10px;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .accuracy-fill {
+            height: 100%;
+            background-color: #4ade80;
+            transition: width 0.3s;
+        }
+
+        #combo-indicator {
+            position: absolute;
+            right: 20px;
+            bottom: 20px;
+            color: white;
+            font-size: 24px;
+            opacity: 0;
+            z-index: 50;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+        }
+    </style>
+</head>
+<body>
+    <div id="game-container" class="bg-gray-900">
+        <div id="hud">
+            <div class="text-xl font-bold">Score: <span id="score">0</span></div>
+            <div class="flex justify-between mt-1">
+                <span>Time: <span id="time">60.0</span>s</span>
+                <span class="ml-6">Hits: <span id="hits">0</span></span>
+            </div>
+            <div class="mt-1">Accuracy: <span id="accuracy">0</span>%</div>
+            <div class="accuracy-meter">
+                <div id="accuracy-fill" class="accuracy-fill" style="width: 0%"></div>
+            </div>
+            <div class="mt-2">Ammo: <span id="ammo-count">6</span>/6</div>
+            <div id="ammo-display" class="ammo-container"></div>
+        </div>
+        
+        <div id="combo-indicator">COMBO x<span id="combo-count">0</span></div>
+        <div id="crosshair">
+            <div id="crosshair-circle"></div>
+        </div>
+        
+        <div id="start-screen" class="fade-in">
+            <h1 class="text-4xl font-bold text-white mb-8">Target Shooting Practice</h1>
+            <div class="text-white text-center mb-8 max-w-lg">
+                <p class="mb-4">Test your aim and reflexes in this shooting gallery. Hit targets to earn points - the closer to the center, the more points you get!</p>
+                <p class="mb-2">• Click or tap to shoot</p>
+                <p class="mb-2">• Press R to reload when empty (6 shots per magazine)</p>
+                <p class="mb-2">• Chain hits for combo multipliers</p>
+                <p class="mb-2">• Hit moving targets for bonus points</p>
+            </div>
+            <button id="start-btn" class="px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xl rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-50">
+                Start Game
+            </button>
+        </div>
+        
+        <div id="game-over-screen" class="hidden">
+            <h1 class="text-4xl font-bold text-white mb-6">Game Over</h1>
+            <div class="text-white text-center mb-8">
+                <p class="text-2xl mb-2">Final Score: <span id="final-score" class="font-bold">0</span></p>
+                <p class="mb-1">Targets Hit: <span id="final-hits" class="font-bold">0</span></p>
+                <p class="mb-1">Shots Fired: <span id="final-shots" class="font-bold">0</span></p>
+                <p class="mb-1">Accuracy: <span id="final-accuracy" class="font-bold">0%</span></p>
+                <p class="mb-1">Best Combo: <span id="final-combo" class="font-bold">0</span></p>
+            </div>
+            <button id="restart-btn" class="px-8 py-3 bg-green-600 hover:bg-green-700 text-white font-bold text-xl rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-opacity-50">
+                Play Again
+            </button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Game elements
+            const gameContainer = document.getElementById('game-container');
+            const crosshair = document.getElementById('crosshair');
+            const startScreen = document.getElementById('start-screen');
+            const gameOverScreen = document.getElementById('game-over-screen');
+            const startBtn = document.getElementById('start-btn');
+            const restartBtn = document.getElementById('restart-btn');
+            const scoreDisplay = document.getElementById('score');
+            const timeDisplay = document.getElementById('time');
+            const hitsDisplay = document.getElementById('hits');
+            const accuracyDisplay = document.getElementById('accuracy');
+            const accuracyFill = document.getElementById('accuracy-fill');
+            const ammoDisplay = document.getElementById('ammo-display');
+            const ammoCount = document.getElementById('ammo-count');
+            const comboIndicator = document.getElementById('combo-indicator');
+            const comboCount = document.getElementById('combo-count');
+
+            // Game state variables
+            let score = 0;
+            let timeLeft = 60.0;
+            let gameActive = false;
+            let targets = [];
+            let targetId = 0;
+            let shotsCount = 0;
+            let hitsCount = 0;
+            let ammo = 6;
+            let reloading = false;
+            let combo = 0;
+            let bestCombo = 0;
+            let lastShotTime = 0;
+            let gameInterval;
+            let targetInterval;
+            
+            // Sound effects
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            let gunshot, reload, targetHit, emptyClip;
+            
+            // Initialize sounds
+            function initSounds() {
+                // Gunshot sound
+                gunshot = createSound();
+                const gunshotGain = audioContext.createGain();
+                gunshotGain.gain.value = 0.2;
+                gunshot.connect(gunshotGain);
+                gunshotGain.connect(audioContext.destination);
+
+                // Reload sound
+                reload = createSound();
+                reload.connect(audioContext.destination);
+
+                // Target hit sound
+                targetHit = createSound();
+                const hitGain = audioContext.createGain();
+                hitGain.gain.value = 0.3;
+                targetHit.connect(hitGain);
+                hitGain.connect(audioContext.destination);
+
+                // Empty clip sound
+                emptyClip = createSound();
+                emptyClip.connect(audioContext.destination);
+            }
+
+            function createSound() {
+                return audioContext.createOscillator();
+            }
+
+            function playGunshot() {
+                const oscillator = createSound();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.type = 'sawtooth';
+                oscillator.frequency.setValueAtTime(100, audioContext.currentTime);
+                oscillator.frequency.exponentialRampToValueAtTime(20, audioContext.currentTime + 0.1);
+                
+                gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                oscillator.start();
+                oscillator.stop(audioContext.currentTime + 0.1);
+            }
+
+            function playReload() {
+                const oscillator = createSound();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.type = 'sine';
+                oscillator.frequency.setValueAtTime(300, audioContext.currentTime);
+                oscillator.frequency.setValueAtTime(500, audioContext.currentTime + 0.1);
+                
+                gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+                gainNode.gain.setValueAtTime(0.1, audioContext.currentTime + 0.1);
+                gainNode.gain.linearRampToValueAtTime(0, audioContext.currentTime + 0.3);
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                oscillator.start();
+                oscillator.stop(audioContext.currentTime + 0.3);
+            }
+
+            function playTargetHit(scoreValue) {
+                const oscillator = createSound();
+                const gainNode = audioContext.createGain();
+                
+                // Higher pitch for better scores
+                const baseFreq = 400;
+                const freqMultiplier = scoreValue / 5;
+                
+                oscillator.type = 'sine';
+                oscillator.frequency.setValueAtTime(baseFreq + freqMultiplier * 100, audioContext.currentTime);
+                oscillator.frequency.exponentialRampToValueAtTime(baseFreq + freqMultiplier * 200, audioContext.currentTime + 0.1);
+                
+                gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
+                gainNode.gain.linearRampToValueAtTime(0, audioContext.currentTime + 0.2);
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                oscillator.start();
+                oscillator.stop(audioContext.currentTime + 0.2);
+            }
+
+            function playEmptyClip() {
+                const oscillator = createSound();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.type = 'sine';
+                oscillator.frequency.setValueAtTime(100, audioContext.currentTime);
+                
+                gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+                gainNode.gain.linearRampToValueAtTime(0, audioContext.currentTime + 0.1);
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                oscillator.start();
+                oscillator.stop(audioContext.currentTime + 0.1);
+            }
+
+            // Initialize game
+            function init() {
+                initSounds();
+                updateAmmoDisplay();
+                
+                // Mouse/touch movement for crosshair
+                document.addEventListener('mousemove', (e) => {
+                    if (gameActive) {
+                        crosshair.style.left = `${e.clientX}px`;
+                        crosshair.style.top = `${e.clientY}px`;
+                    }
+                });
+                
+                document.addEventListener('touchmove', (e) => {
+                    if (gameActive && e.touches.length > 0) {
+                        e.preventDefault();
+                        crosshair.style.left = `${e.touches[0].clientX}px`;
+                        crosshair.style.top = `${e.touches[0].clientY}px`;
+                    }
+                }, { passive: false });
+
+                // Click/touch to shoot
+                gameContainer.addEventListener('mousedown', shoot);
+                gameContainer.addEventListener('touchstart', (e) => {
+                    if (gameActive) {
+                        e.preventDefault();
+                        crosshair.style.left = `${e.touches[0].clientX}px`;
+                        crosshair.style.top = `${e.touches[0].clientY}px`;
+                        shoot(e);
+                    }
+                }, { passive: false });
+
+                // Reload with R key
+                document.addEventListener('keydown', (e) => {
+                    if (gameActive && e.key === 'r' && !reloading && ammo < 6) {
+                        reloadWeapon();
+                    }
+                });
+
+                // Start and restart buttons
+                startBtn.addEventListener('click', startGame);
+                restartBtn.addEventListener('click', startGame);
+            }
+
+            function startGame() {
+                // Reset game state
+                score = 0;
+                timeLeft = 60.0;
+                targets = [];
+                targetId = 0;
+                shotsCount = 0;
+                hitsCount = 0;
+                ammo = 6;
+                reloading = false;
+                combo = 0;
+                bestCombo = 0;
+                lastShotTime = 0;
+                
+                // Clear any existing targets
+                const existingTargets = document.querySelectorAll('.target');
+                existingTargets.forEach(target => target.remove());
+                
+                const existingBulletHoles = document.querySelectorAll('.bullet-hole');
+                existingBulletHoles.forEach(hole => hole.remove());
+                
+                // Update displays
+                scoreDisplay.textContent = '0';
+                timeDisplay.textContent = '60.0';
+                hitsDisplay.textContent = '0';
+                accuracyDisplay.textContent = '0';
+                accuracyFill.style.width = '0%';
+                updateAmmoDisplay();
+                
+                // Hide start/game over screens
+                startScreen.classList.add('fade-out');
+                gameOverScreen.classList.add('fade-out');
+                
+                setTimeout(() => {
+                    startScreen.classList.add('hidden');
+                    gameOverScreen.classList.add('hidden');
+                    
+                    // Set game as active
+                    gameActive = true;
+                    
+                    // Start game loop
+                    gameInterval = setInterval(updateGame, 100);
+                    targetInterval = setInterval(spawnTarget, 1200);
+                    
+                    // Initial targets
+                    for (let i = 0; i < 3; i++) {
+                        setTimeout(() => {
+                            if (gameActive) spawnTarget();
+                        }, i * 300);
+                    }
+                    
+                }, 500);
+            }
+
+            function endGame() {
+                gameActive = false;
+                clearInterval(gameInterval);
+                clearInterval(targetInterval);
+                
+                // Update final statistics
+                document.getElementById('final-score').textContent = score;
+                document.getElementById('final-hits').textContent = hitsCount;
+                document.getElementById('final-shots').textContent = shotsCount;
+                document.getElementById('final-accuracy').textContent = 
+                    shotsCount > 0 ? Math.round((hitsCount / shotsCount) * 100) + '%' : '0%';
+                document.getElementById('final-combo').textContent = bestCombo;
+                
+                // Show game over screen
+                gameOverScreen.classList.remove('hidden', 'fade-out');
+                gameOverScreen.classList.add('fade-in');
+            }
+
+            function updateGame() {
+                timeLeft -= 0.1;
+                timeLeft = Math.max(0, parseFloat(timeLeft.toFixed(1)));
+                timeDisplay.textContent = timeLeft.toFixed(1);
+                
+                // Move and update targets
+                targets.forEach(targetData => {
+                    const target = document.getElementById(`target-${targetData.id}`);
+                    if (target) {
+                        if (targetData.moving) {
+                            targetData.x += targetData.speedX;
+                            targetData.y += targetData.speedY;
+                            
+                            // Bounce off edges
+                            if (targetData.x - targetData.size <= 0 || 
+                                targetData.x + targetData.size >= window.innerWidth) {
+                                targetData.speedX *= -1;
+                            }
+                            if (targetData.y - targetData.size <= 0 || 
+                                targetData.y + targetData.size >= window.innerHeight) {
+                                targetData.speedY *= -1;
+                            }
+                            
+                            target.style.left = `${targetData.x}px`;
+                            target.style.top = `${targetData.y}px`;
+                        }
+                        
+                        // Shrink target over time if shrinking
+                        if (targetData.shrinking) {
+                            targetData.timeAlive += 0.1;
+                            const shrinkFactor = Math.max(0.3, 1 - targetData.timeAlive / 5);
+                            target.style.transform = `scale(${shrinkFactor})`;
+                            
+                            if (shrinkFactor <= 0.3) {
+                                removeTarget(targetData.id);
+                            }
+                        }
+                    }
+                });
+                
+                // Check if game is over
+                if (timeLeft <= 0) {
+                    endGame();
+                }
+            }
+
+            function spawnTarget() {
+                if (!gameActive) return;
+                
+                const id = targetId++;
+                const size = Math.random() < 0.3 ? 60 : Math.random() < 0.7 ? 50 : 40;
+                const targetCount = targets.length;
+                
+                // Distribute targets better across the screen
+                let x, y;
+                let attempts = 0;
+                const padding = 100; // Padding from screen edges
+                
+                do {
+                    x = padding + Math.random() * (window.innerWidth - padding * 2);
+                    y = padding + Math.random() * (window.innerHeight - padding * 2);
+                    
+                    // Ensure targets aren't too close to each other
+                    let tooClose = false;
+                    for (const target of targets) {
+                        const distance = Math.sqrt(
+                            Math.pow(x - target.x, 2) + 
+                            Math.pow(y - target.y, 2)
+                        );
+                        if (distance < size * 2.5) {
+                            tooClose = true;
+                            break;
+                        }
+                    }
+                    
+                    if (!tooClose) break;
+                    attempts++;
+                } while (attempts < 20);
+                
+                // Attributes for more variety
+                const moving = Math.random() < 0.3;
+                const shrinking = !moving && Math.random() < 0.4;
+                const speedMultiplier = Math.random() < 0.3 ? 2 : 1;
+                
+                const targetData = {
+                    id,
+                    x,
+                    y,
+                    size,
+                    speedX: moving ? (Math.random() - 0.5) * 2 * speedMultiplier : 0,
+                    speedY: moving ? (Math.random() - 0.5) * 2 * speedMultiplier : 0,
+                    moving,
+                    shrinking,
+                    timeAlive: 0,
+                    points: moving ? 20 : (size === 40 ? 15 : (size === 50 ? 10 : 5))
+                };
+                
+                targets.push(targetData);
+                
+                // Create target DOM elements
+                const target = document.createElement('div');
+                target.id = `target-${id}`;
+                target.className = 'target';
+                target.style.width = `${size}px`;
+                target.style.height = `${size}px`;
+                target.style.left = `${x}px`;
+                target.style.top = `${y}px`;
+                
+                // Create colored rings (concentric circles)
+                const colors = ['#ff0000', '#ff7700', '#ffff00', '#ffffff'];
+                const rings = 4;
+                
+                for (let i = 0; i < rings; i++) {
+                    const ring = document.createElement('div');
+                    ring.className = 'target-ring';
+                    ring.style.width = `${size - (size * 0.25 * i)}px`;
+                    ring.style.height = `${size - (size * 0.25 * i)}px`;
+                    ring.style.backgroundColor = colors[i];
+                    target.appendChild(ring);
+                }
+                
+                // Add target value in the center
+                const valueText = document.createElement('div');
+                valueText.className = 'absolute z-10 text-black text-xs font-bold';
+                valueText.textContent = targetData.points;
+                target.appendChild(valueText);
+                
+                gameContainer.appendChild(target);
+                
+                // Remove target after some time if not hit
+                if (!shrinking) {
+                    setTimeout(() => {
+                        removeTarget(id);
+                    }, 2500 + Math.random() * 1500);
+                }
+            }
+
+            function removeTarget(id) {
+                const targetIndex = targets.findIndex(t => t.id === id);
+                if (targetIndex !== -1) {
+                    targets.splice(targetIndex, 1);
+                    
+                    const target = document.getElementById(`target-${id}`);
+                    if (target) {
+                        target.remove();
+                    }
+                }
+            }
+
+            function updateAmmoDisplay() {
+                ammoDisplay.innerHTML = '';
+                ammoCount.textContent = ammo;
+                
+                for (let i = 0; i < 6; i++) {
+                    const bullet = document.createElement('div');
+                    bullet.className = 'ammo-bullet';
+                    bullet.style.backgroundColor = i < ammo ? '#f59e0b' : 'rgba(255, 255, 255, 0.2)';
+                    ammoDisplay.appendChild(bullet);
+                }
+            }
+
+            function reloadWeapon() {
+                if (reloading || ammo === 6) return;
+                
+                reloading = true;
+                playReload();
+                
+                setTimeout(() => {
+                    ammo = 6;
+                    updateAmmoDisplay();
+                    reloading = false;
+                }, 1200);
+            }
+
+            function updateAccuracy() {
+                const accuracy = shotsCount > 0 ? Math.round((hitsCount / shotsCount) * 100) : 0;
+                accuracyDisplay.textContent = accuracy;
+                accuracyFill.style.width = `${accuracy}%`;
+                
+                // Change color based on accuracy
+                if (accuracy >= 80) {
+                    accuracyFill.style.backgroundColor = '#4ade80'; // Green
+                } else if (accuracy >= 60) {
+                    accuracyFill.style.backgroundColor = '#facc15'; // Yellow
+                } else {
+                    accuracyFill.style.backgroundColor = '#f87171'; // Red
+                }
+            }
+
+            function shoot(event) {
+                if (!gameActive || reloading) return;
+                
+                // Check if we have ammo
+                if (ammo <= 0) {
+                    playEmptyClip();
+                    return;
+                }
+                
+                // Get shot position
+                const shotX = crosshair.offsetLeft;
+                const shotY = crosshair.offsetTop;
+                
+                // Create muzzle flash
+                const flash = document.createElement('div');
+                flash.className = 'muzzle-flash';
+                flash.style.left = `${shotX}px`;
+                flash.style.top = `${shotY}px`;
+                gameContainer.appendChild(flash);
+                setTimeout(() => flash.remove(), 150);
+                
+                // Create a bullet hole
+                const hole = document.createElement('div');
+                hole.className = 'bullet-hole';
+                hole.style.left = `${shotX}px`;
+                hole.style.top = `${shotY}px`;
+                gameContainer.appendChild(hole);
+                
+                // Sound effect
+                playGunshot();
+                
+                // Decrease ammo
+                ammo--;
+                updateAmmoDisplay();
+                
+                // Auto-reload when empty
+                if (ammo === 0) {
+                    setTimeout(() => {
+                        reloadWeapon();
+                    }, 500);
+                }
+                
+                // Update shots count
+                shotsCount++;
+                
+                // Check for target hits
+                let hit = false;
+                let closestDistance = Infinity;
+                let hitTarget = null;
+                let hitPoints = 0;
+                
+                for (const target of targets) {
+                    const distance = Math.sqrt(
+                        Math.pow(shotX - target.x, 2) + 
+                        Math.pow(shotY - target.y, 2)
+                    );
+                    
+                    if (distance < target.size && distance < closestDistance) {
+                        closestDistance = distance;
+                        hitTarget = target;
+                        
+                        // Calculate score based on how close to center
+                        const distanceRatio = distance / target.size;
+                        let points;
+                        
+                        if (distanceRatio <= 0.25) { // Bullseye
+                            points = 4 * target.points;
+                        } else if (distanceRatio <= 0.5) { // Inner ring
+                            points = 2 * target.points;
+                        } else if (distanceRatio <= 0.75) { // Middle ring
+                            points = 1.5 * target.points;
+                        } else { // Outer ring
+                            points = target.points;
+                        }
+                        
+                        hitPoints = Math.round(points);
+                        hit = true;
+                    }
+                }
+                
+                // Check combo timing (shots within 1.5 seconds maintain combo)
+                const now = Date.now();
+                if (now - lastShotTime > 1500) {
+                    combo = 0;
+                }
+                lastShotTime = now;
+                
+                if (hit && hitTarget) {
+                    // Update combo
+                    combo++;
+                    bestCombo = Math.max(bestCombo, combo);
+                    
+                    // Apply combo multiplier if > 1
+                    let comboMultiplier = 1;
+                    if (combo >= 5) comboMultiplier = 2;
+                    else if (combo >= 3) comboMultiplier = 1.5;
+                    
+                    const finalPoints = Math.round(hitPoints * comboMultiplier);
+                    
+                    // Create hit marker
+                    const hitMarker = document.createElement('div');
+                    hitMarker.className = 'hit-marker';
+                    hitMarker.style.left = `${shotX}px`;
+                    hitMarker.style.top = `${shotY}px`;
+                    gameContainer.appendChild(hitMarker);
+                    setTimeout(() => hitMarker.remove(), 200);
+                    
+                    // Create score popup
+                    const scorePopup = document.createElement('div');
+                    scorePopup.className = 'score-popup';
+                    scorePopup.style.left = `${shotX}px`;
+                    scorePopup.style.top = `${shotY}px`;
+                    
+                    // Color based on hit quality
+                    let scoreColor;
+                    if (hitPoints >= 2 * hitTarget.points) {
+                        scoreColor = '#4ade80'; // Green for bullseye
+                    } else if (hitPoints > hitTarget.points) {
+                        scoreColor = '#facc15'; // Yellow for inner rings
+                    } else {
+                        scoreColor = 'white'; // White for outer ring
+                    }
+                    
+                    scorePopup.style.color = scoreColor;
+                    scorePopup.textContent = `+${finalPoints}`;
+                    
+                    if (combo >= 3) {
+                        // Highlight combos
+                        scorePopup.style.fontSize = '20px';
+                        if (combo >= 5) scorePopup.style.textShadow = '0 0 5px #ff9500';
+                    }
+                    
+                    gameContainer.appendChild(scorePopup);
+                    setTimeout(() => scorePopup.remove(), 1000);
+                    
+                    // Play hit sound
+                    playTargetHit(hitPoints);
+                    
+                    // Update score
+                    score += finalPoints;
+                    scoreDisplay.textContent = score;
+                    
+                    // Update hits
+                    hitsCount++;
+                    hitsDisplay.textContent = hitsCount;
+                    
+                    // Remove hit target
+                    removeTarget(hitTarget.id);
+                    
+                    // Show combo indicator for combos >= 3
+                    if (combo >= 3) {
+                        comboCount.textContent = combo;
+                        comboIndicator.style.opacity = '1';
+                        comboIndicator.style.color = combo >= 5 ? '#ff9500' : 'white';
+                        
+                        clearTimeout(window.comboTimeout);
+                        window.comboTimeout = setTimeout(() => {
+                            comboIndicator.style.opacity = '0';
+                        }, 1000);
+                    }
+                } else {
+                    // Reset combo on miss
+                    combo = 0;
+                    comboIndicator.style.opacity = '0';
+                }
+                
+                // Update accuracy
+                updateAccuracy();
+            }
+
+            // Initialize the game
+            init();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,960 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>CPS Tester with Oscilloscope</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<style>
+  :root{
+    --bg:#0a0b0d;
+    --panel:#0f1116;
+    --fg:#f2f5f9;
+    --muted:#98a4b3;
+    --blue:#1a8cff; /* classic computer blue accent */
+    --blue-2:#0070f3;
+    --danger:#ff2d55;
+    --good:#00d17d;
+    --shadow: 0 6px 20px rgba(0,0,0,.35);
+    --ring: 0 0 0 2px rgba(26,140,255,.35), 0 0 18px rgba(26,140,255,.25);
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0;
+    background: radial-gradient(1200px 600px at 50% -20%, #0d121a 5%, var(--bg) 65%);
+    color:var(--fg);
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+    letter-spacing:.2px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    touch-action: manipulation;
+  }
+  .scanlines:before{
+    content:"";
+    pointer-events:none;
+    position:fixed; inset:0;
+    background: repeating-linear-gradient(
+      to bottom,
+      rgba(255,255,255,.04) 0px,
+      rgba(255,255,255,.04) 1px,
+      rgba(0,0,0,0) 2px,
+      rgba(0,0,0,0) 3px
+    );
+    mix-blend-mode: overlay;
+    opacity:.08;
+    z-index:1;
+  }
+  #app{min-height:100%; display:flex; flex-direction:column; position:relative}
+  header{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:14px 16px;
+    background:linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,0));
+    border-bottom:1px solid rgba(255,255,255,.06);
+    position:sticky; top:0; z-index:10;
+    backdrop-filter: blur(6px);
+  }
+  .brand{
+    font-weight:800; letter-spacing:2px; font-size:14px;
+    color:#fff;
+    text-shadow:0 0 10px rgba(26,140,255,.25);
+  }
+  .brand .dot{color:var(--blue)}
+  .hstack{display:flex; align-items:center; gap:10px}
+  .btn, .tab, .link{
+    font:inherit; color:var(--fg); background:transparent; border:1px solid rgba(255,255,255,.12);
+    padding:10px 14px; border-radius:10px; cursor:pointer;
+    transition:.15s ease transform, .2s ease background, .2s ease border-color, .2s ease color, .2s ease box-shadow;
+    box-shadow: var(--shadow);
+    background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
+  }
+  .btn:hover{transform:translateY(-1px); border-color:rgba(26,140,255,.5); box-shadow: var(--ring)}
+  .btn.blue{background:linear-gradient(180deg, rgba(26,140,255,.25), rgba(26,140,255,.15)); border-color: rgba(26,140,255,.7)}
+  .btn.blue:active{transform:translateY(0) scale(.99)}
+  .btn.ghost{border-color:rgba(255,255,255,.08); background:rgba(255,255,255,.02)}
+  .link{border:none; box-shadow:none; opacity:.85}
+  .link:hover{opacity:1; color:var(--blue)}
+  main{flex:1; display:grid; place-items:center; padding:16px}
+  .screen{display:none; width:100%; max-width:1100px; padding:12px}
+  .screen.active{display:block; animation:fadeIn .25s ease}
+  @keyframes fadeIn{ from{opacity:0; transform:translateY(4px)} to{opacity:1; transform:translateY(0)} }
+  .panel{
+    background:linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.01));
+    border:1px solid rgba(255,255,255,.08);
+    border-radius:16px; padding:16px;
+    box-shadow: var(--shadow);
+  }
+  .title{
+    font-weight:900; font-size:28px; letter-spacing:1.2px; margin:0 0 6px 0;
+  }
+  .subtitle{color:var(--muted); font-size:13px; margin-bottom:12px}
+  .grid{display:grid; gap:14px}
+  @media(min-width:920px){ .grid.cols-2{grid-template-columns:1.1fr .9fr} }
+  .group{padding:12px; border-radius:12px; background:rgba(255,255,255,.02); border:1px dashed rgba(255,255,255,.06)}
+  .group h4{margin:0 0 10px 0; font-size:13px; color:#cfe3ff; letter-spacing:.6px}
+  .row{display:flex; flex-wrap:wrap; gap:8px; align-items:center}
+  .opt{
+    display:flex; align-items:center; gap:8px; padding:8px 10px;
+    background:rgba(255,255,255,.03); border:1px solid rgba(255,255,255,.1); border-radius:10px; cursor:pointer
+  }
+  .opt.active{border-color:rgba(26,140,255,.6); box-shadow: var(--ring)}
+  .opt input{accent-color: var(--blue)}
+  .range{width:100%}
+  .label{color:var(--muted); font-size:12px}
+  .muted{color:var(--muted)}
+  .mono{font-variant-numeric: tabular-nums}
+  .kbd{
+    display:inline-block; border:1px solid rgba(255,255,255,.2); padding:2px 6px; border-radius:6px; background:rgba(255,255,255,.05); font-size:12px
+  }
+  /* Game Screen */
+  .hud{
+    display:flex; gap:10px; flex-wrap:wrap; align-items:center; justify-content:space-between; margin-bottom:12px
+  }
+  .stat{
+    padding:10px 12px; border-radius:12px; border:1px solid rgba(255,255,255,.1);
+    background:linear-gradient(180deg, rgba(26,140,255,.12), rgba(26,140,255,.04));
+    min-width:110px; text-align:center; font-weight:700; font-size:14px;
+    box-shadow: var(--shadow);
+  }
+  .stat .big{display:block; font-size:26px; letter-spacing:1px}
+  .pad{
+    position:relative; height:240px; width:100%; border-radius:16px;
+    border:1px solid rgba(255,255,255,.12); background:radial-gradient(300px 260px at 50% 20%, rgba(26,140,255,.18), rgba(26,140,255,.04) 30%, rgba(255,255,255,.01) 70%);
+    overflow:hidden; display:grid; place-items:center; cursor:crosshair; user-select:none;
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,.04), inset 0 30px 60px rgba(0,0,0,.35), 0 10px 30px rgba(0,0,0,.4);
+  }
+  .pad:active{transform:scale(.998)}
+  .pulse{
+    position:absolute; border-radius:50%; pointer-events:none; border:2px solid var(--blue); opacity:.6;
+    box-shadow: 0 0 20px rgba(26,140,255,.5), inset 0 0 20px rgba(26,140,255,.25);
+    animation:pop .6s ease-out forwards;
+  }
+  @keyframes pop{ from{transform:scale(.2); opacity:1} to{transform:scale(1.6); opacity:0} }
+  .padText{font-weight:800; letter-spacing:2px; color:#cfe3ff; text-shadow:0 0 18px rgba(26,140,255,.35)}
+  .scope{
+    position:relative; width:100%; height:260px; border-radius:16px; overflow:hidden;
+    border:1px solid rgba(255,255,255,.12); background:linear-gradient(180deg, rgba(0,0,0,.5), rgba(0,0,0,.6));
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,.04), 0 10px 30px rgba(0,0,0,.4);
+  }
+  .scope .toolbar{
+    position:absolute; top:8px; right:8px; display:flex; gap:6px; z-index:2
+  }
+  canvas{display:block; width:100%; height:100%}
+  .legend{
+    display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-top:8px; color:var(--muted); font-size:12px
+  }
+  .chip{display:inline-flex; align-items:center; gap:6px; padding:6px 10px; border-radius:10px; border:1px solid rgba(255,255,255,.1); background:rgba(255,255,255,.03)}
+  .dot{width:8px; height:8px; border-radius:999px; background:var(--blue); box-shadow:0 0 12px rgba(26,140,255,.7)}
+  /* Leaderboard */
+  .board{display:grid; gap:8px}
+  .tabs{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:8px}
+  .tab{padding:8px 12px; border-radius:10px; border:1px solid rgba(255,255,255,.12)}
+  .tab.active{border-color:rgba(26,140,255,.6); box-shadow: var(--ring); background:rgba(26,140,255,.1)}
+  .rowItem{
+    display:flex; align-items:center; justify-content:space-between; padding:10px 12px; border-radius:10px;
+    border:1px solid rgba(255,255,255,.08); background:rgba(255,255,255,.02);
+  }
+  .rowItem .rank{color:#cfe3ff; width:28px}
+  .rowItem .name{flex:1}
+  .rowItem .score{font-weight:800}
+  .empty{color:var(--muted); text-align:center; padding:14px 0}
+  /* Over screen */
+  .bigScore{
+    font-size:50px; font-weight:900; letter-spacing:2px; margin:6px 0 2px 0; text-shadow:0 0 20px rgba(26,140,255,.35)
+  }
+  .tag{font-size:12px; color:#cfe3ff; letter-spacing:.6px}
+  input[type="text"]{
+    width:100%; padding:12px 14px; border-radius:12px; background:rgba(255,255,255,.03);
+    border:1px solid rgba(255,255,255,.12); color:var(--fg); outline:none; transition:.2s ease border-color, .2s ease box-shadow
+  }
+  input[type="text"]:focus{border-color:rgba(26,140,255,.6); box-shadow: var(--ring)}
+  .rowButtons{display:flex; flex-wrap:wrap; gap:10px; margin-top:12px}
+  /* Helpers */
+  .center{display:flex; align-items:center; justify-content:center}
+  .hidden{display:none !important}
+  .foot{opacity:.7; font-size:11px}
+</style>
+</head>
+<body class="scanlines">
+<div id="app">
+  <header>
+    <div class="brand">CPS TEST <span class="dot">●</span> LAB</div>
+    <div class="hstack">
+      <button class="link" id="nav-home">Home</button>
+      <button class="link" id="nav-leaderboard">Leaderboard</button>
+      <button class="link" id="nav-help" title="Controls">Help</button>
+    </div>
+  </header>
+  <main>
+    <!-- Home / Settings -->
+    <section id="screen-home" class="screen active">
+      <div class="panel">
+        <div class="title">Click Speed Tester</div>
+        <div class="subtitle">Minimal. Blue. Fast. Includes a square-wave oscilloscope of your clicks.</div>
+        <div class="grid cols-2">
+          <div class="group">
+            <h4>Test Settings</h4>
+            <div class="row" style="margin-bottom:8px">
+              <span class="label">Duration</span>
+              <div class="row" id="durationOptions" style="gap:6px; margin-left:8px">
+                <label class="opt"><input type="radio" name="duration" value="1">1s</label>
+                <label class="opt active"><input type="radio" name="duration" value="5" checked>5s</label>
+                <label class="opt"><input type="radio" name="duration" value="10">10s</label>
+                <label class="opt"><input type="radio" name="duration" value="15">15s</label>
+              </div>
+            </div>
+
+            <div class="row" style="gap:14px; margin:6px 0 12px">
+              <label class="opt" id="toggleCountdown"><input type="checkbox" id="countdown" checked>Countdown</label>
+              <label class="opt" id="toggleSound"><input type="checkbox" id="sound" checked>Sound</label>
+              <label class="opt" id="toggleHaptics"><input type="checkbox" id="haptics" checked>Haptics</label>
+            </div>
+
+            <div class="row" style="align-items:flex-end; gap:16px">
+              <div style="flex:1">
+                <div class="label">Volume</div>
+                <input id="volume" class="range" type="range" min="0" max="100" value="70">
+              </div>
+              <div style="flex:1">
+                <div class="label">Pulse Width (osc)</div>
+                <input id="pulseWidth" class="range" type="range" min="20" max="200" value="90">
+              </div>
+            </div>
+
+            <div class="rowButtons">
+              <button id="btn-start" class="btn blue">Start Test</button>
+              <button id="btn-clear" class="btn ghost" title="Clear local scores">Reset Local Scores</button>
+            </div>
+            <div class="foot" style="margin-top:8px">
+              Tip: You can click the pad or press the spacebar. Avoid multi-touch; only primary pointer counts.
+            </div>
+          </div>
+
+          <div class="group">
+            <h4>Oscilloscope</h4>
+            <div class="row" style="gap:8px; margin-bottom:8px">
+              <label class="opt active" id="oscModeScroll"><input type="radio" name="oscMode" value="scroll" checked>Scroll</label>
+              <label class="opt" id="oscModeTrig"><input type="radio" name="oscMode" value="trigger">Triggered</label>
+              <label class="opt" id="freezeBtn"><input type="checkbox" id="freeze">Freeze</label>
+            </div>
+            <div class="row" style="gap:16px">
+              <div style="flex:1">
+                <div class="label">Timebase (window: <span id="timebaseLabel">5.0</span>s)</div>
+                <input id="timebase" class="range" type="range" min="2" max="12" step="0.5" value="5">
+              </div>
+              <div style="flex:1">
+                <div class="label">Persistence</div>
+                <input id="persistence" class="range" type="range" min="0" max="95" value="35">
+              </div>
+            </div>
+            <div class="foot" style="margin-top:8px">
+              Trigger locks view around a recent rising edge. Pulse width controls square height span per click.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel" style="margin-top:14px">
+        <div class="title" style="font-size:20px">Global Leaderboard</div>
+        <div class="subtitle">Top results by duration (stored locally; import/export to share).</div>
+        <div class="tabs" id="boardTabs">
+          <button class="tab active" data-dur="1">1s</button>
+          <button class="tab" data-dur="5">5s</button>
+          <button class="tab" data-dur="10">10s</button>
+          <button class="tab" data-dur="15">15s</button>
+        </div>
+        <div class="board" id="boardList"></div>
+        <div class="rowButtons">
+          <button class="btn ghost" id="exportBtn">Export Board</button>
+          <button class="btn ghost" id="importBtn">Import Board</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Game -->
+    <section id="screen-game" class="screen">
+      <div class="hud">
+        <div class="stat"><span class="label">Time</span><span id="hudTime" class="big mono">5.00</span></div>
+        <div class="stat"><span class="label">Clicks</span><span id="hudClicks" class="big mono">0</span></div>
+        <div class="stat"><span class="label">Instant CPS</span><span id="hudCPS" class="big mono">0.00</span></div>
+        <div class="hstack">
+          <button class="btn ghost" id="btn-abort">Abort</button>
+        </div>
+      </div>
+      <div class="pad" id="pad">
+        <div class="padText">TAP / CLICK / SPACE</div>
+      </div>
+      <div class="scope" style="margin-top:12px; position:relative">
+        <div class="toolbar">
+          <button class="btn ghost" id="scopeClear">Clear</button>
+          <button class="btn ghost" id="scopeFreeze">Freeze</button>
+        </div>
+        <canvas id="scope"></canvas>
+      </div>
+      <div class="legend">
+        <div class="chip"><span class="dot"></span> Square wave click pulses</div>
+        <div class="chip"><span class="mono">Mode:</span>&nbsp;<span id="legendMode">Scroll</span></div>
+        <div class="chip"><span class="mono">Timebase:</span>&nbsp;<span id="legendTimebase">5.0s</span></div>
+        <div class="chip"><span class="mono">Persistence:</span>&nbsp;<span id="legendPersistence">35%</span></div>
+      </div>
+    </section>
+
+    <!-- Game Over -->
+    <section id="screen-over" class="screen">
+      <div class="panel">
+        <div class="title">Results</div>
+        <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr))">
+          <div class="group center" style="flex-direction:column">
+            <div class="tag">Clicks in <span id="overDur">5</span>s</div>
+            <div id="overClicks" class="bigScore mono">0</div>
+          </div>
+          <div class="group center" style="flex-direction:column">
+            <div class="tag">Average CPS</div>
+            <div id="overCPS" class="bigScore mono">0.00</div>
+          </div>
+          <div class="group center" style="flex-direction:column">
+            <div class="tag">You are</div>
+            <div id="overRank" class="bigScore" style="font-size:34px">—</div>
+          </div>
+        </div>
+        <div class="grid" style="grid-template-columns: 1.2fr .8fr; gap:12px; margin-top:10px">
+          <div class="group">
+            <h4>Save to Leaderboard</h4>
+            <div class="row" style="gap:10px">
+              <input id="nameInput" type="text" placeholder="Your name (optional)">
+              <button class="btn blue" id="saveScore">Save</button>
+            </div>
+            <div class="foot" id="saveMsg" style="margin-top:6px"></div>
+          </div>
+          <div class="group">
+            <h4>Next</h4>
+            <div class="rowButtons">
+              <button class="btn blue" id="playAgain">Play Again</button>
+              <button class="btn ghost" id="toHome">Home</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<script>
+(function(){
+  const $ = sel => document.querySelector(sel);
+  const $$ = sel => Array.from(document.querySelectorAll(sel));
+
+  // State
+  const state = {
+    duration: 5,
+    countdown: true,
+    sound: true,
+    haptics: true,
+    volume: .7,
+    osc: {
+      mode: 'scroll', // 'scroll' or 'trigger'
+      timebase: 5,
+      persistence: .35,
+      pulseMs: 90,
+      freeze: false
+    }
+  };
+
+  // Screens
+  const screens = {
+    home: $('#screen-home'),
+    game: $('#screen-game'),
+    over: $('#screen-over')
+  };
+  function showScreen(key){
+    Object.values(screens).forEach(s => s.classList.remove('active'));
+    screens[key].classList.add('active');
+  }
+  $('#nav-home').addEventListener('click', () => showScreen('home'));
+  $('#nav-leaderboard').addEventListener('click', () => {
+    showScreen('home'); scrollToBoard();
+  });
+  $('#nav-help').addEventListener('click', () => {
+    alert('Controls:\n- Click/Tap the pad or press Spacebar\n- Adjust duration in settings\n- Oscilloscope shows square pulses per click\n- Trigger mode locks to rising edges\n- Export/Import leaderboard to share');
+  });
+
+  // Settings UI
+  // Duration radios
+  const durationOptions = $('#durationOptions');
+  durationOptions.addEventListener('change', () => {
+    const val = parseFloat(durationOptions.querySelector('input:checked').value);
+    state.duration = val;
+    setActive(durationOptions, val.toString());
+    refreshBoard();
+  });
+  function setActive(container, val){
+    container.querySelectorAll('.opt').forEach(el => el.classList.remove('active'));
+    container.querySelectorAll('input').forEach(i => {
+      if(i.value === String(val)) i.closest('.opt').classList.add('active');
+    });
+  }
+  // Toggles
+  $('#countdown').addEventListener('change', e => state.countdown = e.target.checked);
+  $('#sound').addEventListener('change', e => state.sound = e.target.checked);
+  $('#haptics').addEventListener('change', e => state.haptics = e.target.checked);
+  $('#volume').addEventListener('input', e => {
+    state.volume = parseInt(e.target.value,10)/100;
+    if(AudioEngine.ctx) AudioEngine.setVolume(state.volume);
+  });
+  $('#pulseWidth').addEventListener('input', e => state.osc.pulseMs = parseInt(e.target.value,10));
+  // Osc settings
+  $('input[name="oscMode"][value="scroll"]').addEventListener('change', e=> setOscMode('scroll'));
+  $('input[name="oscMode"][value="trigger"]').addEventListener('change', e=> setOscMode('trigger'));
+  function setOscMode(m){
+    state.osc.mode = m;
+    $('#legendMode').textContent = m.charAt(0).toUpperCase()+m.slice(1);
+    $('#oscModeScroll').classList.toggle('active', m==='scroll');
+    $('#oscModeTrig').classList.toggle('active', m==='trigger');
+    Scope.mode = state.osc.mode;
+  }
+  $('#freeze').addEventListener('change', e => {
+    state.osc.freeze = e.target.checked;
+    Scope.freeze(state.osc.freeze);
+  });
+  $('#timebase').addEventListener('input', e => {
+    const v = parseFloat(e.target.value);
+    state.osc.timebase = v;
+    $('#timebaseLabel').textContent = v.toFixed(1);
+    $('#legendTimebase').textContent = v.toFixed(1)+'s';
+    Scope.setTimebase(v);
+  });
+  $('#persistence').addEventListener('input', e => {
+    const p = parseInt(e.target.value,10)/100;
+    state.osc.persistence = p;
+    $('#legendPersistence').textContent = Math.round(p*100)+'%';
+    Scope.setPersistence(p);
+  });
+
+  // Buttons
+  $('#btn-start').addEventListener('click', () => startFlow());
+  $('#btn-abort').addEventListener('click', () => endGame(true));
+  $('#playAgain').addEventListener('click', () => { showScreen('home'); startFlow(); });
+  $('#toHome').addEventListener('click', () => showScreen('home'));
+  $('#btn-clear').addEventListener('click', () => {
+    if(confirm('Reset local leaderboard for all durations?')){
+      localStorage.removeItem('cpslab_board_v1');
+      refreshBoard();
+      showToast('Local scores cleared.');
+    }
+  });
+
+  // Leaderboard
+  const boardTabs = $('#boardTabs');
+  let boardDur = 1;
+  boardTabs.addEventListener('click', e => {
+    const btn = e.target.closest('button.tab');
+    if(!btn) return;
+    boardDur = parseInt(btn.dataset.dur,10);
+    $$('#boardTabs .tab').forEach(t => t.classList.toggle('active', t===btn));
+    refreshBoard();
+  });
+  $('#exportBtn').addEventListener('click', () => {
+    const data = getBoard();
+    const blob = new Blob([JSON.stringify(data,null,2)], {type:'application/json'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href=url; a.download='cpslab_board.json'; a.click();
+    URL.revokeObjectURL(url);
+  });
+  $('#importBtn').addEventListener('click', async () => {
+    const pick = document.createElement('input');
+    pick.type='file'; pick.accept='application/json';
+    pick.addEventListener('change', async () => {
+      const file = pick.files[0];
+      if(!file) return;
+      try{
+        const text = await file.text();
+        const json = JSON.parse(text);
+        setBoard(json); refreshBoard();
+        showToast('Board imported.');
+      }catch(e){ alert('Import failed: '+e.message); }
+    });
+    pick.click();
+  });
+
+  function scrollToBoard(){
+    const target = $('#boardTabs');
+    target.scrollIntoView({behavior:'smooth', block:'center'});
+  }
+
+  // HUD elements
+  const hudTime = $('#hudTime');
+  const hudClicks = $('#hudClicks');
+  const hudCPS = $('#hudCPS');
+  const pad = $('#pad');
+
+  // Audio Engine
+  const AudioEngine = {
+    ctx: null,
+    master: null,
+    unlocked: false,
+    setVolume(v){ if(this.master) this.master.gain.value = v; },
+    init(){
+      if(this.ctx) return;
+      const ctx = new (window.AudioContext||window.webkitAudioContext)();
+      const master = ctx.createGain();
+      master.gain.value = state.volume;
+      master.connect(ctx.destination);
+      this.ctx = ctx; this.master = master;
+      this.unlocked = true;
+    },
+    beep(freq=880, ms=70, type='square'){
+      if(!state.sound) return;
+      try{
+        if(!this.ctx){ this.init(); }
+        const t = this.ctx.currentTime;
+        const o = this.ctx.createOscillator();
+        const g = this.ctx.createGain();
+        o.type = type; o.frequency.value = freq;
+        g.gain.value = 0.0001;
+        g.gain.setTargetAtTime(0.08, t, 0.002);
+        g.gain.setTargetAtTime(0.0001, t + ms/1000*0.4, 0.03);
+        o.connect(g).connect(this.master);
+        o.start();
+        o.stop(t + Math.max(.05, ms/1000));
+      }catch(e){}
+    }
+  };
+  function unlockAudioOnce(){
+    if(AudioEngine.unlocked) return;
+    const start = () => {
+      try{ AudioEngine.init(); }catch(e){}
+      window.removeEventListener('pointerdown', start);
+      window.removeEventListener('keydown', start);
+      AudioEngine.unlocked = true;
+    };
+    window.addEventListener('pointerdown', start, {once:true});
+    window.addEventListener('keydown', start, {once:true});
+  }
+  unlockAudioOnce();
+
+  // Haptics
+  function vibrate(ms=10){ if(state.haptics && navigator.vibrate) navigator.vibrate(ms); }
+
+  // Scope Engine
+  const Scope = (function(){
+    const canvas = $('#scope');
+    const ctx = canvas.getContext('2d');
+    const DPR = Math.max(1, window.devicePixelRatio || 1);
+    let width=0, height=0;
+    let sampleRate = 240; // samples per second
+    let timebase = state.osc.timebase; // seconds visible
+    let capacity = Math.max(64, Math.floor(sampleRate*timebase));
+    let buffer = new Float32Array(capacity);
+    let writeIndex = 0;
+    let carry = 0;
+    let pulseRemain = 0;
+    let persistence = state.osc.persistence; // 0..1
+    let frozen = false;
+    let mode = state.osc.mode; // 'scroll' or 'trigger'
+    let lastDraw = performance.now();
+    const grid = {major:10, minor:50};
+
+    function resize(){
+      const rect = canvas.getBoundingClientRect();
+      width = Math.max(200, Math.floor(rect.width*DPR));
+      height = Math.max(120, Math.floor(rect.height*DPR));
+      canvas.width = width; canvas.height = height;
+    }
+    window.addEventListener('resize', resize, {passive:true});
+    resize();
+
+    function clearBuffer(){
+      buffer = new Float32Array(capacity);
+      writeIndex = 0; pulseRemain=0;
+      ctx.clearRect(0,0,width,height);
+    }
+
+    function setTimebase(sec){
+      timebase = Math.max(0.5, sec);
+      capacity = Math.max(64, Math.floor(sampleRate*timebase));
+      const old = buffer;
+      buffer = new Float32Array(capacity);
+      // copy last samples if possible
+      const n = Math.min(old.length, buffer.length);
+      for(let i=0;i<n;i++){
+        const idx = (writeIndex - n + i + old.length) % old.length;
+        buffer[i] = old[idx];
+      }
+      writeIndex = n % capacity;
+    }
+
+    function injectPulse(ms){
+      pulseRemain += Math.max(1, Math.round(ms * sampleRate / 1000));
+    }
+
+    function setPersistence(p){ persistence = Math.max(0, Math.min(0.98, p)); }
+    function freeze(on){ frozen = !!on; }
+    function setMode(m){ mode = m; }
+
+    function tick(dt){
+      // dt in ms
+      if(frozen) return;
+      carry += dt * sampleRate / 1000;
+      let n = carry|0;
+      if(n<=0) return;
+      carry -= n;
+      while(n-->0){
+        buffer[writeIndex] = pulseRemain>0 ? 1 : 0;
+        if(pulseRemain>0) pulseRemain--;
+        writeIndex = (writeIndex+1) % capacity;
+      }
+    }
+
+    function draw(){
+      // fade (persistence)
+      ctx.fillStyle = `rgba(0,0,0,${Math.max(.06,1 - (persistence*1.1))})`;
+      ctx.fillRect(0,0,width,height);
+      // grid
+      const gridColor = 'rgba(120,170,255,.18)';
+      const gridColorBold = 'rgba(120,170,255,.32)';
+      const stepX = width / grid.major;
+      const stepY = height / 4;
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      for(let i=0;i<=grid.major;i++){
+        ctx.moveTo(i*stepX+0.5, 0); ctx.lineTo(i*stepX+0.5, height);
+      }
+      for(let j=0;j<=4;j++){
+        ctx.moveTo(0, j*stepY+0.5); ctx.lineTo(width, j*stepY+0.5);
+      }
+      ctx.strokeStyle = gridColor;
+      ctx.stroke();
+      // center line
+      ctx.beginPath(); ctx.moveTo(0, height*.7); ctx.lineTo(width, height*.7);
+      ctx.strokeStyle = gridColorBold; ctx.stroke();
+
+      // waveform
+      ctx.lineWidth = Math.max(1.5, DPR);
+      ctx.strokeStyle = '#56a7ff';
+      ctx.shadowColor = 'rgba(26,140,255,.6)';
+      ctx.shadowBlur = 8;
+
+      const baseY = height*0.70;
+      const amp = Math.min(height*0.55, Math.max(20, height*0.25));
+      ctx.beginPath();
+
+      let startIndex;
+      if(mode === 'trigger'){
+        // scan backwards for rising edge near middle of buffer
+        const scan = Math.min(capacity-2, Math.floor(sampleRate*2));
+        let idx = writeIndex;
+        let found = -1;
+        for(let i=0;i<scan;i++){
+          const a = buffer[(idx - i - 2 + capacity) % capacity];
+          const b = buffer[(idx - i - 1 + capacity) % capacity];
+          if(a < 0.5 && b >= 0.5){ found = (idx - i - 1 + capacity) % capacity; break; }
+        }
+        if(found === -1){
+          startIndex = writeIndex; // fallback
+        } else {
+          const pre = Math.floor(capacity * 0.15); // pre-trigger
+          startIndex = (found - pre + capacity) % capacity;
+        }
+      } else {
+        startIndex = writeIndex;
+      }
+
+      // draw across canvas width
+      for(let x=0; x<width; x++){
+        const sIdx = (startIndex + Math.floor(x * capacity / width)) % capacity;
+        const v = buffer[sIdx] >= 0.5 ? 1 : 0;
+        const y = v ? (baseY - amp) : baseY;
+        if(x===0) ctx.moveTo(x+0.5, y+0.5); else ctx.lineTo(x+0.5, y+0.5);
+      }
+      ctx.stroke();
+      ctx.shadowBlur = 0;
+    }
+
+    function loop(t){
+      const now = performance.now();
+      const dt = now - lastDraw;
+      lastDraw = now;
+      tick(dt);
+      if(!frozen) draw();
+      requestAnimationFrame(loop);
+    }
+    requestAnimationFrame(loop);
+
+    return {
+      injectPulse,
+      setTimebase,
+      setPersistence,
+      freeze,
+      set mode(m){ setMode(m) },
+      clear: clearBuffer
+    };
+  })();
+
+  // Game Logic
+  let running = false;
+  let startTime = 0;
+  let endTime = 0;
+  let countdownTimer = null;
+  let clicks = 0;
+  let clickTimestamps = []; // ms
+  let canSpace = true;
+
+  function startFlow(){
+    // prepare audio
+    if(state.sound) AudioEngine.init();
+    // countdown if enabled
+    if(state.countdown){
+      showScreen('game');
+      resetGameState();
+      freezeScope(false);
+      hudTime.textContent = 'Ready';
+      hudCPS.textContent = '0.00';
+      hudClicks.textContent = '0';
+      let c = 3;
+      const cadence = () => {
+        if(c>0){
+          hudTime.textContent = String(c);
+          Scope.injectPulse(state.osc.pulseMs);
+          AudioEngine.beep(600 + (3-c)*120, 100, 'square');
+          flashPad();
+          c--;
+          countdownTimer = setTimeout(cadence, 650);
+        } else {
+          AudioEngine.beep(1200, 120, 'square');
+          startGame();
+        }
+      };
+      cadence();
+    } else {
+      showScreen('game');
+      resetGameState();
+      startGame();
+    }
+  }
+  function resetGameState(){
+    running = false;
+    clicks = 0;
+    clickTimestamps.length = 0;
+    Scope.clear();
+    canSpace = true;
+    $('#legendMode').textContent = state.osc.mode.charAt(0).toUpperCase()+state.osc.mode.slice(1);
+    $('#legendTimebase').textContent = state.osc.timebase.toFixed(1)+'s';
+    $('#legendPersistence').textContent = Math.round(state.osc.persistence*100)+'%';
+    Scope.setTimebase(state.osc.timebase);
+    Scope.setPersistence(state.osc.persistence);
+    Scope.mode = state.osc.mode;
+  }
+  function startGame(){
+    running = true;
+    startTime = performance.now();
+    endTime = startTime + state.duration*1000;
+    updateHUD();
+  }
+
+  function endGame(aborted=false){
+    running = false;
+    clearTimeout(countdownTimer);
+    const duration = state.duration;
+    const totalClicks = clicks;
+    const cps = totalClicks / duration;
+    $('#overDur').textContent = duration;
+    $('#overClicks').textContent = totalClicks;
+    $('#overCPS').textContent = cps.toFixed(2);
+    $('#overRank').textContent = classify(cps);
+    $('#saveMsg').textContent = '';
+    $('#nameInput').value = '';
+    if(!aborted) showScreen('over');
+    else showScreen('home');
+  }
+
+  function classify(cps){
+    if(cps >= 15) return 'Machine';
+    if(cps >= 12) return 'Turbo';
+    if(cps >= 9) return 'Thunder';
+    if(cps >= 6) return 'Gamer';
+    if(cps >= 4) return 'Human';
+    return 'Chill';
+  }
+
+  function updateHUD(){
+    if(!running) return;
+    const now = performance.now();
+    const remaining = Math.max(0, endTime - now);
+    hudTime.textContent = (remaining/1000).toFixed(2);
+    hudClicks.textContent = String(clicks);
+    // instant CPS (last 1s window)
+    const cutoff = now - 1000;
+    while(clickTimestamps.length && clickTimestamps[0] < cutoff) clickTimestamps.shift();
+    hudCPS.textContent = (clickTimestamps.length / 1).toFixed(2);
+
+    if(remaining <= 0){
+      endGame(false);
+      return;
+    }
+    requestAnimationFrame(updateHUD);
+  }
+
+  function flashPad(x,y){
+    const d = document.createElement('div');
+    d.className='pulse';
+    const rect = pad.getBoundingClientRect();
+    const size = Math.min(rect.width, rect.height)*.35;
+    d.style.width = d.style.height = size+'px';
+    d.style.left = (x? (x - rect.left - size/2) : (rect.width/2 - size/2))+'px';
+    d.style.top = (y? (y - rect.top - size/2) : (rect.height/2 - size/2))+'px';
+    pad.appendChild(d);
+    setTimeout(()=>d.remove(), 600);
+  }
+
+  // Pad interactions
+  pad.addEventListener('pointerdown', e => {
+    if(e.button !== 0) return;
+    if(!running) return;
+    registerClick(e.clientX, e.clientY);
+  });
+
+  // Spacebar
+  window.addEventListener('keydown', e => {
+    if(e.code === 'Space'){
+      e.preventDefault();
+      if(canSpace && running){
+        canSpace = false;
+        registerClick();
+      }
+    }
+  });
+  window.addEventListener('keyup', e => {
+    if(e.code === 'Space'){ canSpace = true; }
+  });
+
+  function registerClick(x,y){
+    clicks++;
+    clickTimestamps.push(performance.now());
+    Scope.injectPulse(state.osc.pulseMs);
+    if(state.sound) AudioEngine.beep(950, 50, 'square');
+    vibrate(8);
+    flashPad(x,y);
+  }
+
+  // Scope toolbar
+  $('#scopeClear').addEventListener('click', () => Scope.clear());
+  $('#scopeFreeze').addEventListener('click', () => {
+    state.osc.freeze = !state.osc.freeze;
+    Scope.freeze(state.osc.freeze);
+  });
+
+  function freezeScope(on){ state.osc.freeze = !!on; Scope.freeze(on); }
+
+  // Save score
+  $('#saveScore').addEventListener('click', () => {
+    const name = ($('#nameInput').value || 'Anonymous').slice(0, 24);
+    const duration = state.duration;
+    const score = parseFloat($('#overCPS').textContent);
+    if(isNaN(score) || score<=0){ $('#saveMsg').textContent = 'No score to save.'; return; }
+    const board = getBoard();
+    if(!board[duration]) board[duration] = [];
+    board[duration].push({name, cps:score, clicks: parseInt($('#overClicks').textContent,10) , duration, at: Date.now()});
+    // keep top 20
+    board[duration].sort((a,b)=> b.cps - a.cps);
+    board[duration] = board[duration].slice(0,20);
+    setBoard(board);
+    $('#saveMsg').textContent = 'Saved!';
+    refreshBoard();
+  });
+
+  // Leaderboard store
+  function getBoard(){
+    try{
+      const raw = localStorage.getItem('cpslab_board_v1');
+      if(!raw) return {};
+      const json = JSON.parse(raw);
+      return json || {};
+    }catch(e){ return {}; }
+  }
+  function setBoard(json){
+    try{ localStorage.setItem('cpslab_board_v1', JSON.stringify(json)); }catch(e){}
+  }
+
+  function refreshBoard(){
+    const data = getBoard()[boardDur] || [];
+    const host = $('#boardList');
+    host.innerHTML = '';
+    if(!data.length){
+      const div = document.createElement('div');
+      div.className='empty';
+      div.textContent = 'No scores yet. Be the first!';
+      host.appendChild(div);
+      return;
+    }
+    data.forEach((row, i) => {
+      const li = document.createElement('div');
+      li.className='rowItem';
+      const left = document.createElement('div');
+      left.className='hstack';
+      left.style.gap='10px';
+      const rank = document.createElement('div');
+      rank.className='rank mono';
+      rank.textContent = (i+1).toString().padStart(2,'0');
+      const name = document.createElement('div');
+      name.className='name';
+      name.textContent = row.name || 'Anonymous';
+      left.append(rank, name);
+
+      const right = document.createElement('div');
+      const cps = document.createElement('div');
+      cps.className = 'score mono';
+      cps.textContent = (row.cps||0).toFixed(2)+' cps';
+      const meta = document.createElement('div');
+      meta.className='muted';
+      const d = new Date(row.at||Date.now());
+      meta.textContent = `${row.clicks||Math.round(row.cps*boardDur)} clicks • ${boardDur}s • ${d.toLocaleDateString()}`;
+      right.append(cps, meta);
+      right.style.textAlign='right';
+      li.append(left, right);
+      host.appendChild(li);
+    });
+  }
+  refreshBoard();
+
+  // Start test CTA from keyboard
+  window.addEventListener('keydown', e => {
+    if(screens.home.classList.contains('active') && (e.code==='Space' || e.code==='Enter')){
+      e.preventDefault();
+      startFlow();
+    }
+  });
+
+  // Prevent context menu on pad for mobile
+  pad.addEventListener('contextmenu', e => e.preventDefault());
+
+  // Toast
+  let toastTimer;
+  function showToast(msg){
+    let t = document.getElementById('toast');
+    if(!t){
+      t = document.createElement('div');
+      t.id='toast';
+      t.style.position='fixed';
+      t.style.bottom='18px';
+      t.style.left='50%';
+      t.style.transform='translateX(-50%)';
+      t.style.background='linear-gradient(180deg, rgba(26,140,255,.3), rgba(26,140,255,.15))';
+      t.style.border='1px solid rgba(26,140,255,.6)';
+      t.style.padding='10px 14px';
+      t.style.borderRadius='12px';
+      t.style.boxShadow='0 8px 30px rgba(0,0,0,.45)';
+      t.style.zIndex='50';
+      document.body.appendChild(t);
+    }
+    t.textContent = msg;
+    t.style.opacity='1';
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(()=> t.style.opacity='0', 1800);
+  }
+
+  // Ensure first time focus
+  setTimeout(()=> window.focus(), 50);
+
+})();
+</script>
+</html>

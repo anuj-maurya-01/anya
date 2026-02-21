@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Neon Space Flap</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      color-scheme: dark;
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(circle at 10% 20%, #111827 0, #020617 35%, #020409 70%, #000000 100%);
+      background-size: 250% 250%;
+      animation: bgGlow 26s ease-in-out infinite alternate;
+      font-family: "Orbitron", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: #e5f3ff;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+      user-select: none;
+    }
+    @keyframes bgGlow {
+      0% { background-position: 0% 0%; }
+      100% { background-position: 100% 100%; }
+    }
+    #game-wrapper {
+      position: relative;
+      width: 100%;
+      max-width: 480px;
+      padding: 12px;
+    }
+    #gameCanvas {
+      width: 100%;
+      height: auto;
+      max-height: calc(100vh - 80px);
+      display: block;
+      background: radial-gradient(circle at 20% 0%, #020617 0, #02010a 40%, #000000 100%);
+      border-radius: 18px;
+      box-shadow:
+        0 0 30px rgba(34, 211, 238, 0.35),
+        0 0 80px rgba(129, 140, 248, 0.5),
+        0 0 140px rgba(56, 189, 248, 0.45);
+      border: 1px solid rgba(148, 163, 184, 0.35);
+      touch-action: none;
+      cursor: pointer;
+    }
+    #hint {
+      margin-top: 10px;
+      text-align: center;
+      font-size: 0.78rem;
+      opacity: 0.75;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      text-shadow: 0 0 8px rgba(34, 211, 238, 0.55);
+    }
+    @media (max-width: 480px) {
+      #game-wrapper {
+        padding: 8px;
+      }
+      #hint {
+        font-size: 0.7rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="game-wrapper">
+    <canvas id="gameCanvas"></canvas>
+    <div id="hint">Tap / Click / Press Space to ignite thrusters</div>
+  </div>
+
+  <script>
+    (function() {
+      "use strict";
+
+      const canvas = document.getElementById("gameCanvas");
+      const ctx = canvas.getContext("2d");
+
+      const GAME_WIDTH = 360;
+      const GAME_HEIGHT = 640;
+
+      const dpr = window.devicePixelRatio || 1;
+      canvas.width = GAME_WIDTH * dpr;
+      canvas.height = GAME_HEIGHT * dpr;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+      const GRAVITY = 900;
+      const FLAP_STRENGTH = 360;
+      const PIPE_SPEED = 165;
+      const PIPE_INTERVAL = 1.35; // seconds
+      const GAP_SIZE = 150;
+
+      let state = "READY"; // READY, PLAYING, GAMEOVER
+      let lastTime = 0;
+      let readyTime = 0;
+
+      let ship;
+      let obstacles = [];
+      let stars = [];
+      let score = 0;
+      let bestScore = 0;
+      let spawnTimer = 0;
+
+      let screenShake = 0;
+      let hitFlashTimer = 0;
+
+      let backgroundGradient = null;
+
+      const STORAGE_KEY = "neonSpaceFlapBestScore";
+
+      const AudioFX = {
+        ctx: null,
+        init() {
+          if (this.ctx) return;
+          const AudioContext = window.AudioContext || window.webkitAudioContext;
+          if (!AudioContext) return;
+          this.ctx = new AudioContext();
+        },
+        resume() {
+          if (this.ctx && this.ctx.state === "suspended") {
+            this.ctx.resume();
+          }
+        },
+        flap() {
+          if (!this.ctx) return;
+          const ctx = this.ctx;
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = "square";
+          const t = ctx.currentTime;
+          osc.frequency.setValueAtTime(320, t);
+          osc.frequency.exponentialRampToValueAtTime(640, t + 0.11);
+          gain.gain.setValueAtTime(0.0, t);
+          gain.gain.linearRampToValueAtTime(0.32, t + 0.02);
+          gain.gain.exponentialRampToValueAtTime(0.001, t + 0.18);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(t);
+          osc.stop(t + 0.22);
+        },
+        score() {
+          if (!this.ctx) return;
+          const ctx = this.ctx;
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = "triangle";
+          const t = ctx.currentTime;
+          osc.frequency.setValueAtTime(660, t);
+          osc.frequency.exponentialRampToValueAtTime(990, t + 0.16);
+          gain.gain.setValueAtTime(0.0, t);
+          gain.gain.linearRampToValueAtTime(0.28, t + 0.02);
+          gain.gain.exponentialRampToValueAtTime(0.001, t + 0.2);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(t);
+          osc.stop(t + 0.22);
+        },
+        hit() {
+          if (!this.ctx) return;
+          const ctx = this.ctx;
+          const duration = 0.3;
+          const buffer = ctx.createBuffer(1, ctx.sampleRate * duration, ctx.sampleRate);
+          const data = buffer.getChannelData(0);
+          for (let i = 0; i < data.length; i++) {
+            const decay = 1 - i / data.length;
+            data[i] = (Math.random() * 2 - 1) * decay;
+          }
+          const noise = ctx.createBufferSource();
+          const gain = ctx.createGain();
+          const t = ctx.currentTime;
+          gain.gain.setValueAtTime(0.45, t);
+          gain.gain.exponentialRampToValueAtTime(0.001, t + duration);
+          noise.buffer = buffer;
+          noise.connect(gain);
+          gain.connect(ctx.destination);
+          noise.start(t);
+          noise.stop(t + duration);
+        }
+      };
+
+      function initBackground() {
+        backgroundGradient = ctx.createLinearGradient(0, 0, 0, GAME_HEIGHT);
+        backgroundGradient.addColorStop(0, "#020617");
+        backgroundGradient.addColorStop(0.3, "#02021b");
+        backgroundGradient.addColorStop(0.65, "#02000c");
+        backgroundGradient.addColorStop(1, "#000000");
+      }
+
+      function initStars() {
+        stars = [];
+        const total = 70;
+        for (let i = 0; i < total; i++) {
+          const layer = Math.random() < 0.6 ? 0 : 1;
+          const speedBase = layer === 0 ? 18 : 35;
+          stars.push({
+            x: Math.random() * GAME_WIDTH,
+            y: Math.random() * GAME_HEIGHT,
+            size: layer === 0 ? (0.7 + Math.random() * 1.4) : (1.2 + Math.random() * 1.6),
+            speed: speedBase + Math.random() * (layer === 0 ? 14 : 26),
+            alpha: 0.35 + Math.random() * 0.45,
+            layer
+          });
+        }
+      }
+
+      function resetShip() {
+        ship = {
+          x: GAME_WIDTH * 0.28,
+          y: GAME_HEIGHT * 0.5,
+          radius: 16,
+          vy: 0,
+          rotation: 0
+        };
+      }
+
+      function resetGameState() {
+        obstacles = [];
+        spawnTimer = 0;
+        score = 0;
+        screenShake = 0;
+        hitFlashTimer = 0;
+        readyTime = 0;
+        resetShip();
+      }
+
+      function loadBestScore() {
+        try {
+          const stored = localStorage.getItem(STORAGE_KEY);
+          bestScore = stored ? parseInt(stored, 10) || 0 : 0;
+        } catch (e) {
+          bestScore = 0;
+        }
+      }
+
+      function saveBestScore() {
+        try {
+          localStorage.setItem(STORAGE_KEY, String(bestScore));
+        } catch (e) {
+          // ignore
+        }
+      }
+
+      function spawnObstacle() {
+        const margin = 80;
+        const maxY = GAME_HEIGHT - margin - GAP_SIZE;
+        const gapTop = margin + Math.random() * (maxY - margin);
+        const gapCenterY = gapTop + GAP_SIZE / 2;
+        obstacles.push({
+          x: GAME_WIDTH + 60,
+          width: 74,
+          gapY: gapCenterY,
+          gapHeight: GAP_SIZE,
+          scored: false
+        });
+      }
+
+      function updateStars(dt) {
+        for (let s of stars) {
+          s.x -= s.speed * dt;
+          if (s.x < -4) {
+            s.x = GAME_WIDTH + Math.random() * (GAME_WIDTH * 0.5);
+            s.y = Math.random() * GAME_HEIGHT;
+          }
+        }
+      }
+
+      function updateShip(dt, applyPhysics) {
+        if (applyPhysics) {
+          ship.vy += GRAVITY * dt;
+          ship.y += ship.vy * dt;
+
+          const targetRot = Math.max(Math.min(ship.vy * 0.0024, 0.7), -0.55);
+          ship.rotation += (targetRot - ship.rotation) * 0.2;
+        } else {
+          const bobAmplitude = 6;
+          const bobSpeed = 2.1;
+          ship.y = GAME_HEIGHT * 0.52 + Math.sin(readyTime * bobSpeed) * bobAmplitude;
+          ship.rotation = Math.sin(readyTime * bobSpeed) * 0.18;
+        }
+      }
+
+      function updateObstacles(dt, allowScoring) {
+        for (let o of obstacles) {
+          o.x -= PIPE_SPEED * dt;
+
+          if (allowScoring && !o.scored && (o.x + o.width) < ship.x) {
+            o.scored = true;
+            score++;
+            if (score > bestScore) {
+              bestScore = score;
+              saveBestScore();
+            }
+            AudioFX.score();
+          }
+        }
+        obstacles = obstacles.filter(o => o.x + o.width > -100);
+      }
+
+      function circleRectCollision(cx, cy, r, rect) {
+        if (rect.h <= 0) return false;
+        const nearestX = Math.max(rect.x, Math.min(cx, rect.x + rect.w));
+        const nearestY = Math.max(rect.y, Math.min(cy, rect.y + rect.h));
+        const dx = cx - nearestX;
+        const dy = cy - nearestY;
+        return dx * dx + dy * dy < r * r;
+      }
+
+      function checkCollisions() {
+        if (ship.y - ship.radius <= 0 || ship.y + ship.radius >= GAME_HEIGHT) {
+          triggerGameOver();
+          return;
+        }
+        for (let o of obstacles) {
+          const topRect = {
+            x: o.x,
+            y: 0,
+            w: o.width,
+            h: o.gapY - o.gapHeight / 2
+          };
+          const bottomRect = {
+            x: o.x,
+            y: o.gapY + o.gapHeight / 2,
+            w: o.width,
+            h: GAME_HEIGHT - (o.gapY + o.gapHeight / 2)
+          };
+          if (circleRectCollision(ship.x, ship.y, ship.radius, topRect) ||
+              circleRectCollision(ship.x, ship.y, ship.radius, bottomRect)) {
+            triggerGameOver();
+            return;
+          }
+        }
+      }
+
+      function triggerGameOver() {
+        if (state !== "PLAYING") return;
+        state = "GAMEOVER";
+        hitFlashTimer = 0.25;
+        screenShake = 14;
+        AudioFX.hit();
+      }
+
+      function flap() {
+        ship.vy = -FLAP_STRENGTH;
+        AudioFX.flap();
+      }
+
+      function handlePress() {
+        AudioFX.init();
+        AudioFX.resume();
+        if (state === "READY") {
+          state = "PLAYING";
+          flap();
+        } else if (state === "PLAYING") {
+          flap();
+        } else if (state === "GAMEOVER") {
+          state = "READY";
+          resetGameState();
+        }
+      }
+
+      function update(dt) {
+        readyTime += state === "READY" ? dt : 0;
+
+        updateStars(dt);
+
+        if (state === "READY") {
+          updateShip(dt, false);
+        } else if (state === "PLAYING") {
+          spawnTimer += dt;
+          if (spawnTimer >= PIPE_INTERVAL) {
+            spawnTimer = 0;
+            spawnObstacle();
+          }
+          updateShip(dt, true);
+          updateObstacles(dt, true);
+          checkCollisions();
+        } else if (state === "GAMEOVER") {
+          updateShip(dt, true);
+          updateObstacles(dt, false);
+        }
+
+        if (screenShake > 0) {
+          const decayBase = 0.9;
+          const factor = Math.pow(decayBase, dt * 60);
+          screenShake *= factor;
+          if (screenShake < 0.3) screenShake = 0;
+        }
+        if (hitFlashTimer > 0) {
+          hitFlashTimer -= dt;
+          if (hitFlashTimer < 0) hitFlashTimer = 0;
+        }
+      }
+
+      function drawBackground() {
+        ctx.fillStyle = backgroundGradient || "#020617";
+        ctx.fillRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
+
+        const nebulaGrad = ctx.createRadialGradient(
+          GAME_WIDTH * 0.1, GAME_HEIGHT * 0.2, 40,
+          GAME_WIDTH * 0.1, GAME_HEIGHT * 0.2, 260
+        );
+        nebulaGrad.addColorStop(0, "rgba(59, 130, 246, 0.38)");
+        nebulaGrad.addColorStop(0.4, "rgba(8, 47, 73, 0.32)");
+        nebulaGrad.addColorStop(1, "rgba(15, 23, 42, 0)");
+        ctx.fillStyle = nebulaGrad;
+        ctx.fillRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
+
+        const purpleNebula = ctx.createRadialGradient(
+          GAME_WIDTH * 0.9, GAME_HEIGHT * 0.75, 40,
+          GAME_WIDTH * 0.9, GAME_HEIGHT * 0.75, 260
+        );
+        purpleNebula.addColorStop(0, "rgba(147, 51, 234, 0.35)");
+        purpleNebula.addColorStop(0.4, "rgba(76, 29, 149, 0.3)");
+        purpleNebula.addColorStop(1, "rgba(12, 10, 34, 0)");
+        ctx.fillStyle = purpleNebula;
+        ctx.fillRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
+      }
+
+      function drawStars() {
+        for (let s of stars) {
+          ctx.globalAlpha = s.alpha;
+          const color = s.layer === 0 ? "#e0f2fe" : "#7dd3fc";
+          ctx.fillStyle = color;
+          ctx.beginPath();
+          ctx.arc(s.x, s.y, s.size, 0, Math.PI * 2);
+          ctx.fill();
+
+          if (s.layer === 1) {
+            ctx.strokeStyle = "rgba(125, 211, 252, 0.6)";
+            ctx.lineWidth = 0.6;
+            ctx.beginPath();
+            ctx.moveTo(s.x + s.size, s.y);
+            ctx.lineTo(s.x + s.size + 5, s.y);
+            ctx.stroke();
+          }
+        }
+        ctx.globalAlpha = 1;
+      }
+
+      function drawObstacles() {
+        for (let o of obstacles) {
+          const x = o.x;
+          const w = o.width;
+          const gapTop = o.gapY - o.gapHeight / 2;
+          const gapBottom = o.gapY + o.gapHeight / 2;
+
+          const pipeGrad = ctx.createLinearGradient(x, 0, x + w, 0);
+          pipeGrad.addColorStop(0, "#22d3ee");
+          pipeGrad.addColorStop(0.5, "#a855f7");
+          pipeGrad.addColorStop(1, "#22c55e");
+
+          ctx.save();
+          ctx.shadowColor = "rgba(34, 211, 238, 0.6)";
+          ctx.shadowBlur = 22;
+
+          ctx.fillStyle = pipeGrad;
+
+          // Top
+          ctx.beginPath();
+          ctx.roundRect(x, 0, w, gapTop, 10);
+          ctx.fill();
+
+          // Bottom
+          const bottomHeight = GAME_HEIGHT - gapBottom;
+          ctx.beginPath();
+          ctx.roundRect(x, gapBottom, w, bottomHeight, 10);
+          ctx.fill();
+
+          ctx.restore();
+
+          // Energy rims
+          const rimWidth = 6;
+          const rimColorTop = "rgba(56, 189, 248, 0.8)";
+          const rimColorBottom = "rgba(244, 63, 94, 0.8)";
+
+          ctx.lineWidth = rimWidth;
+          ctx.strokeStyle = rimColorTop;
+          ctx.beginPath();
+          ctx.moveTo(x - 4, gapTop);
+          ctx.lineTo(x + w + 4, gapTop);
+          ctx.stroke();
+
+          ctx.strokeStyle = rimColorBottom;
+          ctx.beginPath();
+          ctx.moveTo(x - 4, gapBottom);
+          ctx.lineTo(x + w + 4, gapBottom);
+          ctx.stroke();
+
+          // Subtle moving glyphs inside pipes
+          const glyphCount = 6;
+          ctx.save();
+          ctx.strokeStyle = "rgba(148, 163, 184, 0.3)";
+          ctx.lineWidth = 1;
+          for (let i = 0; i < glyphCount; i++) {
+            const gy = (gapTop / glyphCount) * i * 0.9;
+            const gy2 = gapBottom + (GAME_HEIGHT - gapBottom) / glyphCount * i * 0.9;
+            ctx.beginPath();
+            ctx.moveTo(x + 6, gy + 10);
+            ctx.lineTo(x + w - 6, gy + 6);
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.moveTo(x + 6, gy2 + 10);
+            ctx.lineTo(x + w - 6, gy2 + 6);
+            ctx.stroke();
+          }
+          ctx.restore();
+        }
+      }
+
+      function drawShip() {
+        const s = ship;
+        ctx.save();
+        ctx.translate(s.x, s.y);
+        ctx.rotate(s.rotation);
+
+        // Glow
+        ctx.save();
+        ctx.shadowBlur = 25;
+        ctx.shadowColor = "rgba(56, 189, 248, 0.9)";
+
+        // Body
+        const hullGrad = ctx.createLinearGradient(-s.radius, 0, s.radius, 0);
+        hullGrad.addColorStop(0, "#22d3ee");
+        hullGrad.addColorStop(0.45, "#38bdf8");
+        hullGrad.addColorStop(1, "#a855f7");
+
+        ctx.fillStyle = hullGrad;
+        ctx.beginPath();
+        ctx.moveTo(-s.radius * 0.6, -s.radius * 0.9);
+        ctx.quadraticCurveTo(s.radius * 0.3, -s.radius, s.radius * 0.9, 0);
+        ctx.quadraticCurveTo(s.radius * 0.3, s.radius, -s.radius * 0.6, s.radius * 0.9);
+        ctx.quadraticCurveTo(-s.radius * 1.1, 0, -s.radius * 0.6, -s.radius * 0.9);
+        ctx.closePath();
+        ctx.fill();
+        ctx.restore();
+
+        // Cockpit
+        ctx.save();
+        ctx.fillStyle = "rgba(15, 23, 42, 0.9)";
+        ctx.strokeStyle = "rgba(191, 219, 254, 0.9)";
+        ctx.lineWidth = 1.4;
+        ctx.beginPath();
+        ctx.ellipse(2, -4, 7, 9, 0, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+        ctx.restore();
+
+        // Engine core
+        ctx.save();
+        const engineGrad = ctx.createRadialGradient(-s.radius * 0.7, 0, 1, -s.radius * 0.7, 0, 9);
+        engineGrad.addColorStop(0, "#e0f2fe");
+        engineGrad.addColorStop(0.4, "#38bdf8");
+        engineGrad.addColorStop(1, "rgba(15, 23, 42, 0.1)");
+        ctx.fillStyle = engineGrad;
+        ctx.beginPath();
+        ctx.arc(-s.radius * 0.7, 0, 9, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+
+        // Thruster flame
+        ctx.save();
+        const thrustBase = 10;
+        const thrustPulse = (Math.sin(performance.now() * 0.02) + 1) * 4;
+        const motionFactor = Math.max(-ship.vy * 0.02, 0);
+        const thrusterLength = thrustBase + thrustPulse + motionFactor;
+        const flameGrad = ctx.createLinearGradient(
+          -s.radius * 0.7 - thrusterLength, 0,
+          -s.radius * 0.7, 0
+        );
+        flameGrad.addColorStop(0, "rgba(248, 250, 252, 0)");
+        flameGrad.addColorStop(0.2, "rgba(125, 211, 252, 0.45)");
+        flameGrad.addColorStop(0.7, "rgba(45, 212, 191, 0.9)");
+        flameGrad.addColorStop(1, "rgba(34, 197, 235, 1)");
+        ctx.fillStyle = flameGrad;
+        ctx.beginPath();
+        ctx.moveTo(-s.radius * 0.7 - thrusterLength, -5);
+        ctx.quadraticCurveTo(-s.radius * 0.7 - thrusterLength * 0.2, 0, -s.radius * 0.7 - thrusterLength, 5);
+        ctx.lineTo(-s.radius * 0.7, 3);
+        ctx.quadraticCurveTo(-s.radius * 0.7 - 4, 0, -s.radius * 0.7, -3);
+        ctx.closePath();
+        ctx.globalAlpha = 0.9;
+        ctx.shadowColor = "rgba(56, 189, 248, 0.9)";
+        ctx.shadowBlur = 16;
+        ctx.fill();
+        ctx.restore();
+
+        // Shield ring
+        ctx.save();
+        ctx.beginPath();
+        ctx.strokeStyle = "rgba(59, 130, 246, 0.55)";
+        ctx.lineWidth = 2;
+        ctx.setLineDash([3, 3]);
+        ctx.arc(2, 0, s.radius * 1.05, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.restore();
+
+        ctx.restore();
+      }
+
+      function drawHUD() {
+        ctx.save();
+        ctx.textAlign = "center";
+        ctx.fillStyle = "#e0f2fe";
+        ctx.strokeStyle = "rgba(8, 47, 73, 0.9)";
+        ctx.lineWidth = 4;
+        ctx.font = "32px 'Orbitron', system-ui, sans-serif";
+        const scoreText = String(score);
+        ctx.strokeText(scoreText, GAME_WIDTH / 2, 64);
+        ctx.fillText(scoreText, GAME_WIDTH / 2, 64);
+        ctx.restore();
+      }
+
+      function drawStartScreen() {
+        ctx.save();
+        ctx.fillStyle = "rgba(15, 23, 42, 0.86)";
+        const panelWidth = GAME_WIDTH * 0.78;
+        const panelHeight = 190;
+        const panelX = (GAME_WIDTH - panelWidth) / 2;
+        const panelY = GAME_HEIGHT * 0.2;
+        ctx.beginPath();
+        ctx.roundRect(panelX, panelY, panelWidth, panelHeight, 16);
+        ctx.fill();
+
+        ctx.strokeStyle = "rgba(56, 189, 248, 0.9)";
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+
+        ctx.textAlign = "center";
+
+        const titleGrad = ctx.createLinearGradient(panelX, panelY, panelX + panelWidth, panelY);
+        titleGrad.addColorStop(0, "#38bdf8");
+        titleGrad.addColorStop(0.5, "#a855f7");
+        titleGrad.addColorStop(1, "#22c55e");
+        ctx.fillStyle = titleGrad;
+        ctx.font = "24px 'Orbitron', system-ui, sans-serif";
+        ctx.fillText("NEON SPACE FLAP", GAME_WIDTH / 2, panelY + 42);
+
+        ctx.fillStyle = "rgba(148, 163, 184, 0.95)";
+        ctx.font = "11px 'Orbitron', system-ui, sans-serif";
+        ctx.fillText("Pilot your starfighter through", GAME_WIDTH / 2, panelY + 80);
+        ctx.fillText("charged quantum gates.", GAME_WIDTH / 2, panelY + 96);
+
+        ctx.fillStyle = "rgba(148, 163, 184, 0.9)";
+        ctx.font = "10px 'Orbitron', system-ui, sans-serif";
+        ctx.fillText("Tap / Click / Press SPACE to ignite thrusters", GAME_WIDTH / 2, panelY + 128);
+        ctx.fillText("Don't touch the energy fields.", GAME_WIDTH / 2, panelY + 144);
+
+        const pulse = 0.4 + 0.6 * Math.abs(Math.sin(readyTime * 3));
+        ctx.fillStyle = "rgba(34, 211, 238," + pulse.toFixed(3) + ")";
+        ctx.font = "12px 'Orbitron', system-ui, sans-serif";
+        ctx.fillText("TAP TO LAUNCH", GAME_WIDTH / 2, panelY + 174);
+
+        ctx.restore();
+      }
+
+      function drawGameOver() {
+        ctx.save();
+        ctx.fillStyle = "rgba(15, 23, 42, 0.88)";
+        const panelWidth = GAME_WIDTH * 0.78;
+        const panelHeight = 210;
+        const panelX = (GAME_WIDTH - panelWidth) / 2;
+        const panelY = GAME_HEIGHT * 0.27;
+        ctx.beginPath();
+        ctx.roundRect(panelX, panelY, panelWidth, panelHeight, 16);
+        ctx.fill();
+
+        const borderGrad = ctx.createLinearGradient(panelX, panelY, panelX + panelWidth, panelY + panelHeight);
+        borderGrad.addColorStop(0, "#f97316");
+        borderGrad.addColorStop(0.5, "#f43f5e");
+        borderGrad.addColorStop(1, "#a855f7");
+        ctx.strokeStyle = borderGrad;
+        ctx.lineWidth = 2;
+        ctx.stroke();
+
+        ctx.textAlign = "center";
+
+        ctx.fillStyle = "#fca5a5";
+        ctx.font = "22px 'Orbitron', system-ui, sans-serif";
+        ctx.fillText("SYSTEM FAILURE", GAME_WIDTH / 2, panelY + 42);
+
+        ctx.fillStyle = "rgba(148, 163, 184, 0.95)";
+        ctx.font = "11px 'Orbitron', system-ui, sans-serif";
+        ctx.fillText("Score: " + score, GAME_WIDTH / 2, panelY + 80);
+        ctx.fillText("Best:  " + bestScore, GAME_WIDTH / 2, panelY + 100);
+
+        ctx.fillStyle = "rgba(148, 163, 184, 0.9)";
+        ctx.font = "10px 'Orbitron', system-ui, sans-serif";
+        ctx.fillText("You collided with the quantum gate.", GAME_WIDTH / 2, panelY + 132);
+
+        const pulse = 0.3 + 0.7 * Math.abs(Math.sin(performance.now() * 0.004));
+        ctx.fillStyle = "rgba(34, 197, 235," + pulse.toFixed(3) + ")";
+        ctx.font = "12px 'Orbitron', system-ui, sans-serif";
+        ctx.fillText("TAP / SPACE TO RE-LAUNCH", GAME_WIDTH / 2, panelY + 172);
+
+        ctx.restore();
+      }
+
+      function drawHitFlash() {
+        if (hitFlashTimer <= 0) return;
+        const alpha = Math.min(hitFlashTimer / 0.25, 1);
+        ctx.fillStyle = "rgba(248, 250, 252," + (alpha * 0.85).toFixed(3) + ")";
+        ctx.fillRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
+      }
+
+      function gameLoop(timestamp) {
+        if (!lastTime) lastTime = timestamp;
+        const dt = Math.min((timestamp - lastTime) / 1000, 0.033);
+        lastTime = timestamp;
+
+        update(dt);
+
+        ctx.save();
+
+        if (screenShake > 0) {
+          const shakeX = (Math.random() - 0.5) * screenShake;
+          const shakeY = (Math.random() - 0.5) * screenShake;
+          ctx.translate(shakeX, shakeY);
+        }
+
+        drawBackground();
+        drawStars();
+        drawObstacles();
+        drawShip();
+        ctx.restore();
+
+        drawHitFlash();
+        drawHUD();
+
+        if (state === "READY") {
+          drawStartScreen();
+        } else if (state === "GAMEOVER") {
+          drawGameOver();
+        }
+
+        requestAnimationFrame(gameLoop);
+      }
+
+      function setupInput() {
+        canvas.addEventListener("pointerdown", function(e) {
+          e.preventDefault();
+          handlePress();
+        });
+
+        window.addEventListener("keydown", function(e) {
+          if (e.code === "Space" || e.code === "ArrowUp") {
+            e.preventDefault();
+            handlePress();
+          }
+        });
+      }
+
+      function init() {
+        initBackground();
+        initStars();
+        loadBestScore();
+        resetGameState();
+        setupInput();
+        requestAnimationFrame(gameLoop);
+      }
+
+      init();
+    })();
+  </script>
+</body>
+</html>
