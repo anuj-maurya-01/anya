@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=div, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta name="title" content="3D Cube - For Crush | Aoudumber Bade">
     <meta name="github" content="https://github.com/Aoudumber-Bade">
     <link rel="shortcut icon" href="./logo.ico" type="image/x-icon" />
@@ -142,6 +142,23 @@
   <script src='./js/OBJLoader.js'></script>
   <script src='./js/gsap.min.js'></script>
   <script src="./js/script.js"></script>
+  <script src="./js/navbar.js"></script>
+  <script>
+    // Play audio on first user interaction
+    const audio = document.getElementById('hb');
+    let audioPlayed = false;
+    
+    function playAudio() {
+      if (!audioPlayed && audio) {
+        audio.play().catch(e => console.log('Audio autoplay blocked:', e));
+        audioPlayed = true;
+      }
+    }
+    
+    document.addEventListener('click', playAudio, { once: true });
+    document.addEventListener('touchstart', playAudio, { once: true });
+    document.addEventListener('keydown', playAudio, { once: true });
+  </script>
 
 
   <script>
@@ -326,7 +343,7 @@
       THREE.MeshSurfaceSampler = MeshSurfaceSampler;
 
     })();
-
+    
   </script>
   <script>
     (function () {
@@ -1377,8 +1394,8 @@ document.getElementById("navLinks").classList.toggle("show");
 }
 });
   </script>
-  <script src="https://cdn.jsdelivr.net/gh/zyoushuo/Blog/hexo/js/mouse_slide.js"></script>
-  <script src="https://cdn.jsdelivr.net/gh/zyoushuo/Blog/hexo/js/clicklove.js"></script>
+ <!-- <script src="https://cdn.jsdelivr.net/gh/zyoushuo/Blog/hexo/js/mouse_slide.js"></script> -->
+  <!--<script src="https://cdn.jsdelivr.net/gh/zyoushuo/Blog/hexo/js/clicklove.js"></script>-->
   
 </body>
 
