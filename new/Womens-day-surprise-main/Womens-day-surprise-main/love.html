@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -9,7 +9,97 @@
     <link rel="shortcut icon" href="./logo.ico" type="image/x-icon" />
   <title>Happy Womens Day</title>
   <link rel="stylesheet" href="./css/style.css">
+<style>
+/* ============ NAVBAR ============ */
 
+.navbar{
+  background: rgba(255,255,255,.95);
+  backdrop-filter: blur(10px);
+  border-radius: 40px;
+  margin: 15px auto;
+  padding: 12px 20px;
+  max-width: 92%;
+  box-shadow: 0 6px 20px rgba(0,0,0,.12);
+  position: relative;
+  z-index: 1000;
+}
+
+.nav-container{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.logo{
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #e91e63;
+}
+
+.hamburger{
+  display: none;
+  flex-direction: column;
+  cursor: pointer;
+}
+
+.hamburger span{
+  width: 26px;
+  height: 3px;
+  background: #e91e63;
+  margin: 4px 0;
+  border-radius: 4px;
+}
+
+.nav-links{
+  list-style: none;
+  display: flex;
+  gap: 15px;
+  padding: 0;
+  margin: 0;
+}
+
+.nav-links a{
+  text-decoration: none;
+  color: #e91e63;
+  font-weight: 600;
+  padding: 8px 12px;
+  border-radius: 20px;
+  transition: .3s;
+}
+
+.nav-links a:hover,
+.nav-links a.active{
+  background: #e91e63;
+  color: #fff;
+}
+
+/* ============ MOBILE NAV ============ */
+
+@media (max-width:768px){
+
+  .hamburger{
+    display: flex;
+  }
+
+  .nav-links{
+    position: absolute;
+    top: 70px;
+    left: 5%;
+    width: 90%;
+    background: rgba(255,255,255,.98);
+    flex-direction: column;
+    align-items: center;
+    display: none;
+    padding: 20px 0;
+    border-radius: 25px;
+    box-shadow: 0 10px 25px rgba(0,0,0,.2);
+  }
+
+  .nav-links.show{
+    display: flex;
+  }
+}
+</style>
 </head>
 
 <body>
@@ -20,7 +110,31 @@
 		<p class="text-center text-white text-sm"><a
 			href="https://www.instagram.com/aoudumber.dev/reels/#"></a></p>
 	  </div>
+    <nav class="navbar">
+  <div class="nav-container">
 
+    <div class="logo">💖 Our Heartbeat</div>
+
+    <div class="hamburger" id="hamburger">
+      <span></span><span></span><span></span>
+    </div>
+
+    <ul class="nav-links" id="navLinks">
+      <li><a href="timer.html">Our Time</a></li>
+      <li><a href="heartbeat.html">Our Heartbeat</a></li>
+      <li><a href="book.html">Book</a></li>
+      <li><a href="messages.html">Messages</a></li>
+      <li><a href="dates.html">Dates</a></li>
+      <li><a href="moments.html">Cute Moments</a></li>
+      <li><a href="dance.html">Dance</a></li>
+      <li><a href="letters.html">Letters</a></li>
+      <li><a href="confession.html">Confession</a></li>
+      <li><a href="chats.html">Chats</a></li>
+      <li><a href="qa.html">Q&A</a></li>
+    </ul>
+
+  </div>
+</nav>
   <script src='./js/three.min.js'></script>
   <!-- <script src='./js/MeshSurfaceSampler.js'></script> -->
   <script src='./js/TrackballControls.js'></script>
@@ -1257,7 +1371,11 @@
       }, 10);
     })(document.getElementById('pinkboard'));
 
-    
+    document.addEventListener("click",e=>{
+if(e.target.closest("#hamburger")){
+document.getElementById("navLinks").classList.toggle("show");
+}
+});
   </script>
   <script src="https://cdn.jsdelivr.net/gh/zyoushuo/Blog/hexo/js/mouse_slide.js"></script>
   <script src="https://cdn.jsdelivr.net/gh/zyoushuo/Blog/hexo/js/clicklove.js"></script>
