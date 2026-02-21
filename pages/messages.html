@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Messages 💌</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:"Poppins",sans-serif}
+
+body{
+  opacity:1;
+  font-weight:500;
+  filter:none;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  background:linear-gradient(to bottom,#ffd1dc,#ffc1d6);
+  min-height:100vh;
+  color:#333;
+  overflow-x:hidden;
+}
+
+/* ===== BACKGROUND HEARTS ===== */
+.heart{
+  position:fixed;
+  font-size:18px;
+  animation:float 6s linear infinite;
+}
+
+@keyframes float{
+  from{transform:translateY(100vh);opacity:1}
+  to{transform:translateY(-10vh);opacity:0}
+}
+
+/* ===== NAVBAR ===== */
+.navbar{
+ background:rgba(255,255,255,0.95);
+ backdrop-filter: none;
+  margin:15px auto;
+  padding:12px 18px;
+  border-radius:40px;
+  max-width:92%;
+  box-shadow:0 8px 20px rgba(0,0,0,0.1);
+  position:relative;
+  z-index:1000;
+}
+
+.nav-container{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+.logo{
+  font-weight:600;
+  color:#e75480;
+}
+
+.hamburger{
+  display:none;
+  flex-direction:column;
+  cursor:pointer;
+}
+
+.hamburger span{
+  width:26px;
+  height:3px;
+  background:#e75480;
+  margin:4px 0;
+  border-radius:4px;
+}
+
+.nav-links{
+  list-style:none;
+  display:flex;
+  gap:14px;
+}
+
+.nav-links a{
+  text-decoration:none;
+  color:#d81b60;
+  font-size:14px;
+  font-weight:600;
+  padding:6px 14px;
+  border-radius:20px;
+  transition:.3s;
+}
+
+.nav-links a.active,
+.nav-links a:hover{
+  background:#e75480;
+  color:#fff;
+}
+
+
+/* ===== MOBILE NAV ===== */
+@media(max-width:768px){
+  .hamburger{display:flex}
+
+  .nav-links{
+    position:absolute;
+    top:65px;
+    left:5%;
+    width:90%;
+    background:rgba(255,255,255,0.97);
+    flex-direction:column;
+    align-items:center;
+    display:none;
+    padding:20px 0;
+    border-radius:25px;
+    box-shadow:0 10px 25px rgba(0,0,0,.2);
+  }
+
+  .nav-links.show{display:flex}
+}
+
+/* ===== MESSAGE CARD ===== */
+.card{
+  max-width:900px;
+  background:#fff;
+  margin:40px auto;
+  padding:35px 25px;
+  border-radius:25px;
+  text-align:center;
+  box-shadow:0 15px 40px rgba(0,0,0,0.15);
+}
+
+.card h1{
+  font-family:"Great Vibes",cursive;
+  color:#e75480;
+  font-size:38px;
+  margin-bottom:15px;
+}
+
+.card p{
+  font-size:15px;
+  line-height:1.7;
+  margin-bottom:15px;
+  color:#444;
+  font-weight:500;
+}
+
+.card img{
+  width:100%;
+  max-width:320px;
+  margin-top:20px;
+  border-radius:15px;
+}
+
+/* ===== BUTTONS ===== */
+.nav-btns{
+  display:flex;
+  justify-content:center;
+  gap:20px;
+  margin-bottom:40px;
+}
+
+.nav-btns button{
+  background:#ff7fa6;
+  border:none;
+  color:white;
+  padding:10px 22px;
+  border-radius:25px;
+  font-size:14px;
+  cursor:pointer;
+  box-shadow:0 8px 18px rgba(0,0,0,0.15);
+}
+
+.nav-btns button:hover{background:#ff5f95}
+
+/* ===== FOOTER ===== */
+footer{
+  background:#ffe6ee;
+  margin:15px;
+  padding:12px;
+  border-radius:25px;
+  text-align:center;
+  font-size:13px;
+  color:#777;
+}
+</style>
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <div class="nav-container">
+    <div class="logo">💖 Our Messages</div>
+
+    <div class="hamburger" id="hamburger">
+      <span></span><span></span><span></span>
+    </div>
+
+    <ul class="nav-links" id="navLinks">
+      <li><a href="timer.html">Our Time</a></li>
+      <li><a href="heartbeat.html">Our Heartbeat</a></li>
+      <li><a href="book.html">Book</a></li>
+      <li><a href="messages.html" class="active">Messages</a></li>
+      <li><a href="dates.html">Dates</a></li>
+      <li><a href="moments.html">Cute Moments</a></li>
+      <li><a href="dance.html">Dance</a></li>
+      <li><a href="letters.html">Letters</a></li>
+      <li><a href="confession.html">Confession</a></li>
+      <li><a href="chats.html">Chats</a></li>
+      <li><a href="qa.html">Q&A</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- MESSAGE CARD -->
+<div class="card">
+  <h1 id="msgTitle"></h1>
+  <p id="msgText1"></p>
+  <p id="msgText2"></p>
+  <img id="msgGif" src="" alt="Love Gif">
+</div>
+
+
+<!-- NAV BUTTONS -->
+<div class="nav-btns">
+  <button onclick="prevMsg()">← Previous</button>
+  <button onclick="nextMsg()">Next →</button>
+</div>
+
+<footer>
+  Made with ❤️ for our eternal love. Forever and always.
+</footer>
+
+
+<script>
+/* ===============================
+   HAMBURGER MENU
+================================ */
+const hamburger = document.getElementById("hamburger");
+const navLinks = document.getElementById("navLinks");
+
+if (hamburger && navLinks) {
+  hamburger.addEventListener("click", () => {
+    navLinks.classList.toggle("show");
+  });
+}
+
+/* ===============================
+   LOVE MESSAGES DATA
+================================ */
+const messages = [
+  { title:"Dear My Love 💕", text1:"Every heartbeat writes your name on my soul.", text2:"Loving you is my forever choice.", gif:"https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExaXU2aWI0emQwdHRrMHF3dzR5OW1tb2dmaW95aHVsMmh4cWdjdzE4cCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/Lv2VhwHrt6ljhvZ6LF/giphy.gif" },
+  { title:"My Safe Place 💖", text1:"In your arms, chaos turns into peace.", text2:"You are my home.", gif:"https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExaXU2aWI0emQwdHRrMHF3dzR5OW1tb2dmaW95aHVsMmh4cWdjdzE4cCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/1JmGiBtqTuehfYxuy9/giphy.gif" },
+  { title:"Forever Us 💫", text1:"I don’t want perfection.", text2:"I just want you.", gif:"https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExdWI3bzljOWl2a3ltdDZpc2R5MjBoazduY2o4NTNzMHNsZ2JuODg5NiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/yZ7Xya4covzN1WhOAa/giphy.gif" },
+  { title:"My Heart ❤️", text1:"My heart learned your name before my mind did.", text2:"You live in every beat.", gif:"https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExdmJvdWx3NWdveTZobTYxY2ZrYXp6MzJweGllZmp2bmVyM29qbHRiYSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/Fc0glzAjfjsaV0IfUQ/giphy.gif" },
+  { title:"Always You 🌹", text1:"In every lifetime, I’d find you again.", text2:"It will always be you.", gif:"https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExNzN1d3RsYmE4em8wNzZpb3VxM3Zxcm4xZG01b3pmdTEyaDJoMmEzaSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/s6fnVyWTfM2nUKuMVY/giphy.gif" },
+
+  { title:"My Forever 💍", text1:"Time feels softer when I’m with you.", text2:"Forever sounds beautiful with you.", gif:"https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExMGQwYnEyY2NlZmhiOGJ6bzFpYzA4M2F5czkzamo1bXk0cnptb2N0ayZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/chpVje4XVoDLnDQ7XJ/giphy.gif" },
+  { title:"Soulmate ✨", text1:"Some connections don’t need explanations.", text2:"Ours just exists.", gif:"https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExcG00OW54cmJjdnE0a3k1dWczOXhhcHpscHl0MWczN3hpYnJzZDBvcyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/jIL3lq9Ah00tG/giphy.gif" },
+  { title:"My Sunshine ☀️", text1:"Even my darkest days glow because of you.", text2:"You are my light.", gif:"https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExd2p4MThiejgwdmljOTg0bnBxMWJsaXVxNzBvdHJnNDRrc2huaG16eCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/ZVfhlEEGbwuFG/giphy.gif" },
+  { title:"Endless Love 💞", text1:"My love for you doesn’t know limits.", text2:"It only grows.", gif:"https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExN3BkOTN2NWlhOHBoeDBwbmkxa2JiOXExOTBidmU3ZTU0ZWh4eGtrbSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/EuD7d6MoWkB1K/giphy.gif" },
+  { title:"Heartbeat 💓", text1:"Every beat whispers your name.", text2:"You are my rhythm.", gif:"https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExZG42Z2lkZGtia2hpbmZ5djU5MmRsNjczY2Z3MjUzOTVxamZxdzN4cCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/YKcWT7DvtwVVu/giphy.gif" },
+
+  { title:"My Calm 🌙", text1:"You quiet my storms without trying.", text2:"You are my peace.", gif:"https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExM2VlNmFwMHNkYnE5dGh3cG1lc2wzNnBycHgzZ25hOHppZm0zeW1vZyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/QWeENbJNNTZbqZHOmQ/giphy.gif" },
+  { title:"My Dream 💭", text1:"You feel like a dream I never wake from.", text2:"Reality is sweeter with you.", gif:"https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExdzd5eHhoeWVramw3YXVxM29neDM0N2Jxa2kwMmcwb2h1bzVobGc0dSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/SwRD4ZrUnlrLG/giphy.gif" },
+  { title:"Always Mine 💘", text1:"Distance means nothing when hearts are close.", text2:"You are mine.", gif:"https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExcnplNWQxeWl0M3lpZmJqd3psZGEwa2NqOHBrMjBmaXd0ejNiOTZqdyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/q9DJg2aDD8P5K/giphy.gif" },
+  { title:"My Thought 🥰", text1:"You cross my mind quietly.", text2:"And stay there.", gif:"https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExeDNzc3BtMHhkdnpwN213Y2Z4ZzFpM2VzODdwajhiYWFlNDRweWc5cSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/byTkG3fBegmk2nEVbX/giphy.gif" },
+  { title:"Together 🌍", text1:"As long as I have you, I fear nothing.", text2:"Together always.", gif:"https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExNWx6NzlpZ2dkbjk3cnZ2YW9uaDV6MjE2bDl0Y3I2c2s5dDdydnA3NiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/bGm9FuBCGg4SY/giphy.gif" },
+
+  { title:"My Smile 😊", text1:"You make me smile without effort.", text2:"That’s magic.", gif:"https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExNGZybWViYWZ4aDJocXJicHU1ZTZvbm05aHp2NnU2MzBreGk4NG5tdSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/143v0Z4767T15e/giphy.gif" },
+  { title:"Unbreakable 💪", text1:"Life bends, but we don’t break.", text2:"Side by side.", gif:"https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExdXMwdWZmeGF0MWIwejh6dHIxaW82enA5YzVkaTVrMmtyYWVnejd5byZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/BOPz50G5Cf2Y5XS9Ba/giphy.gif" },
+  { title:"My Path 🧭", text1:"I don’t need directions with you.", text2:"You are the journey.", gif:"https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExN28ydG9zb2diaGF5cDNtN3A0Y3dmeXM0cjV6MGh3MGxwNmJhM3V0ayZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/lLzdDOfCPQSiY/giphy.gif" },
+  { title:"Pure Love 💗", text1:"Ours is simple, real, and true.", text2:"That’s what makes it beautiful.", gif:"https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExaGtqOWw0NmpiZTM3eWJmbTZyZ2l6bjEyN3JxNjY1dWZnN3ZzMzkwbSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/a0DYSmcM5wcmqw1HOG/giphy.gif" },
+  { title:"Eternal ♾️", text1:"This love doesn’t end.", text2:"It only continues.", gif:"https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExOGN1aXBhcmswcHYxMmFlbjFpc3J6dDhjYXo3MW1ldHhzOHF1Nmo5ZSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/FqBTvSNjNzeZG/giphy.gif" },
+
+  { title:"My World 🌎", text1:"Everything feels right with you.", text2:"My world begins here.", gif:"https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExYmRreXZva3VqdWU4bGRrZmQ2OWN0dDhhMnlybnNiamg2ZTJrMTU4MSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/LZfastEco7W3m/giphy.gif" },
+  { title:"My Choice 💕", text1:"Every day I choose you again.", text2:"And again.", gif:"https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExaTkwcWI1bDh2enlrZ3ZxNHA5ZXVyNnltdmEwN2d0YTYxcXc1OWlmeCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/1wvcQ6ERuXNU8LqFRF/giphy.gif" },
+  { title:"My Home 🏡", text1:"Your presence feels like shelter.", text2:"Safe and warm.", gif:"https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExNnp1OTRjYTEzem1uZGFjbmo0aXI0b2oxOXdoZnBjbjMwbW9ubTZoZiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/xT0BKwt1L8QgVIDyp2/giphy.gif" },
+  { title:"My Strength 🔥", text1:"You make me stronger by loving me.", text2:"That’s rare.", gif:"https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExNnE5enFlcXB3MGV0OG0yZjhxc3I4ODR3bGhxY3J2aGtqZTF3ZXN4NSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/pA1LQ4Mge9xRuWj6jy/giphy.gif" },
+  { title:"My Always 💖", text1:"No matter the season, I stay.", text2:"With you.", gif:"https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExanNweTJtaGRuYXBxbGx0YjYxa3ZhMmFjZGNkcTdydjVycWlsMWhpYiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/dTyYJaobGiQMY87xRg/giphy.gif" },
+
+  { title:"My Tomorrow 🌅", text1:"I look forward to tomorrow with you.", text2:"Always.", gif:"https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExOWs3M25iaGZ0d29lZmd2YTliZDBpYTNkeW5wcWppb3lhd3Vld28zdCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/e3axbmr3DcqA9Pe7J2/giphy.gif" },
+  { title:"My Peace 🕊️", text1:"You calm places I didn’t know hurt.", text2:"Thank you.", gif:"https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExN2dyeG1vNzI2N2E0dm96dnV2OXJjaW1ubGFxYjhueDJ4ZjhoOGY1OCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/D46lamuVD9n0s/giphy.gif" },
+  { title:"My Anchor ⚓", text1:"When I drift, you ground me.", text2:"Always.", gif:"https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExaHRtcmt2eDV5eWo5ZXZxNmRrcXdlbDlqenF2djFtMHExZ2ZpZGs3aiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/DUi205HDQecM0/giphy.gif" },
+  { title:"My Gift 🎁", text1:"Loving you feels undeserved.", text2:"Yet perfect.", gif:"https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExdmp1eTc2amt2MnQ5cHpudG1paG1zNXN5enY5M2l3enJ5aDExcXZtYSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/mRvzQIDr0gHCz82SV0/giphy.gif" },
+  { title:"My Constant 🔒", text1:"Everything changes, you remain.", text2:"My constant.", gif:"https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExdnNhc2U5dGllb3JydHJuaXVxeWdxZ3l3OWdybmZ0Y2ltdXE5dTMwZCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/Ie4CIIvQS0bk3zwZlM/giphy.gif" },
+
+  { title:"My Light ✨", text1:"You shine even in my darkest days.", text2:"Always.", gif:"https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExZ2gzMGYzaW5ybGZtNXVhN2Q2OGlremEybzZqaHVkMm91eDc0YjE3NSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/IzXiddo2twMmdmU8Lv/giphy.gif" },
+  { title:"My Promise 🤍", text1:"I promise to love you gently.", text2:"Every day.", gif:"https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExaHJnNzdtbjFmODJmNHYwbjk3c2UyZTAzdW5wZHVzeWQ0YThyOWt0eCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/VHyMvWhvKvJNo2pVQ6/giphy.gif" },
+  { title:"My Forever Love 💞", text1:"This isn’t a phase.", text2:"It’s forever.", gif:"https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExZnN3ZmVsc282ZzMzNTBzbzh0anNmZTJ4aGJkYXI4dGl5enVsMTAyaCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/0cdbJBHZXG2hm132X2/giphy.gif" },
+  { title:"My Destiny 🌠", text1:"Meeting you was written somewhere.", text2:"I believe that.", gif:"https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExaDB4MTlhaXNmNGZ2bGh0YTc4cGMyMjZoOGx3azYwZmJnNXVzM2VncSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/QEN54dmAJuTF0wBWXz/giphy.gif" },
+  { title:"My Everything ❤️‍🔥", text1:"You are not part of my life.", text2:"You are my life.", gif:"https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExdTMxdTgyemp1ZDBzMDFxOHF6aWpwNDUxOTI4bjNneHJ3NXVndWF2byZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/Y9bboRSDSw0CezsCji/giphy.gif" },
+
+  { title:"My Forever Person 💕", text1:"In a thousand crowds, I’d find you.", text2:"Every time.", gif:"https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExZGptNjdxYndtem1jMjN6d2NlODN6dG43b29qN3k2bmd2NXBtMGV0cyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/edCZpp7BJLsVWQdloi/giphy.gif" },
+  { title:"My Ending ♾️", text1:"If love had an ending.", text2:"It would still be you.", gif:"https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExZnRlbDJyNG0xZDFod3JlaHRpbno2MWt3YTVyeHB2ZmZlc2YwZ25yYyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/12hAqqMqwgnV9C/giphy.gif" },
+  {
+  title:"My Serendipity 🌈",
+  text1:"I wasn’t searching for love.",
+  text2:"Yet I found you.",
+  gif:"https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExNjh6cnZuMmllNDdrbmk3bXlnN2xtNWJ6OW9xZHNnOHRvYXZ1eHY0NCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/Q5QohuzIBsMRSySbha/giphy.gif"
+  },
+  {
+    title:"My Beginning 🌱",
+    text1:"Everything beautiful in my life started with you.",
+    text2:"You are my beginning.",
+    gif:"https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExNWIzamJlczVuOW56cDRzdW1objhuOXgxMzk1NDl5OThvc2ZqODNwZyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/dU8NsOGXI5DNZGinC7/giphy.gif"
+  },
+  {
+    title:"My Comfort 🤍",
+    text1:"You understand my silence better than my words.",
+    text2:"That’s love.",
+    gif:"https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHVyczlqZ2Fsa2M0Z3Q5OGMydmxqcjZwYW1jNjA3dzR1aDRobGZ1MCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/u9gQHoKJckHm/giphy.gif"
+  },
+  {
+    title:"My Smile Reason 😊",
+    text1:"Even a thought of you lifts my mood.",
+    text2:"You are my happiness.",
+    gif:"https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExbjgxaGVoaXNxOHQxMmdhNWYycTdwb2szNnY1eHV2NXV4ZTZlNDZicSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/wgwbtIJIbfqFJ4UAYO/giphy.gif"
+  },
+  {
+    title:"My Safe Heart 🫶",
+    text1:"With you, I can be completely myself.",
+    text2:"No fear. Just love.",
+    gif:"https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExN29odmVxMTJsOGY2Z2YzcjFsa2xiMmRiemkwc3p5NGFzcHV5cnQ2diZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/mpxPP57clnsdi/giphy.gif"
+  },
+  {
+    title:"My Warmth 🔥",
+    text1:"Your love wraps around me like warmth.",
+    text2:"I feel safe with you.",
+    gif:"https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExNmFva3N1aHNxcHFycm44eTZzNXI0ZGZ0YWxweG1nejRmYzgxNGRhcCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/xEHWp8BEYhITZUaTTb/giphy.gif"
+  },
+  {
+    title:"My Promise Ring 💍",
+    text1:"I may not have everything figured out.",
+    text2:"But I know it’s you.",
+    gif:"https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExZ2lkcXFmNWdndDB5ZTZoMXU1MnMwcG1odnZzeDB0dGR0d2txc3h0dCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/OkbYYldmZpl1tSA7Pz/giphy.gif"
+  },
+  {
+    title:"My Calm Storm 🌊",
+    text1:"Life gets loud, but you quiet my heart.",
+    text2:"Always.",
+    gif:"https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExZHM0bWpjNjVwNWwzbWM1MXYyczZ2eHpicWRrbTllZWp3NnUzYWJoeiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/WWWy9oCi4EtSU/giphy.gif"
+  },
+  {
+    title:"My Miracle ✨",
+    text1:"You walked into my life unexpectedly.",
+    text2:"And changed everything.",
+    gif:"https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExcGJqMjM5bXoxNWhybHRzYTl6eWZiYmZocGZieGltZHFndHBqbDA2MiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/dPynFzl9CL01W/giphy.gif"
+  },
+  {
+    title:"My Choice Always 🔐",
+    text1:"Every version of me chooses you.",
+    text2:"Again and again.",
+    gif:"https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExMWR6bW1wMzlmbndkOGxvbHFtOHhlMWkyeHQzMHNpbmljaHUwZWVlcCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/aN94XqfV5vrLW/giphy.gif"
+  },
+  {
+  title:"My Quiet Forever 🌙",
+  text1:"Even in silence, we understand each other.",
+  text2:"That’s forever to me.",
+  gif:"https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExMWIweWI4enpjODljNGVmdHZkcHA2dnZqMzd0b2V1MWdlbmJwYmp1eCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/qwrAramuzC9pe/giphy.gif"
+}
+];
+
+
+/* ===============================
+   MESSAGE NAVIGATION LOGIC
+================================ */
+let currentIndex = 0;
+
+const titleEl = document.getElementById("msgTitle");
+const text1El = document.getElementById("msgText1");
+const text2El = document.getElementById("msgText2");
+const gifEl   = document.getElementById("msgGif");
+
+function showMessage(index) {
+  if (!messages[index]) return;
+
+  titleEl.textContent = messages[index].title;
+  text1El.textContent = messages[index].text1;
+  text2El.textContent = messages[index].text2;
+  gifEl.src = messages[index].gif;
+}
+
+function nextMsg() {
+  currentIndex = (currentIndex + 1) % messages.length;
+  showMessage(currentIndex);
+}
+
+function prevMsg() {
+  currentIndex = (currentIndex - 1 + messages.length) % messages.length;
+  showMessage(currentIndex);
+}
+
+/* ===============================
+   INITIAL LOAD
+================================ */
+document.addEventListener("DOMContentLoaded", () => {
+  showMessage(currentIndex);
+});
+</script>
+
+
+</body>
+</html>

@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Our Confession 💞</title>
+
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&family=Dancing+Script:wght@600&display=swap" rel="stylesheet">
+
+
+<style>
+/* ============ BASE ============ */
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:'Poppins',sans-serif;
+  background:linear-gradient(135deg,#ff9a9e,#fecfef,#fcbad3);
+  color:#333;
+  overflow-x:hidden;
+}
+
+/* ============ BACKGROUND EFFECTS ============ */
+.hearts-bg{
+  position:fixed;
+  inset:0;
+  background-image:url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="20">💖</text></svg>');
+  background-size:50px 50px;
+  opacity:.08;
+  z-index:-2;
+}
+
+.floating-hearts{
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  z-index:1;
+}
+
+.heart{
+  position:absolute;
+  font-size:2rem;
+  color:#e91e63;
+  animation:rise 6s linear infinite;
+}
+
+@keyframes rise{
+  from{transform:translateY(100vh);opacity:0}
+  20%{opacity:1}
+  to{transform:translateY(-10vh);opacity:0}
+}
+
+/* ============ NAVBAR ============ */
+.navbar{
+  background:rgba(255,255,255,.95);
+  backdrop-filter:blur(10px);
+  border-radius:40px;
+  margin:15px auto;
+  padding:12px 20px;
+  max-width:92%;
+  box-shadow:0 6px 20px rgba(0,0,0,.12);
+  position:relative;
+  z-index:1000;
+}
+
+.nav-container{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+
+.logo{
+  font-size:1.2rem;
+  font-weight:600;
+  color:#e91e63;
+}
+
+.hamburger{
+  display:none;
+  flex-direction:column;
+  cursor:pointer;
+}
+
+.hamburger span{
+  width:26px;
+  height:3px;
+  background:#e91e63;
+  margin:4px 0;
+  border-radius:4px;
+}
+
+.nav-links{
+  list-style:none;
+  display:flex;
+  gap:15px;
+  padding:0;
+  margin:0;
+}
+
+.nav-links a{
+  text-decoration:none;
+  color:#e91e63;
+  font-weight:600;
+  padding:8px 12px;
+  border-radius:20px;
+  transition:.3s;
+}
+
+.nav-links a:hover,
+.nav-links a.active{
+  background:#e91e63;
+  color:#fff;
+}
+
+/* ============ MOBILE NAV ============ */
+@media(max-width:768px){
+  .hamburger{display:flex}
+
+  .nav-links{
+    position:absolute;
+    top:70px;
+    left:5%;
+    width:90%;
+    background:rgba(255,255,255,.98);
+    flex-direction:column;
+    align-items:center;
+    display:none;
+    padding:20px 0;
+    border-radius:25px;
+    box-shadow:0 10px 25px rgba(0,0,0,.2);
+  }
+
+  .nav-links.show{display:flex}
+}
+
+/* ============ CONFESSIONS ============ */
+.confession-section{
+  min-height:85vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  padding:20px;
+}
+
+.confession-card{
+  background:rgba(255,255,255,.95);
+  border-radius:20px;
+  padding:40px;
+  max-width:700px;
+  text-align:center;
+  box-shadow:0 8px 25px rgba(0,0,0,.12);
+  opacity:0;
+  transform:translateY(50px);
+  transition:1s;
+}
+
+.confession-card.show{
+  opacity:1;
+  transform:translateY(0);
+}
+
+.glow-text{
+  font-family:'Dancing Script',cursive;
+  font-size:3rem;
+  color:#e91e63;
+  text-shadow:0 0 10px #ffb6c1,0 0 25px #e91e63;
+}
+
+#confession-text,
+#his-confession-text{
+  font-size:1.3rem;
+  color:#555;
+  line-height:1.6;
+  font-style:italic;
+  white-space:pre-line;
+}
+
+/* ============ FOOTER ============ */
+footer{
+  text-align:center;
+  padding:20px;
+  background:rgba(255,255,255,.85);
+  font-size:.9rem;
+  border-radius:20px 20px 0 0;
+}
+</style>
+</head>
+
+<body>
+
+<audio autoplay loop>
+  <source src="../assets/audio/mera_hua.mp3" type="audio/mpeg">
+</audio>
+
+<div class="hearts-bg"></div>
+<div class="floating-hearts" id="floating-hearts"></div>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <div class="nav-container">
+    <div class="logo">💖 Our Confession</div>
+
+    <div class="hamburger" id="hamburger">
+      <span></span><span></span><span></span>
+    </div>
+
+    <ul class="nav-links" id="navLinks">
+      <li><a href="timer.html">Our Time</a></li>
+      <li><a href="heartbeat.html">Our Heartbeat</a></li>
+      <li><a href="book.html">Book</a></li>
+      <li><a href="messages.html">Messages</a></li>
+      <li><a href="dates.html">Dates</a></li>
+      <li><a href="moments.html">Cute Moments</a></li>
+      <li><a href="dance.html">Dance</a></li>
+      <li><a href="letters.html">Letters</a></li>
+      <li><a href="confession.html" class="active">Confession</a></li>
+      <li><a href="chats.html">Chats</a></li>
+      <li><a href="qa.html">Q&A</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- HER CONFESSION -->
+<section class="confession-section">
+  <div class="confession-card">
+    <h1 class="glow-text">💖 Her Confession 💖</h1>
+    <p id="confession-text"></p>
+  </div>
+</section>
+
+<!-- HIS CONFESSION -->
+<section class="confession-section">
+  <div class="confession-card">
+    <h1 class="glow-text">💞 His Confession 💞</h1>
+    <p id="his-confession-text"></p>
+  </div>
+</section>
+
+<footer>Made with ❤️ from the deepest corners of our hearts.</footer>
+
+<script>
+/* Hamburger */
+document.getElementById("hamburger").onclick=()=>{
+  document.getElementById("navLinks").classList.toggle("show");
+};
+
+/* Floating hearts */
+setInterval(()=>{
+  const h=document.createElement("div");
+  h.className="heart";
+  h.innerText="💖";
+  h.style.left=Math.random()*100+"vw";
+  document.getElementById("floating-hearts").appendChild(h);
+  setTimeout(()=>h.remove(),6000);
+},900);
+
+/* Scroll reveal */
+window.addEventListener("scroll",()=>{
+  document.querySelectorAll(".confession-card").forEach(c=>{
+    if(c.getBoundingClientRect().top<window.innerHeight-100){
+      c.classList.add("show");
+    }
+  });
+});
+
+/* Typing animation */
+const herText=`Toh padhiye… mai chahti hu aap samjhein ki Riya aapko dil se jaanti hai 💖
+May ke end se hi aap ache lagne lage the, aur July mein “I like you, Anuj” kehne ke baad sab kuch badal gaya 🫶
+
+I love you, Anuj 💌`;
+
+const hisText=`Riya… tum meri life ka woh hissa ho jahan peace milta hai ❤️
+Aur haan… I love you too 💌`;
+
+let i=0,j=0;
+function typeHer(){
+  if(i<herText.length){
+    document.getElementById("confession-text").innerHTML+=herText[i++];
+    setTimeout(typeHer,50);
+  }else setTimeout(typeHis,800);
+}
+function typeHis(){
+  if(j<hisText.length){
+    document.getElementById("his-confession-text").innerHTML+=hisText[j++];
+    setTimeout(typeHis,50);
+  }
+}
+window.onload=typeHer;
+</script>
+
+</body>
+</html>

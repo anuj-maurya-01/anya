@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Our Milestones 💕</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+<script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Poppins,sans-serif;}
+
+body{
+  background:linear-gradient(135deg,#ff9a9e,#fecfef);
+  overflow-x:hidden;
+}
+
+/* ===== HEART BACKGROUND ===== */
+.hearts-bg{
+  position:fixed;
+  inset:0;
+  background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='20'>💖</text></svg>");
+  background-size:50px;
+  opacity:.08;
+  z-index:-1;
+}
+
+/* ===== FLOATING HEARTS ===== */
+.heart{
+  position:fixed;
+  font-size:20px;
+  animation:float 6s linear infinite;
+  opacity:.7;
+}
+@keyframes float{
+  from{transform:translateY(100vh);}
+  to{transform:translateY(-10vh);opacity:0;}
+}
+
+/* ===== NAVBAR ===== */
+.navbar{
+  position:relative;
+  z-index:10;
+  background:rgba(255,255,255,.95);
+  margin:20px auto;
+  max-width:90%;
+  padding:12px 20px;
+  border-radius:50px;
+  box-shadow:0 8px 20px rgba(0,0,0,.15);
+}
+
+.nav-container{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+.logo{
+  color:#e91e63;
+  font-weight:700;
+  font-size:1.2rem;
+}
+
+.hamburger{
+  display:none;
+  flex-direction:column;
+  cursor:pointer;
+}
+.hamburger span{
+  width:26px;
+  height:3px;
+  background:#e91e63;
+  margin:4px 0;
+  border-radius:4px;
+}
+
+.nav-links{
+  list-style:none;
+  display:flex;
+  gap:15px;
+}
+.nav-links a{
+  text-decoration:none;
+  color:#e91e63;
+  font-weight:600;
+  padding:8px 14px;
+  border-radius:20px;
+}
+.nav-links a.active,
+.nav-links a:hover{
+  background:#e91e63;
+  color:white;
+}
+
+@media(max-width:768px){
+  .hamburger{display:flex;}
+  .nav-links{
+    position:absolute;
+    top:90px;
+    left:5%;
+    width:90%;
+    background:white;
+    flex-direction:column;
+    align-items:center;
+    display:none;
+    border-radius:25px;
+    padding:20px 0;
+    box-shadow:0 10px 25px rgba(0,0,0,.2);
+  }
+  .nav-links.show{display:flex;}
+}
+
+/* ===== CONTENT ===== */
+.container{
+  background:rgba(255,255,255,.96);
+  max-width:1100px;
+  margin:30px auto;
+  padding:40px;
+  border-radius:25px;
+  box-shadow:0 10px 40px rgba(0,0,0,.15);
+}
+
+h1{
+  text-align:center;
+  font-family:'Dancing Script',cursive;
+  font-size:3rem;
+  color:#e91e63;
+  margin-bottom:40px;
+}
+
+/* ===== TIMELINE ===== */
+.timeline{
+  position:relative;
+  margin-top:30px;
+}
+.timeline::before{
+  content:"";
+  position:absolute;
+  left:50%;
+  width:4px;
+  height:100%;
+  background:#ff6b9d;
+  transform:translateX(-50%);
+}
+
+.timeline-item{
+  width:45%;
+  padding:20px 25px;
+  background:white;
+  border-radius:20px;
+  box-shadow:0 6px 20px rgba(0,0,0,.15);
+  margin:25px 0;
+  position:relative; /* keep */
+}
+.timeline-item.left{
+  margin-left:50px;
+  margin-right:80px;   /* 👈 space from center line */
+}
+
+.timeline-item.right{
+  margin-right:0;
+  margin-left:513px;    /* 👈 space from center line */
+}
+
+
+.timeline-item::before{
+  content:"";
+  width:14px;
+  height:14px;
+  background:#e91e63;
+  border-radius:50%;
+  position:absolute;
+  top:22px;
+}
+
+.timeline-item.left::before{right:-8px;}
+.timeline-item.right::before{left:-8px;}
+
+.timeline-item span{
+  font-weight:700;
+  color:#e91e63;
+  display:block;
+  margin-bottom:6px;
+}
+
+@media(max-width:768px){
+
+  .timeline{
+    padding:0 10px;
+  }
+
+  .timeline::before{
+    left:50%;
+  }
+
+  .timeline-item{
+    width:42%;
+    padding:16px 18px;
+  }
+
+  .timeline-item.left{
+    margin-right:-60px;
+    margin-left:-40px;
+  }
+
+  .timeline-item.right{
+    margin-left:125px;
+    margin-right:30px;
+  }
+
+  .timeline-item.left::before{
+    right:-11px;
+  }
+
+  .timeline-item.right::before{
+    left:-11px;
+  }
+}
+
+footer{
+  text-align:center;
+  padding:20px;
+  color:#555;
+}
+
+/* Push content below menu */
+.page-content {
+  margin-top:40px;
+  padding: 20px;
+}
+
+/* Dates section spacing */
+.dates-section {
+  margin-top: 10px;
+}
+
+  /* ===== MOBILE TEXT FIX ===== */
+@media (max-width: 768px){
+
+  /* Date text */
+  .timeline-item .date{
+    font-size:0.8rem;
+    font-weight:600;
+    margin-bottom:6px;
+    line-height:1.2;
+  }
+
+  /* Content text */
+  .timeline-item .content{
+    font-size:0.85rem;
+    line-height:1.4;
+    word-break:break-word;
+    overflow-wrap:break-word;
+    white-space:normal;
+  }
+
+  /* Prevent text touching edges */
+  .timeline-item{
+    padding:14px 16px;
+    text-align:left;
+    width:65%
+  }
+
+  /* Reduce heading for mobile */
+  h1{
+    font-size:2.2rem;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="hearts-bg"></div>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <div class="nav-container">
+    <div class="logo">💖</div>
+    <div class="hamburger" id="hamburger">
+      <span></span><span></span><span></span>
+    </div>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="timer.html">Our Time</a></li>
+      <li><a href="heartbeat.html">Our Heartbeat</a></li>
+      <li><a href="book.html">Book</a></li>
+      <li><a href="messages.html">Messages</a></li>
+      <li><a href="dates.html" class="active">Dates</a></li>
+      <li><a href="moments.html">Cute Moments</a></li>
+      <li><a href="dance.html">Dance</a></li>
+      <li><a href="letters.html">Letters</a></li>
+      <li><a href="confession.html">Confession</a></li>
+      <li><a href="chats.html">Chats</a></li>
+      <li><a href="qa.html">Q&A</a></li>
+    </ul>
+  </div>
+</nav>
+  <main class="page-content">
+  <section class="dates-section">
+    <div class="container">
+      <h1>Our Milestones 💕</h1>
+      <div class="timeline">
+          <div class="timeline-item left">
+            <div class="dot"></div>
+            <div class="date">Nov 14, 2022</div>
+            <div class="content">The day she knew I existed in school — she saw me for the first time. ✨👀</div>
+          </div>
+
+          <div class="timeline-item right">
+            <div class="dot"></div>
+            <div class="date">Dec 25, 2022</div>
+            <div class="content">The day our story started on Instagram — we talked for the first time. 💞📱</div>
+          </div>
+
+          <div class="timeline-item left">
+            <div class="dot"></div>
+            <div class="date">Mar 4, 2023</div>
+            <div class="content">She realized that she was finally attached to me — we had a small fight that day. 💫💔</div>
+          </div>
+
+          <div class="timeline-item right">
+            <div class="dot"></div>
+            <div class="date">Apr 21, 2023</div>
+            <div class="content">Our first meeting in real life, face to face. ❤️✨</div>
+          </div>
+
+          <div class="timeline-item left">
+            <div class="dot"></div>
+            <div class="date">Apr 25, 2023</div>
+            <div class="content">We had a fight again, and I told her not to talk to me. 😔💭</div>
+          </div>
+
+          <div class="timeline-item right">
+            <div class="dot"></div>
+            <div class="date">Apr 28, 2023</div>
+            <div class="content">After not talking for 2 days, I returned and asked her to talk to me again. 💬❤️</div>
+          </div>
+
+          <div class="timeline-item left">
+            <div class="dot"></div>
+            <div class="date">May 25, 2023</div>
+            <div class="content">We became good friends and started trying to make our bond stronger. 🌸🤝</div>
+          </div>
+           
+         <div class="timeline-item right">
+         <div class="dot"></div>
+         <div class="date">June 19, 2023</div>
+         <div class="content">She said, “I like you.”I asked her why it affects her so much and why she cries. 💔🥺</div>
+         </div>
+        
+          <div class="timeline-item left">
+            <div class="dot"></div>
+            <div class="date">July 21, 2023</div>
+            <div class="content">The interschool cricket match started house-wise. 🎯🏏  
+    The song “O Humsafar” played randomly. 🎶💫  
+    She wrote some lines on her own, and I wrote some too. ✍️💭</div>
+          </div>
+            
+          <div class="timeline-item right">
+          <div class="dot"></div>
+          <div class="date">July 22, 2023</div>
+          <div class="content">
+          Final match — Red House vs Green House. 🔴🆚🟢  
+          She offered a chair. 🪑  
+          Drama moments. 🎭  
+          She told Prakhar to call me and bring the chair. 😅
+         </div>
+         </div>
+        
+          <div class="timeline-item left">
+          <div class="dot"></div>
+          <div class="date">July 24, 2023</div>
+          <div class="content">
+          We had a fight. 💥😔
+          </div>
+          </div>
+        
+          <div class="timeline-item right">
+            <div class="dot"></div>
+            <div class="date">July 26, 2023</div>
+            <div class="content">She asked me to stay in school after classes were over. 🏫💫</div>
+          </div>
+
+          <div class="timeline-item left">
+            <div class="dot"></div>
+            <div class="date">July 27, 2023</div>
+            <div class="content">Eye flu 😅👁️✨</div>
+          </div>
+
+          <div class="timeline-item right">
+            <div class="dot"></div>
+            <div class="date">July 31, 2023</div>
+            <div class="content">She became sure about her feelings — that she loves me. 💖🥰</div>
+          </div>
+
+          <div class="timeline-item left">
+            <div class="dot"></div>
+            <div class="date">Aug 2, 2023</div>
+            <div class="content">She dedicated a song to me — “Uncha Lamba Kadd Hai”. 🎶💕</div>
+          </div>
+
+          <div class="timeline-item right">
+            <div class="dot"></div>
+            <div class="date">Aug 3, 2023</div>
+            <div class="content">I wrote a poem and she thought it was for her. 📝💫</div>
+          </div>
+            
+          <div class="timeline-item left">
+          <div class="dot"></div>
+          <div class="date">Aug 8, 2023</div>
+          <div class="content">I wrote a poem for her.
+          She asked and confirmed it at that time.✍️📝❤️
+          </div>
+          </div>
+        
+        <div class="timeline-item right">
+        <div class="dot"></div>
+        <div class="date">Aug 18, 2023</div>
+        <div class="content">
+         She recited the shayari she had written on July 24. 🎙️✨
+        </div>
+        </div>
+        
+          <div class="timeline-item left">
+            <div class="dot"></div>
+            <div class="date">Aug 29, 2023</div>
+            <div class="content">I deactivated my account after getting angry with her. 😤💔</div>
+          </div>
+
+          <div class="timeline-item right">
+            <div class="dot"></div>
+            <div class="date">Aug 30, 2023</div>
+            <div class="content">We weren’t talking. 💭😔</div>
+          </div>
+
+          <div class="timeline-item left">
+            <div class="dot"></div>
+            <div class="date">Aug 31, 2023</div>
+            <div class="content">We talked again and settled everything. 💞🤗</div>
+          </div>
+            
+        <div class="timeline-item right">
+       <div class="dot"></div>
+       <div class="date">Sep 9–10, 2023</div>
+        <div class="content">
+      I probably did some coding and used her name and Anya’s name in it. 💻💙
+       </div>
+        </div>
+         
+        <div class="timeline-item left">
+          <div class="dot"></div>
+          <div class="date">Sep 11, 2023</div>
+          <div class="content">We had a small fight. 🥀💭</div>
+        </div>
+        
+        <div class="timeline-item right">
+          <div class="dot"></div>
+          <div class="date">Sep 14, 2023</div>
+          <div class="content">She deactivated her account because fights kept happening on the 11th, 12th, and 13th. 🚫📵</div>
+        </div>
+        
+        <div class="timeline-item left">
+          <div class="dot"></div>
+          <div class="date">Sep 15, 2023</div>
+          <div class="content">I posted a story with the words she had said to me in anger. 🖤🔥</div>
+        </div>
+      
+        <div class="timeline-item right">
+          <div class="dot"></div>
+          <div class="date">Sep 17, 2023</div>
+          <div class="content">There was a message on Snapchat saying, “Come back.” 👻💬</div>
+        </div>
+        
+        <div class="timeline-item left">
+          <div class="dot"></div>
+          <div class="date">Sep 18, 2023</div>
+          <div class="content">I sent her first virtual letter. 💌✨And on that day, My eyes were filled with tears.🥹</div>
+        </div>
+            
+          <div class="timeline-item right">
+            <div class="dot"></div>
+            <div class="date">Sep 21, 2023</div>
+            <div class="content">When she finally got activated, I asked:
+            “Finally you’re back — and how is love, is it less or still the same?”🤨💔</div>
+          </div>
+          
+          <div class="timeline-item left">
+            <div class="dot"></div>
+            <div class="date">Sep 23, 2023</div>
+            <div class="content">There was a fair at Shantipuram.
+            She told me to buy that toy for her, but I didn’t even see the message as I was offline.😔❤️‍🩹</div>
+          </div>
+          
+          <div class="timeline-item right">
+            <div class="dot"></div>
+            <div class="date">Sep 26, 2023</div>
+            <div class="content">I said that there is something more than friendship.
+            There was also a reel where I said to her that I felt this — that when she wasn’t there, it made a big difference.🙄🥺</div>
+          </div>
+          
+          <div class="timeline-item left">
+            <div class="dot"></div>
+            <div class="date">Oct 20, 2023</div>
+            <div class="content">Another fight happened.I sent a snap saying: “Do whatever you want, it won’t matter to anyone.”💔</div>
+          </div>
+          
+          <div class="timeline-item right">
+            <div class="dot"></div>
+            <div class="date">Oct 24, 2023</div>
+            <div class="content">I said I might go out; She felt bad about it.😞</div>
+          </div>
+           
+          <div class="timeline-item left">
+            <div class="dot"></div>
+            <div class="date">Oct 28, 2023</div>
+            <div class="content">Discussion about attending the farewell together.A group was created for the farewell.🎉</div>
+          </div>
+         
+          <div class="timeline-item right">
+            <div class="dot"></div>
+            <div class="date">End of Oct, 2023</div>
+            <div class="content">Normal conversations; things were good for a few days.😊</div>
+          </div>
+        
+          <div class="timeline-item left">
+            <div class="dot"></div>
+            <div class="date">Nov 1-4, 2023</div>
+            <div class="content">Everything was fine.🌸</div>
+          </div>
+        
+          <div class="timeline-item right">
+            <div class="dot"></div>
+            <div class="date">Nov 5, 2023</div>
+            <div class="content">Another fight.The same things kept repeating.She started getting angry and felt that nothing would ever change.💔😡</div>
+          </div>
+            
+          <div class="timeline-item left">
+            <div class="dot"></div>
+            <div class="date">Nov 6, 2023</div>
+            <div class="content">We talked things out.🗣️</div>
+          </div>
+        
+          <div class="timeline-item right">
+            <div class="dot"></div>
+            <div class="date">Nov 8, 2023</div>
+            <div class="content">She gave me a letter and then I disappeared.I slowly started realizing things.✉️</div>
+          </div>
+        
+          <div class="timeline-item left">
+            <div class="dot"></div>
+            <div class="date">Nov 9, 2023</div>
+            <div class="content">She posted her first story with her own photo.She received her first compliment.
+The compliment was: “So beautiful, so elegant, just looking like a wow.”📸✨</div>
+          </div>
+        
+          <div class="timeline-item right">
+            <div class="dot"></div>
+            <div class="date">Nov 14, 2023</div>
+            <div class="content">Diwali🪔</div>
+          </div>
+        
+          <div class="timeline-item left">
+            <div class="dot"></div>
+            <div class="date">Nov 15, 2023</div>
+            <div class="content">I posted a shayari in which I said that it was just an imaginary story and had nothing to do with real life.😗🤭💭</div>
+          </div>
+        
+          <div class="timeline-item right">
+            <div class="dot"></div>
+            <div class="date">Nov 17, 2023</div>
+            <div class="content">School reopened.We saw each other after everything that had happened.🏫</div>
+          </div>
+        
+          <div class="timeline-item left">
+            <div class="dot"></div>
+            <div class="date">Nov 18, 2023</div>
+            <div class="content">Her teacher was absent, so she came as a substitute in my class.Funny Snapchat posts.About me sleeping a lot and walking while half asleep.
+Possibly with the song “Note”.🏫💞</div>
+          </div>
+
+          <div class="timeline-item right">
+            <div class="dot"></div>
+            <div class="date">Nov 19, 2023</div>
+            <div class="content">I dedicated the song “Hamdard” to her. 🎵❤️</div>
+          </div>
+
+          <div class="timeline-item left">
+            <div class="dot"></div>
+            <div class="date">Nov 20, 2023</div>
+            <div class="content">We talked.You said we would meet the next day and that you were “Sprite clear.”
+I was standing behind you in the line that day.💖🌙</div>
+          </div>
+           
+          <div class="timeline-item right">
+            <div class="dot"></div>
+            <div class="date">Nov 21, 2023</div>
+            <div class="content">We finally met and I confessed her that I also love her.</div>
+          </div>
+        
+          <div class="timeline-item left">
+            <div class="dot"></div>
+            <div class="date">Nov 27, 2023</div>
+            <div class="content">We discussed how it all started. 💬✨</div>
+          </div>
+
+          <div class="timeline-item right">
+            <div class="dot"></div>
+            <div class="date">Dec 1, 2023</div>
+            <div class="content">I asked her to suggest some names for Divi. 🌼💭</div>
+          </div>
+            
+          <div class="timeline-item left">
+            <div class="dot"></div>
+            <div class="date">Dec 3, 2023</div>
+            <div class="content">She said “I love you” 100 times.❤️</div>
+          </div>
+        
+          <div class="timeline-item right">
+            <div class="dot"></div>
+            <div class="date">Dec 14, 2023</div>
+            <div class="content">We had a fight, but everything got settled.⚡</div>
+          </div>
+        
+          <div class="timeline-item left">
+            <div class="dot"></div>
+            <div class="date">Dec 16, 2023</div>
+            <div class="content">We were united again.🤝</div>
+          </div>
+        
+          <div class="timeline-item right">
+            <div class="dot"></div>
+            <div class="date">Dec 18, 2023</div>
+            <div class="content">We had a fun competition about who would reach school first. 🏃‍♂️🏃‍♀️✨</div>
+          </div>
+
+          <div class="timeline-item left">
+            <div class="dot"></div>
+            <div class="date">Dec 22, 2023</div>
+            <div class="content">We discussed our farewell plans. 🎓💫</div>
+          </div>
+
+          <div class="timeline-item right">
+            <div class="dot"></div>
+            <div class="date">Dec 25, 2023</div>
+            <div class="content">From strangers to friends, best friends to lovers — our first friendship anniversary! 💍💞</div>
+          </div>
+
+          <div class="timeline-item left">
+            <div class="dot"></div>
+            <div class="date">Dec 28–29, 2023</div>
+            <div class="content">Our school farewell — we spent the whole day together, clicked pictures, and danced as a couple. 💃🕺❤️</div>
+          </div>
+
+          <div class="timeline-item right">
+            <div class="dot"></div>
+            <div class="date">Dec 31, 2024</div>
+            <div class="content">We talked until 1:30 a.m. and celebrated New Year together.🎆🕜</div>
+          </div>
+        
+          <div class="timeline-item left">
+            <div class="dot"></div>
+            <div class="date">Jan 1, 2024</div>
+            <div class="content">First day of the year — a lovely talk expressing our love. 💌✨</div>
+          </div>
+
+          <div class="timeline-item right">
+            <div class="dot"></div>
+            <div class="date">Jan 10, 2024</div>
+            <div class="content">A PTM was held in school; I supported her and made her feel calm. 💞🏫</div>
+          </div>
+
+          <div class="timeline-item left">
+            <div class="dot"></div>
+            <div class="date">Jan 20, 2024</div>
+            <div class="content">I dedicated my poem “Husn ke Bazaar” to her. 🖋️💖</div>
+          </div>
+
+          <div class="timeline-item right">
+            <div class="dot"></div>
+            <div class="date">Jan 25, 2024</div>
+            <div class="content">Our first date after school — I was later caught by my brother’s friends. 😂❤️</div>
+          </div>
+
+          <div class="timeline-item left">
+            <div class="dot"></div>
+            <div class="date">Feb 7, 2024</div>
+            <div class="content">Last day of school — we created our final memory in uniform. 🏫💞</div>
+          </div>
+
+          <div class="timeline-item right">
+            <div class="dot"></div>
+            <div class="date">Feb 22, 2024</div>
+            <div class="content">English exam.We ate golgappas together.📝🌮</div>
+          </div>
+        
+          <div class="timeline-item left">
+            <div class="dot"></div>
+            <div class="date">Apr 1, 2024</div>
+            <div class="content">Her birthday — a very special day for me. 🎂💐</div>
+          </div>
+
+          <div class="timeline-item right">
+            <div class="dot"></div>
+            <div class="date">Apr 10, 2024</div>
+            <div class="content">My birthday — a very special day for her. 🎉❤️</div>
+          </div>
+
+          <div class="timeline-item left">
+            <div class="dot"></div>
+            <div class="date">May 11, 2024</div>
+            <div class="content">We talked late into the night about special things. 🌙💭</div>
+          </div>
+
+          <div class="timeline-item right">
+            <div class="dot"></div>
+            <div class="date">May 13, 2024</div>
+            <div class="content">Result day of Class 12th! 🎓✨</div>
+          </div>
+
+          <div class="timeline-item left">
+            <div class="dot"></div>
+            <div class="date">Jun 10, 2024</div>
+            <div class="content">We met again after a long time — since Feb 22. 💞🤗</div>
+          </div>
+
+          <div class="timeline-item right">
+            <div class="dot"></div>
+            <div class="date">Jul 2, 2024</div>
+            <div class="content">We met at school for official work and she sang “Hey Sona”. 🎶❤️</div>
+          </div>
+
+          <div class="timeline-item left">
+            <div class="dot"></div>
+            <div class="date">Jul 7, 2024</div>
+            <div class="content">We collected our mark sheets — I dropped her home, and her mom said “Why didn’t you ask for water?” 😂🥰</div>
+          </div>
+
+          <div class="timeline-item right">
+            <div class="dot"></div>
+            <div class="date">Aug 1, 2024</div>
+            <div class="content">We met with friends, spent time together, and had a scooty ride. 🛵💞</div>
+          </div>
+
+          <div class="timeline-item left">
+            <div class="dot"></div>
+            <div class="date">Oct 17, 2024</div>
+            <div class="content">We sorted our fight and became even closer. 💕✨</div>
+          </div>
+
+          <div class="timeline-item right">
+            <div class="dot"></div>
+            <div class="date">Oct 29, 2024</div>
+            <div class="content">She was in her village and pretended to be angry — I actually became angry. 😅💭</div>
+          </div>
+
+          <div class="timeline-item left">
+            <div class="dot"></div>
+            <div class="date">Nov 21, 2024</div>
+            <div class="content">Our First Anniversary! 💍💞</div>
+          </div>
+
+          <div class="timeline-item right">
+            <div class="dot"></div>
+            <div class="date">Dec 13, 2024</div>
+            <div class="content">We planned to meet, but she later cancelled. 💭😔</div>
+          </div>
+
+          <div class="timeline-item left">
+            <div class="dot"></div>
+            <div class="date">Dec 21, 2024</div>
+            <div class="content">We met and went to Arail Ghat and Sangam — she got caught at home later. 🏞️💞</div>
+          </div>
+          
+          <div class="timeline-item right">
+            <div class="dot"></div>
+            <div class="date">Jan 1, 2025</div>
+            <div class="content">We wished each other Happy New Year at midnight. 🎆💌</div>
+          </div>
+
+          <div class="timeline-item left">
+            <div class="dot"></div>
+            <div class="date">Jan 25, 2025</div>
+            <div class="content">The world-famous Kumbh Mela — we followed rituals and explored together. 🕉️💞</div>
+          </div>
+
+          <div class="timeline-item right">
+            <div class="dot"></div>
+            <div class="date">Feb 25, 2025</div>
+            <div class="content">Her brother’s reception — I met all her family members for the first time. 👨‍👩‍👧‍👦✨</div>
+          </div>
+
+          <div class="timeline-item left">
+            <div class="dot"></div>
+            <div class="date">Jul 18, 2025</div>
+            <div class="content">We met at Bhardwaj Park and spent a beautiful time together. 🌳❤️</div>
+          </div>
+
+          <div class="timeline-item right">
+            <div class="dot"></div>
+            <div class="date">Jul 29, 2025</div>
+            <div class="content">She got injured while closing the bed drawer. 😢💫</div>
+          </div>
+        
+          <div class="timeline-item left">
+            <div class="dot"></div>
+            <div class="date">Nov 06, 2025</div>
+            <div class="content">We met after a long time and have some close moments.❤️</div>
+          </div>
+
+          <div class="timeline-item right">
+            <div class="dot"></div>
+            <div class="date">Nov 21, 2025</div>
+            <div class="content">A very special day Our second anniversary and we got soo close.💫</div>
+          </div>
+        
+          <div class="timeline-item left">
+            <div class="dot"></div>
+            <div class="date">Dec 03, 2025</div>
+            <div class="content">We met again I have gifted some special gifts to her.❤️</div>
+          </div>
+         
+          <div class="timeline-item right">
+            <div class="dot"></div>
+            <div class="date">Dec 31, 2025</div>
+            <div class="content">We talked until 12:30 a.m. and celebrated 4th New Year together.</div>
+          </div>
+
+        <div class="timeline-item left">
+            <div class="dot"></div>
+            <div class="date">Feb 7, 2026</div>
+            <div class="content">We had our first video call.🤳</div>
+          </div>
+
+        <div class="timeline-item right">
+            <div class="dot"></div>
+            <div class="date">Feb 13, 2026</div>
+            <div class="content">We met again after 3 December.👫</div>
+          </div>
+          </div>
+</div>
+</div>
+  </section>
+</main>
+<footer>Made with ❤️ to cherish every milestone.</footer>
+
+<script>
+/* ===== HAMBURGER MENU ===== */
+const hamburger = document.getElementById("hamburger");
+const navLinks = document.getElementById("navLinks");
+
+hamburger.addEventListener("click", () => {
+  navLinks.classList.toggle("show");
+});
+
+/* ===== FLOATING HEARTS ===== */
+setInterval(() => {
+  const h = document.createElement("div");
+  h.className = "heart";
+  h.textContent = "💖";
+  h.style.left = Math.random() * 100 + "vw";
+  h.style.animationDuration = (3 + Math.random() * 3) + "s";
+  document.body.appendChild(h);
+
+  setTimeout(() => h.remove(), 6000);
+}, 900);
+</script>
+
+</body>
+            </html>
