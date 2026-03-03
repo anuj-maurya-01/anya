@@ -1,0 +1,1007 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Snakes & Ladders — Browser Game</title>
+<style>
+  :root{
+    --bg:#0f1724;
+    --card:#0b1220;
+    --accent:#06b6d4;
+    --muted:#94a3b8;
+    --tile1:#f8fafc;
+    --tile2:#e6eef6;
+  }
+  *{box-sizing:border-box;font-family:Inter,ui-sans-serif,system-ui,Segoe UI,Roboto,"Helvetica Neue",Arial;}
+  html,body{height:100%;margin:0;background:linear-gradient(180deg,#02111a 0%, #071826 60%, #020617 100%);color:#e6f0f6;}
+  .app{
+    min-height:100vh;
+    padding:24px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:24px;
+  }
+
+  .container{
+    width:100%;
+    max-width:1100px;
+    display:grid;
+    grid-template-columns: 1fr 340px;
+    gap:20px;
+  }
+  @media (max-width:920px){
+    .container{grid-template-columns:1fr; padding:8px;}
+  }
+
+  .panel{
+    background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+    border:1px solid rgba(255,255,255,0.04);
+    border-radius:12px;
+    padding:14px;
+    box-shadow: 0 6px 24px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.02);
+  }
+
+  /* Board area */
+  .board-wrap{display:flex;flex-direction:column;gap:12px;}
+  .board{
+    position:relative;
+    width:100%;
+    aspect-ratio:1/1;
+    max-width:820px;
+    margin:0 auto;
+    background:linear-gradient(180deg,#f9fafb 0%, #e6f1f8 100%);
+    border-radius:12px;
+    box-shadow: 0 8px 30px rgba(5,13,25,0.6);
+    overflow:hidden;
+    border:6px solid rgba(3,7,18,0.7);
+  }
+  .grid{
+    position:absolute;
+    inset:0;
+    display:grid;
+    grid-template-columns:repeat(10,1fr);
+    grid-template-rows:repeat(10,1fr);
+  }
+  .cell{
+    border:1px solid rgba(0,0,0,0.06);
+    display:flex;
+    align-items:flex-start;
+    justify-content:flex-start;
+    padding:6px;
+    font-size:11px;
+    color:#0b2440;
+    font-weight:700;
+  }
+  .cell:nth-child(odd){background:linear-gradient(180deg,var(--tile1),var(--tile2));}
+  .cell:nth-child(even){background:linear-gradient(180deg,#fff,#f1f8ff);}
+
+  .cell .num{
+    background:rgba(255,255,255,0.7);
+    color:#0a2540;
+    padding:2px 6px;
+    border-radius:6px;
+    font-size:11px;
+    box-shadow:0 1px 0 rgba(255,255,255,0.4) inset;
+  }
+
+  /* SVG overlay for snakes & ladders */
+  .overlay-svg{
+    position:absolute;
+    inset:0;
+    pointer-events:none;
+  }
+
+  /* Tokens */
+  .token{
+    position:absolute;
+    width:28px;
+    height:28px;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-weight:700;
+    color:white;
+    box-shadow:0 6px 12px rgba(0,0,0,0.45), inset 0 2px 6px rgba(255,255,255,0.12);
+    transform:translate(-50%,-50%);
+    transition:transform 350ms cubic-bezier(.2,.8,.2,1);
+    z-index:40;
+  }
+  .token.player0{background:linear-gradient(180deg,#06b6d4,#0ea5b7);}
+  .token.player1{background:linear-gradient(180deg,#f97316,#fb923c);}
+
+  .controls{
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+  }
+  .panel .title{
+    font-size:20px;
+    font-weight:800;
+    color:#e6f7fb;
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .info{
+    color:var(--muted);
+    font-size:13px;
+    margin-top:6px;
+  }
+
+  .dice{
+    display:flex;
+    gap:8px;
+    align-items:center;
+  }
+
+  .dice-face{
+    width:96px;
+    height:96px;
+    background:linear-gradient(180deg,#0b1220,#0b1930);
+    color:#fff;
+    border-radius:10px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:34px;
+    font-weight:900;
+    box-shadow: 0 8px 24px rgba(2,6,23,0.7);
+    user-select:none;
+    -webkit-user-select:none;
+  }
+  .roll-btn{
+    background:linear-gradient(180deg,#06b6d4,#0ea5b7);
+    color:#04292f;
+    border:none;
+    padding:12px 18px;
+    border-radius:10px;
+    font-weight:800;
+    cursor:pointer;
+    box-shadow:0 6px 14px rgba(6,182,212,0.18);
+  }
+  .roll-btn[disabled]{opacity:0.5;cursor:default;}
+
+  .turn{
+    display:flex;
+    gap:10px;
+    align-items:center;
+    font-weight:700;
+    color:#dff6fb;
+  }
+
+  .players{
+    display:flex;
+    gap:8px;
+    flex-direction:column;
+  }
+  .player-row{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:8px;
+    border-radius:8px;
+    background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+  }
+  .player-badge{
+    width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-weight:800;
+  }
+  .player-stats{flex:1;display:flex;flex-direction:column;font-size:13px;color:var(--muted);}
+  .small{font-size:12px;color:var(--muted);}
+
+  .start-overlay, .gameover-overlay{
+    position:fixed;
+    inset:0;
+    background:linear-gradient(180deg, rgba(2,6,23,0.6), rgba(0,0,0,0.6));
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    z-index:120;
+  }
+  .panel.card{
+    width:420px;
+    max-width:92%;
+    padding:20px;
+    text-align:center;
+  }
+  .controls-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px;}
+  .input{padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.06);background:transparent;color:#eaf6fb;}
+  .select{padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.06);background:transparent;color:#eaf6fb;}
+
+  .muted-btn{background:transparent;border:1px solid rgba(255,255,255,0.06);padding:10px;border-radius:8px;color:var(--muted);cursor:pointer;}
+  .primary-btn{background:linear-gradient(180deg,#06b6d4,#0ea5b7);border:none;padding:12px 16px;border-radius:8px;color:#012;cursor:pointer;font-weight:800;}
+  .small-muted{font-size:13px;color:var(--muted);margin-top:10px;}
+  .logo{font-weight:900;font-size:18px;color:#e8fbff;letter-spacing:0.6px;}
+  .sub{color:var(--muted);font-size:13px;margin-top:6px;}
+
+  .footer-actions{display:flex;gap:8px;justify-content:center;margin-top:12px;}
+  .statline{display:flex;gap:10px;align-items:center;justify-content:space-between;margin-top:10px;font-size:13px;color:var(--muted);}
+  .snake{stroke:#d7263d; stroke-width:8; fill:none; stroke-linecap:round; opacity:0.85;}
+  .snake-head{fill:#d7263d;}
+  .ladder{stroke:#2b9348; stroke-width:8; stroke-linecap:round; opacity:0.95;}
+  .ladder-rung{stroke:#164e2e; stroke-width:3; opacity:0.9;}
+
+  .pulse{animation:pulse 1.4s infinite;}
+  @keyframes pulse{
+    0%{transform:scale(1);filter:drop-shadow(0 0 0 rgba(0,0,0,0.1));}
+    50%{transform:scale(1.03);filter:drop-shadow(0 10px 30px rgba(6,182,212,0.14));}
+    100%{transform:scale(1);filter:drop-shadow(0 0 0 rgba(0,0,0,0.1));}
+  }
+
+  .legend{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;}
+  .legend .item{display:flex;gap:6px;align-items:center;font-size:13px;color:var(--muted);}
+  .dot{width:14px;height:14px;border-radius:50%;}
+
+  .turn-indicator{display:flex;gap:8px;align-items:center;padding:8px;border-radius:8px;background:linear-gradient(90deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="container">
+    <div class="panel board-wrap">
+      <div style="display:flex;align-items:center;justify-content:space-between;">
+        <div>
+          <div class="title">Snakes & Ladders</div>
+          <div class="info">Classic board race — first to 100 wins. Land on ladders to climb, avoid snakes to not slip back.</div>
+        </div>
+        <div class="legend" aria-hidden="true">
+          <div class="item"><div class="dot" style="background:#06b6d4"></div> You</div>
+          <div class="item"><div class="dot" style="background:#f97316"></div> Opponent</div>
+          <div class="item"><svg width="26" height="14"><line x1="2" y1="12" x2="24" y2="2" stroke="#2b9348" stroke-width="3" stroke-linecap="round"/></svg> Ladder</div>
+          <div class="item"><svg width="26" height="14"><path d="M2,2 C10,20 18,-6 24,12" stroke="#d7263d" stroke-width="3" fill="none" stroke-linecap="round"/></svg> Snake</div>
+        </div>
+      </div>
+
+      <div class="board" id="board" role="application" aria-label="Snakes and ladders board">
+        <div class="grid" id="grid"></div>
+        <svg class="overlay-svg" id="overlay" preserveAspectRatio="none" viewBox="0 0 1000 1000"></svg>
+
+        <!-- tokens -->
+        <div class="token player0" id="token0" aria-hidden="true">A</div>
+        <div class="token player1" id="token1" aria-hidden="true">B</div>
+      </div>
+
+      <div style="display:flex;justify-content:space-between;gap:8px;align-items:center;">
+        <div class="small-muted">Turns played: <span id="turnCount">0</span></div>
+        <div class="small-muted">Moves (Your/Enemy): <span id="movesCount">0 / 0</span></div>
+      </div>
+    </div>
+
+    <div class="panel controls">
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <div>
+          <div class="title" id="panelTitle">Waiting to start</div>
+          <div class="small-muted" id="panelSub">Press Start to begin and enable audio</div>
+        </div>
+      </div>
+
+      <div class="players" id="playersList" aria-live="polite"></div>
+
+      <div style="display:flex;flex-direction:column;gap:12px;margin-top:6px;">
+        <div class="turn-indicator">
+          <div style="font-size:13px;color:var(--muted)">Current turn:</div>
+          <div id="currentTurnBadge" style="display:flex;gap:8px;align-items:center">
+            <div class="player-badge" id="turnBadge" style="background:#06b6d4">A</div>
+            <div id="turnName" style="font-weight:800">Player A</div>
+          </div>
+        </div>
+
+        <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+          <div class="dice">
+            <div class="dice-face" id="diceFace">—</div>
+          </div>
+          <button class="roll-btn" id="rollBtn">Roll Dice</button>
+          <button class="muted-btn" id="undoBtn" title="Undo is disabled for fairness" disabled>Undo</button>
+        </div>
+
+        <div style="display:flex;gap:8px;justify-content:space-between;align-items:center;">
+          <div class="small-muted">Game mode: <strong id="modeLabel">2 Players</strong></div>
+          <div style="display:flex;gap:8px;">
+            <button class="primary-btn" id="startBtn">Start Game</button>
+            <button class="muted-btn" id="resetBtn">Reset</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Start overlay -->
+<div class="start-overlay" id="startOverlay">
+  <div class="panel card">
+    <div class="logo">Snakes & Ladders</div>
+    <div class="sub">Choose mode and player names</div>
+
+    <div style="margin-top:14px;text-align:left;">
+      <label class="small-muted">Mode</label>
+      <select id="modeSelect" class="select" aria-label="Game mode">
+        <option value="2">Two players (local)</option>
+        <option value="1">Single player vs Computer</option>
+      </select>
+
+      <div class="controls-grid" style="margin-top:10px;">
+        <div>
+          <label class="small-muted">Player A name</label>
+          <input id="nameA" class="input" placeholder="You" value="You" />
+        </div>
+        <div>
+          <label class="small-muted">Player B name</label>
+          <input id="nameB" class="input" placeholder="Friend / CPU" value="CPU" />
+        </div>
+      </div>
+
+      <div style="margin-top:12px;">
+        <label class="small-muted">First turn</label>
+        <select id="firstSelect" class="select">
+          <option value="0">Player A</option>
+          <option value="1">Player B</option>
+          <option value="random">Random</option>
+        </select>
+      </div>
+
+      <div class="footer-actions">
+        <button id="beginBtn" class="primary-btn">Start & Enable Sound</button>
+        <button id="beginMuteBtn" class="muted-btn">Start without sound</button>
+      </div>
+      <div class="small-muted" style="margin-top:8px;">Tip: tap or click "Roll Dice" to advance. Players take turns. Good luck!</div>
+    </div>
+  </div>
+</div>
+
+<!-- Game over overlay -->
+<div class="gameover-overlay" id="gameoverOverlay" style="display:none;">
+  <div class="panel card">
+    <div class="title" id="winTitle">Player X Wins!</div>
+    <div class="sub" id="winSub">Great job — details below</div>
+
+    <div style="margin-top:12px;text-align:left;">
+      <div class="statline"><div>Winner</div><div id="statWinner">Player A</div></div>
+      <div class="statline"><div>Turns</div><div id="statTurns">0</div></div>
+      <div class="statline"><div>Moves</div><div id="statMoves">0</div></div>
+      <div class="statline"><div>Time</div><div id="statTime">0s</div></div>
+    </div>
+
+    <div class="footer-actions">
+      <button id="replayBtn" class="primary-btn">Play Again</button>
+      <button id="closeOverBtn" class="muted-btn">Close</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/*
+  Snakes & Ladders Game
+  - Two modes: 2 players local or 1 player vs CPU
+  - Board 10x10, serpentine numbering (1 bottom-left to 100 top-left)
+  - Tokens animate with CSS transform
+  - Snakes and ladders defined below
+  - Web Audio API for sounds (activated on user gesture)
+*/
+
+(function(){
+  // DOM
+  const startOverlay = document.getElementById('startOverlay');
+  const modeSelect = document.getElementById('modeSelect');
+  const nameAInput = document.getElementById('nameA');
+  const nameBInput = document.getElementById('nameB');
+  const beginBtn = document.getElementById('beginBtn');
+  const beginMuteBtn = document.getElementById('beginMuteBtn');
+  const firstSelect = document.getElementById('firstSelect');
+  const boardEl = document.getElementById('board');
+  const gridEl = document.getElementById('grid');
+  const overlaySVG = document.getElementById('overlay');
+  const tokenEls = [document.getElementById('token0'), document.getElementById('token1')];
+  const rollBtn = document.getElementById('rollBtn');
+  const diceFace = document.getElementById('diceFace');
+  const playersList = document.getElementById('playersList');
+  const panelTitle = document.getElementById('panelTitle');
+  const panelSub = document.getElementById('panelSub');
+  const turnBadge = document.getElementById('turnBadge');
+  const turnName = document.getElementById('turnName');
+  const turnCountEl = document.getElementById('turnCount');
+  const movesCountEl = document.getElementById('movesCount');
+  const modeLabel = document.getElementById('modeLabel');
+  const startBtn = document.getElementById('startBtn');
+  const resetBtn = document.getElementById('resetBtn');
+
+  const gameoverOverlay = document.getElementById('gameoverOverlay');
+  const winTitle = document.getElementById('winTitle');
+  const winSub = document.getElementById('winSub');
+  const statWinner = document.getElementById('statWinner');
+  const statTurns = document.getElementById('statTurns');
+  const statMoves = document.getElementById('statMoves');
+  const statTime = document.getElementById('statTime');
+  const replayBtn = document.getElementById('replayBtn');
+  const closeOverBtn = document.getElementById('closeOverBtn');
+
+  // Game config: snakes and ladders map (start -> end)
+  const ladders = {
+    4:14,
+    9:31,
+    20:38,
+    28:84,
+    40:59,
+    51:67,
+    63:81,
+    71:91
+  };
+  const snakes = {
+    17:7,
+    54:34,
+    62:19,
+    64:60,
+    87:24,
+    93:73,
+    95:75,
+    99:78
+  };
+
+  // Some constants
+  let audioEnabled = true;
+  let audioCtx = null;
+
+  // Game state
+  let players = [];
+  let currentTurn = 0; // index
+  let isPlaying = false;
+  let turnCount = 0;
+  let movesCount = [0,0];
+  let boardPath = []; // for cells coordinates
+  let animating = false;
+  let mode = 2; // 1 or 2
+  let startTime = 0;
+
+  // Utility: create audio context on first user gesture
+  function ensureAudio() {
+    if (!audioEnabled) return;
+    if (!audioCtx) {
+      try{
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }catch(e){
+        audioCtx = null;
+        audioEnabled = false;
+      }
+    }
+    if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+  }
+
+  function playBeep(freq=440, length=0.12, type='sine', when=0, gain=0.08) {
+    if(!audioEnabled || !audioCtx) return;
+    const t = audioCtx.currentTime + when;
+    const o = audioCtx.createOscillator();
+    const g = audioCtx.createGain();
+    o.type = type;
+    o.frequency.value = freq;
+    g.gain.value = gain;
+    o.connect(g);
+    g.connect(audioCtx.destination);
+    o.start(t);
+    o.stop(t + length);
+  }
+
+  function playDiceSound() {
+    if(!audioEnabled || !audioCtx) return;
+    for(let i=0;i<6;i++){
+      playBeep(200 + Math.random()*400, 0.04, 'triangle', i*0.03, 0.06);
+    }
+  }
+  function playClimb() {
+    if(!audioEnabled || !audioCtx) return;
+    let seq = [320,420,540,680];
+    seq.forEach((f,i)=> playBeep(f,0.07,'sine',i*0.07,0.06));
+  }
+  function playSlide() {
+    if(!audioEnabled || !audioCtx) return;
+    let seq = [500,420,320,240];
+    seq.forEach((f,i)=> playBeep(f,0.06,'sine',i*0.06,0.07));
+  }
+  function playWin() {
+    if(!audioEnabled || !audioCtx) return;
+    let seq = [660,820,990];
+    seq.forEach((f,i)=> playBeep(f,0.18,'sawtooth',i*0.22,0.09));
+  }
+
+  // Build grid DOM (purely visual numbering)
+  function buildGrid(){
+    gridEl.innerHTML='';
+    // We want numbers in DOM top-to-bottom left-to-right, but we will compute coordinates separately
+    // Fill with 100 cells; but label numbers with serpentine mapping for visuals
+    for(let r=9;r>=0;r--){
+      let even = ((9-r)%2===0);
+      for(let c=0;c<10;c++){
+        let col = even ? c : (9-c);
+        let number = (9-r)*10 + col + 1;
+        const cell = document.createElement('div');
+        cell.className='cell';
+        cell.innerHTML = '<div class="num">'+number+'</div>';
+        gridEl.appendChild(cell);
+      }
+    }
+  }
+
+  // Compute center positions for each cell (1..100) in board coordinates (0..1 normalized) to make SVG and token pos responsive
+  function computeBoardPath(){
+    const rect = boardEl.getBoundingClientRect();
+    const w = rect.width;
+    const h = rect.height;
+    const cellW = w/10;
+    const cellH = h/10;
+    boardPath = new Array(101);
+    for(let n=1;n<=100;n++){
+      const rowFromBottom = Math.floor((n-1)/10);
+      const row = rowFromBottom;
+      const isEven = (rowFromBottom % 2 === 0);
+      const idxInRow = (n-1)%10;
+      const col = isEven ? idxInRow : (9 - idxInRow);
+      const centerX = col*cellW + cellW/2;
+      const centerY = h - (row*cellH + cellH/2);
+      // store normalized 0..1 coordinates relative to board
+      boardPath[n] = {x: centerX/w, y: centerY/h, px:centerX, py:centerY};
+    }
+    // Adjust overlay svg viewbox
+    overlaySVG.setAttribute('viewBox','0 0 '+w+' '+h);
+    overlaySVG.style.width = w+'px';
+    overlaySVG.style.height = h+'px';
+  }
+
+  // draw ladders and snakes on overlay SVG
+  function drawSnakesAndLadders(){
+    const svgNS = "http://www.w3.org/2000/svg";
+    overlaySVG.innerHTML='';
+    const rect = boardEl.getBoundingClientRect();
+    const w = rect.width;
+    const h = rect.height;
+    // Draw ladders
+    for (const [s,e] of Object.entries(ladders)){
+      const start = boardPath[Number(s)];
+      const end = boardPath[Number(e)];
+      if(!start || !end) continue;
+      const g = document.createElementNS(svgNS,'g');
+      // ladder sides
+      const side1 = document.createElementNS(svgNS,'line');
+      const side2 = document.createElementNS(svgNS,'line');
+      // compute slight offset
+      const dx = (end.px - start.px);
+      const dy = (end.py - start.py);
+      const nx = -dy; const ny = dx; // perpendicular
+      const len = Math.sqrt(nx*nx+ny*ny) || 1;
+      const ox = (nx/len)*12;
+      const oy = (ny/len)*12;
+      side1.setAttribute('x1', start.px+ox); side1.setAttribute('y1', start.py+oy);
+      side1.setAttribute('x2', end.px+ox); side1.setAttribute('y2', end.py+oy);
+      side1.setAttribute('class','ladder');
+      side2.setAttribute('x1', start.px-ox); side2.setAttribute('y1', start.py-oy);
+      side2.setAttribute('x2', end.px-ox); side2.setAttribute('y2', end.py-oy);
+      side2.setAttribute('class','ladder');
+
+      g.appendChild(side1);
+      g.appendChild(side2);
+
+      // rungs
+      const rungs = 7;
+      for(let i=1;i<rungs;i++){
+        const t = i/rungs;
+        const rx = start.px + dx*t;
+        const ry = start.py + dy*t;
+        const rung = document.createElementNS(svgNS,'line');
+        rung.setAttribute('x1', rx-ox); rung.setAttribute('y1', ry-oy);
+        rung.setAttribute('x2', rx+ox); rung.setAttribute('y2', ry+oy);
+        rung.setAttribute('class','ladder-rung');
+        g.appendChild(rung);
+      }
+
+      overlaySVG.appendChild(g);
+    }
+
+    // Draw snakes
+    for (const [s,e] of Object.entries(snakes)){
+      const start = boardPath[Number(s)];
+      const end = boardPath[Number(e)];
+      if(!start || !end) continue;
+      const path = document.createElementNS(svgNS,'path');
+      // Bezier curve: anchor points to make curve wavy
+      const mx = (start.px + end.px)/2;
+      const my = (start.py + end.py)/2;
+      const dx = start.px - end.px;
+      const dy = start.py - end.py;
+      const c1x = mx + dy*0.3;
+      const c1y = my - dx*0.18;
+      const c2x = mx - dy*0.3;
+      const c2y = my + dx*0.18;
+      const d = `M ${start.px} ${start.py} C ${c1x} ${c1y} ${c2x} ${c2y} ${end.px} ${end.py}`;
+      path.setAttribute('d', d);
+      path.setAttribute('class','snake');
+      overlaySVG.appendChild(path);
+
+      // Head: place small circle near start slightly offset
+      const head = document.createElementNS(svgNS,'circle');
+      // direction vector from start to control to position head
+      const dirx = c1x - start.px;
+      const diry = c1y - start.py;
+      const hposx = start.px + dirx*0.16;
+      const hposy = start.py + diry*0.16;
+      head.setAttribute('cx', hposx);
+      head.setAttribute('cy', hposy);
+      head.setAttribute('r', 8);
+      head.setAttribute('class','snake-head');
+      overlaySVG.appendChild(head);
+    }
+  }
+
+  // Set token absolute position based on cell number
+  function placeToken(playerIndex, cellNumber){
+    const token = tokenEls[playerIndex];
+    const rect = boardEl.getBoundingClientRect();
+    const w = rect.width, h=rect.height;
+    const pos = boardPath[cellNumber] || boardPath[1];
+    const tx = pos.px;
+    const ty = pos.py;
+    // offset for stacking tokens on same cell
+    const offset = playerIndex === 0 ? -10 : 10;
+    const finalX = tx + offset;
+    const finalY = ty + (playerIndex===0? -6 : 6);
+    token.style.transform = `translate(${finalX}px, ${finalY}px) translate(-50%,-50%)`;
+  }
+
+  // Move token animated step-by-step (returns promise)
+  function animateMove(playerIndex, from, to) {
+    return new Promise(async (resolve) => {
+      const token = tokenEls[playerIndex];
+      const steps = [];
+      for(let p=from+1;p<=to;p++) steps.push(p);
+      if(steps.length === 0) { resolve(); return; }
+      animating = true;
+      for(const step of steps){
+        placeToken(playerIndex, step);
+        await delay(320);
+      }
+      animating = false;
+      resolve();
+    });
+  }
+
+  // Simple delay
+  function delay(ms){ return new Promise(res=>setTimeout(res, ms)); }
+
+  // Roll dice animation & sound
+  async function rollDiceAnimation(finalValue){
+    diceFace.classList.add('pulse');
+    const animTime = 700;
+    const start = performance.now();
+    const tick = ()=>{
+      const now = performance.now();
+      const elapsed = now - start;
+      if(elapsed < animTime){
+        const rnd = Math.floor(Math.random()*6)+1;
+        diceFace.textContent = rnd;
+        requestAnimationFrame(tick);
+      } else {
+        diceFace.textContent = finalValue;
+        diceFace.classList.remove('pulse');
+      }
+    };
+    playDiceSound();
+    requestAnimationFrame(tick);
+    await delay(animTime + 60);
+  }
+
+  // Initiate a turn
+  async function handleRoll(){
+    if(animating || !isPlaying) return;
+    if(currentTurn===1 && mode===1 && players[1].isCPU) {
+      // If CPU turn, disable manual roll
+      return;
+    }
+    animating = true;
+    rollBtn.disabled = true;
+    const dice = Math.floor(Math.random()*6)+1;
+    await rollDiceAnimation(dice);
+    // Move current player
+    let player = players[currentTurn];
+    let from = player.pos;
+    let to = Math.min(100, from + dice);
+    // increment moves for player
+    movesCount[currentTurn]++;
+    updateMovesDisplay();
+    await animateMove(currentTurn, from, to);
+    player.pos = to;
+    // Check snakes or ladders
+    await delay(80);
+    if(ladders[player.pos]){
+      // climb
+      playClimb();
+      const dest = ladders[player.pos];
+      await animateJump(player, player.pos, dest, 'ladder');
+      player.pos = dest;
+    } else if(snakes[player.pos]){
+      // slide
+      playSlide();
+      const dest = snakes[player.pos];
+      await animateJump(player, player.pos, dest, 'snake');
+      player.pos = dest;
+    }
+
+    // Check win
+    if(player.pos === 100){
+      endGame(currentTurn);
+      animating = false;
+      return;
+    }
+
+    // Next turn logic: if dice==6 then same player gets another turn (common house rule). Let's implement: roll again on 6
+    if(dice === 6){
+      // extra turn
+      animating = false;
+      // keep same turn, but only if not CPU else CPU will auto-roll after short delay
+      rollBtn.disabled = false;
+      if(currentTurn === 1 && mode ===1 && players[1].isCPU){
+        await delay(600);
+        cpuTakeTurn();
+      }
+      return;
+    }
+    // normal next
+    currentTurn = (currentTurn + 1) % players.length;
+    turnCount++;
+    updateTurnDisplay();
+    updateTurnStats();
+    animating = false;
+    rollBtn.disabled = false;
+    // If next is CPU, let CPU play after short delay
+    if(currentTurn === 1 && mode ===1 && players[1].isCPU){
+      await delay(600 + Math.random()*800);
+      cpuTakeTurn();
+    }
+  }
+
+  // Animate snake/ladder immediate jump with flourish
+  async function animateJump(player, fromCell, toCell, type){
+    animating = true;
+    const playerIndex = players.indexOf(player);
+    // We want to animate along a curve: move token to intermediate points between start and end
+    const start = boardPath[fromCell];
+    const end = boardPath[toCell];
+    const token = tokenEls[playerIndex];
+    // create small step interpolation
+    const steps = [];
+    const stepCount = 8;
+    for(let i=1;i<=stepCount;i++){
+      const t = i/stepCount;
+      // ease in out
+      const tt = t;
+      const ix = start.px + (end.px - start.px)*tt;
+      const iy = start.py + (end.py - start.py)*tt;
+      steps.push({x:ix,y:iy});
+    }
+    // small sound and visual pulse
+    if(type==='ladder') token.style.boxShadow = '0 10px 26px rgba(6,182,212,0.25), inset 0 2px 6px rgba(255,255,255,0.12)';
+    else token.style.boxShadow = '0 10px 26px rgba(215,38,61,0.18), inset 0 2px 6px rgba(255,255,255,0.06)';
+    for(const s of steps){
+      token.style.transition = 'transform 180ms cubic-bezier(.2,.9,.2,1)';
+      token.style.transform = `translate(${s.x + (playerIndex===0 ? -10:10)}px, ${s.y + (playerIndex===0 ? -6:6)}px) translate(-50%,-50%)`;
+      await delay(180);
+    }
+    token.style.transition = 'transform 200ms cubic-bezier(.2,.8,.2,1)';
+    if(type==='ladder') {
+      playClimb();
+    } else {
+      playSlide();
+    }
+    // finally place exactly
+    placeToken(playerIndex, toCell);
+    token.style.boxShadow = '';
+    await delay(260);
+    animating = false;
+  }
+
+  // CPU logic: basic — roll automatically (with small delay)
+  async function cpuTakeTurn(){
+    if(animating || currentTurn !== 1) return;
+    // small chance of thinking delay
+    await delay(300 + Math.random()*700);
+    await handleRoll();
+  }
+
+  function updatePlayersList(){
+    playersList.innerHTML='';
+    players.forEach((p, idx) => {
+      const row = document.createElement('div');
+      row.className='player-row';
+      const badge = document.createElement('div');
+      badge.className='player-badge';
+      badge.style.background = idx===0 ? 'linear-gradient(180deg,#06b6d4,#0ea5b7)' : 'linear-gradient(180deg,#f97316,#fb923c)';
+      badge.textContent = idx===0 ? 'A' : 'B';
+      const stats = document.createElement('div');
+      stats.className='player-stats';
+      stats.innerHTML = `<div style="font-weight:800;color:#e6fbff">${p.name}${p.isCPU? ' (CPU)':''}</div><div class="small">Position: <strong>${p.pos}</strong></div>`;
+      row.appendChild(badge);
+      row.appendChild(stats);
+      playersList.appendChild(row);
+    });
+  }
+
+  function updateTurnDisplay(){
+    turnBadge.textContent = currentTurn===0 ? 'A' : 'B';
+    turnBadge.style.background = currentTurn===0 ? 'linear-gradient(180deg,#06b6d4,#0ea5b7)' : 'linear-gradient(180deg,#f97316,#fb923c)';
+    turnName.textContent = players[currentTurn].name + (players[currentTurn].isCPU ? ' (CPU)' : '');
+    panelTitle.textContent = isPlaying ? 'Game in Progress' : 'Waiting';
+    panelSub.textContent = isPlaying ? 'Take turns and reach 100!' : 'Press Start to play';
+    modeLabel.textContent = mode===1 ? '1 Player (vs CPU)' : '2 Players';
+  }
+
+  function updateTurnStats(){
+    turnCountEl.textContent = turnCount;
+    movesCountEl.textContent = `${movesCount[0]} / ${movesCount[1]}`;
+  }
+  function updateMovesDisplay(){
+    movesCountEl.textContent = `${movesCount[0]} / ${movesCount[1]}`;
+  }
+
+  // Game start
+  function startGame(fromOverlay=false){
+    // read mode and names and who first
+    mode = Number(modeSelect.value);
+    const nameA = nameAInput.value.trim() || 'Player A';
+    const nameB = nameBInput.value.trim() || (mode===1 ? 'CPU' : 'Player B');
+    players = [
+      {name: nameA, pos: 1, isCPU:false},
+      {name: nameB, pos: 1, isCPU: mode===1}
+    ];
+    currentTurn = firstSelect.value === 'random' ? (Math.random() > 0.5 ? 0 : 1) : Number(firstSelect.value);
+    // reset counters
+    turnCount = 0;
+    movesCount = [0,0];
+    isPlaying = true;
+    startTime = Date.now();
+    updatePlayersList();
+    updateTurnDisplay();
+    updateTurnStats();
+    // place tokens at start
+    computeBoardPath(); // recompute to ensure positions match
+    placeToken(0,1);
+    placeToken(1,1);
+    drawSnakesAndLadders();
+    // hide overlay if started by user
+    if(fromOverlay) startOverlay.style.display='none';
+    // make panel labels active
+    panelTitle.textContent = 'Game in Progress';
+    panelSub.textContent = 'Roll dice to move. 6 gives an extra turn!';
+    // enable roll for human if it's human's turn
+    rollBtn.disabled = false;
+    // if first is CPU, schedule CPU move
+    if(currentTurn === 1 && mode===1 && players[1].isCPU){
+      rollBtn.disabled = true;
+      setTimeout(()=> cpuTakeTurn(), 600 + Math.random()*600);
+    }
+  }
+
+  // Start overlay button handlers
+  beginBtn.addEventListener('click', (e)=>{
+    audioEnabled = true;
+    ensureAudio();
+    startGame(true);
+  });
+  beginMuteBtn.addEventListener('click', (e)=>{
+    audioEnabled = false;
+    startGame(true);
+  });
+
+  // Roll button
+  rollBtn.addEventListener('click', async ()=>{
+    if(!isPlaying) return;
+    await handleRoll();
+  });
+
+  // Start button in control (re-start?) - shows overlay to reconfigure
+  startBtn.addEventListener('click', ()=>{
+    startOverlay.style.display='flex';
+  });
+
+  // Reset button resets to initial state
+  resetBtn.addEventListener('click', ()=>{
+    window.location.reload();
+  });
+
+  // Give option to start game quickly from overlay
+  document.getElementById('modeSelect').addEventListener('change', ()=>{
+    const v = modeSelect.value;
+    if(v==='1') nameBInput.value='CPU';
+    else nameBInput.value = 'Player B';
+  });
+
+  // End game
+  function endGame(winnerIndex){
+    isPlaying = false;
+    rollBtn.disabled = true;
+    playWin();
+    // show overlay with stats
+    const winner = players[winnerIndex];
+    gameoverOverlay.style.display='flex';
+    winTitle.textContent = `${winner.name} Wins!`;
+    winSub.textContent = `Reached 100 in ${turnCount} turns`;
+    statWinner.textContent = winner.name;
+    statTurns.textContent = turnCount;
+    statMoves.textContent = `${movesCount[ winnerIndex ]}`;
+    const seconds = Math.round((Date.now() - startTime)/1000);
+    statTime.textContent = seconds + 's';
+  }
+
+  replayBtn.addEventListener('click', ()=>{
+    gameoverOverlay.style.display='none';
+    startOverlay.style.display='flex';
+  });
+  closeOverBtn.addEventListener('click', ()=>{
+    gameoverOverlay.style.display='none';
+  });
+
+  // window resize: recompute positions
+  window.addEventListener('resize', () => {
+    computeBoardPath();
+    drawSnakesAndLadders();
+    // reposition tokens
+    if(players && players.length){
+      placeToken(0, players[0].pos);
+      placeToken(1, players[1].pos);
+    }
+  });
+
+  // Initialize default grid and UI
+  function init(){
+    buildGrid();
+    computeBoardPath();
+    drawSnakesAndLadders();
+    // initial tokens
+    tokenEls[0].textContent = 'A';
+    tokenEls[1].textContent = 'B';
+    placeToken(0,1);
+    placeToken(1,1);
+    // disable roll until start
+    rollBtn.disabled = true;
+    // setup initial players list visual
+    players = [{name:'Player A', pos:1,isCPU:false},{name:'Player B',pos:1,isCPU:false}];
+    updatePlayersList();
+    updateTurnDisplay();
+    updateTurnStats();
+    // Start overlay remains visible
+    startOverlay.style.display='flex';
+
+    // Provide startBtn to open overlay
+    startBtn.addEventListener('click', ()=> startOverlay.style.display='flex');
+
+    // Keyboard accessibility: space/enter roll
+    document.addEventListener('keydown', (e)=>{
+      if(e.key === ' ' || e.key === 'Enter'){
+        if(!startOverlay.style.display || startOverlay.style.display === 'none'){
+          // when overlay not visible and game started
+          if(isPlaying && !animating && !rollBtn.disabled){
+            e.preventDefault();
+            rollBtn.click();
+          }
+        }
+      }
+    });
+  }
+
+  // Initialize audio on first user gesture in case some browsers need direct gesture
+  document.addEventListener('click', function initAudioOnce(){
+    ensureAudio();
+    document.removeEventListener('click', initAudioOnce);
+  });
+
+  // Kick off
+  init();
+
+  // Expose a safe debug in window for interactive testing (not necessary but helpful)
+  window.__snl = {
+    players, ladders, snakes,
+    startGame,
+    placeToken
+  };
+
+})();
+</script>
+</body>
+</html>
